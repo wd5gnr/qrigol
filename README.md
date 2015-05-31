@@ -56,3 +56,10 @@ This tab lets you export the data buffers or plot them with an external tool
 
 ![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_130.jpg)
 
+
+# Building
+
+Use QtCreator and load the .pro file as a project. Select a kit for your configuration and build.
+
+Might work on Windows, although you'd almost surely have to change the port selection and there might
+be a few other things that don't work. No idea. Use Linux!
