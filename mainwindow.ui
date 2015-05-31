@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>3</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="status">
        <attribute name="title">
@@ -35,10 +35,17 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="deviceName"/>
+           <widget class="QLineEdit" name="deviceName">
+            <property name="toolTip">
+             <string>Device name (usually /dev/usbtmc0)</string>
+            </property>
+           </widget>
           </item>
           <item row="2" column="0">
            <widget class="QPushButton" name="connectButton">
+            <property name="toolTip">
+             <string>Connect/Disconnect with instrument</string>
+            </property>
             <property name="text">
              <string>&amp;Connect</string>
             </property>
@@ -55,6 +62,9 @@
            <widget class="QPushButton" name="rsButton">
             <property name="enabled">
              <bool>false</bool>
+            </property>
+            <property name="toolTip">
+             <string>Run or stop the instrument</string>
             </property>
             <property name="text">
              <string>Run/Stop</string>
@@ -78,6 +88,9 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>While operating, the software will lock out the instrument keyboard unless you check this box</string>
             </property>
             <property name="text">
              <string>Unlock keyboard</string>
@@ -109,6 +122,9 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="toolTip">
+                <string>Display the specified channel</string>
+               </property>
                <property name="text">
                 <string>Display</string>
                </property>
@@ -121,6 +137,9 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Vertical sensitivity</string>
                </property>
                <item>
                 <property name="text">
@@ -137,6 +156,9 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="toolTip">
+                <string>Enable bandwidth limiting</string>
+               </property>
                <property name="text">
                 <string>BW Limit</string>
                </property>
@@ -149,6 +171,9 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Enable filtering</string>
                </property>
                <property name="text">
                 <string>Filter</string>
@@ -163,6 +188,9 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="toolTip">
+                <string>Invert signal</string>
+               </property>
                <property name="text">
                 <string>Invert</string>
                </property>
@@ -170,6 +198,9 @@
              </item>
              <item row="0" column="1">
               <widget class="QComboBox" name="c1coup">
+               <property name="toolTip">
+                <string>Select coupling</string>
+               </property>
                <item>
                 <property name="text">
                  <string>AC</string>
@@ -194,6 +225,9 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Configure to match the probe attentuation for the specificed channel</string>
                </property>
                <item>
                 <property name="text">
@@ -240,6 +274,9 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="toolTip">
+                <string>Set vertical offset (tip: use mouse wheel)</string>
+               </property>
                <property name="prefix">
                 <string>Offset </string>
                </property>
@@ -281,6 +318,9 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="toolTip">
+                <string>Configure to match the probe attentuation for the specificed channel</string>
+               </property>
                <item>
                 <property name="text">
                  <string>1X</string>
@@ -320,6 +360,9 @@
              </item>
              <item row="1" column="3">
               <widget class="QComboBox" name="c2vscale">
+               <property name="toolTip">
+                <string>Vertical sensitivity</string>
+               </property>
                <item>
                 <property name="text">
                  <string>2mV</string>
@@ -335,6 +378,9 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="toolTip">
+                <string>Enable filtering</string>
+               </property>
                <property name="text">
                 <string>Filter</string>
                </property>
@@ -347,6 +393,9 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Invert signal</string>
                </property>
                <property name="text">
                 <string>Invert</string>
@@ -361,6 +410,9 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="toolTip">
+                <string>Enable bandwidth limiting</string>
+               </property>
                <property name="text">
                 <string>BW Limit</string>
                </property>
@@ -373,6 +425,9 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Select coupling</string>
                </property>
                <item>
                 <property name="text">
@@ -393,6 +448,9 @@
              </item>
              <item row="0" column="3">
               <widget class="QDoubleSpinBox" name="c2offspin">
+               <property name="toolTip">
+                <string>Set vertical offset (tip: use mouse wheel)</string>
+               </property>
                <property name="prefix">
                 <string>Offset </string>
                </property>
@@ -421,6 +479,9 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="toolTip">
+                <string>Display the specified channel</string>
+               </property>
                <property name="text">
                 <string>Display</string>
                </property>
@@ -445,6 +506,9 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="toolTip">
+              <string>Turn on math or FFT display</string>
+             </property>
              <property name="text">
               <string>Math/FFT Display</string>
              </property>
@@ -452,6 +516,9 @@
            </item>
            <item>
             <widget class="QComboBox" name="mathsel">
+             <property name="toolTip">
+              <string>Select math function</string>
+             </property>
              <item>
               <property name="text">
                <string>A+B</string>
@@ -475,7 +542,6 @@
             </widget>
            </item>
           </layout>
-          <zorder>cdisp2</zorder>
           <zorder>mathsel</zorder>
           <zorder>mathdisp</zorder>
          </widget>
@@ -483,7 +549,7 @@
         <item>
          <widget class="QPushButton" name="updAcq_2">
           <property name="toolTip">
-           <string>Reads settings from scope</string>
+           <string>Reads settings from instrument</string>
           </property>
           <property name="text">
            <string>Read Scope</string>
@@ -507,6 +573,9 @@
             <layout class="QGridLayout" name="gridLayout_2">
              <item row="2" column="2">
               <widget class="QLabel" name="srate">
+               <property name="toolTip">
+                <string>Shows the sample rate (samples/second) used by the instrument with the current settings</string>
+               </property>
                <property name="text">
                 <string/>
                </property>
@@ -519,6 +588,9 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Horizontal position (tip: use scroll wheel)</string>
                </property>
                <property name="suffix">
                 <string>uS</string>
@@ -589,6 +661,9 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Horizontal scale</string>
                </property>
                <item>
                 <property name="text">
@@ -760,6 +835,9 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="toolTip">
+                <string>Sets the increment used to adjust the horizontal position</string>
+               </property>
                <property name="prefix">
                 <string> Increment </string>
                </property>
@@ -787,6 +865,9 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Reset horizontal position to 0</string>
                </property>
                <property name="text">
                 <string>Clear</string>
@@ -833,6 +914,9 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="toolTip">
+                <string>Set real time or equal time mode</string>
+               </property>
                <item>
                 <property name="text">
                  <string>Real Time</string>
@@ -852,6 +936,9 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Set data acquistion type</string>
                </property>
                <item>
                 <property name="text">
@@ -877,6 +964,9 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>When averaging, select how many samples are averaged</string>
                </property>
                <item>
                 <property name="text">
@@ -928,6 +1018,9 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="toolTip">
+                <string>Select long memory (512K or 1M)</string>
+               </property>
                <property name="layoutDirection">
                 <enum>Qt::RightToLeft</enum>
                </property>
@@ -973,7 +1066,7 @@
            <item>
             <widget class="QPushButton" name="updAcq">
              <property name="toolTip">
-              <string>Reads settings from scope</string>
+              <string>Reads settings from instrument</string>
              </property>
              <property name="text">
               <string>Read Scope</string>
@@ -994,6 +1087,9 @@
          <layout class="QGridLayout" name="gridLayout_12">
           <item row="0" column="1">
            <widget class="QComboBox" name="tmode">
+            <property name="toolTip">
+             <string>Trigger mode - The bottom of this tab will change to show mode-specific options</string>
+            </property>
             <item>
              <property name="text">
               <string>Edge</string>
@@ -1057,6 +1153,9 @@
           </item>
           <item row="3" column="1">
            <widget class="QDoubleSpinBox" name="tlevel">
+            <property name="toolTip">
+             <string>Trigger level (tip: use mouse wheel)</string>
+            </property>
             <property name="suffix">
              <string>V</string>
             </property>
@@ -1075,7 +1174,11 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QComboBox" name="tsource"/>
+           <widget class="QComboBox" name="tsource">
+            <property name="toolTip">
+             <string>Trigger source</string>
+            </property>
+           </widget>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label_49">
@@ -1109,6 +1212,9 @@
           </item>
           <item row="2" column="1">
            <widget class="QComboBox" name="tsweep">
+            <property name="toolTip">
+             <string>Type of sweep: Normal, Manual, Single</string>
+            </property>
             <item>
              <property name="text">
               <string>Auto</string>
@@ -1154,6 +1260,15 @@
           </item>
           <item row="6" column="0">
            <widget class="QPushButton" name="tfifty">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Set trigger level to 50%</string>
+            </property>
             <property name="text">
              <string>50%</string>
             </property>
@@ -1161,6 +1276,9 @@
           </item>
           <item row="6" column="1">
            <widget class="QPushButton" name="tforce">
+            <property name="statusTip">
+             <string>Force trigger</string>
+            </property>
             <property name="text">
              <string>Force</string>
             </property>
@@ -1176,6 +1294,9 @@
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
             <widget class="QComboBox" name="tposneg">
+             <property name="statusTip">
+              <string>Select which edge is the trigger</string>
+             </property>
              <item>
               <property name="text">
                <string>Positive</string>
@@ -1190,6 +1311,9 @@
            </item>
            <item>
             <widget class="QDoubleSpinBox" name="tedgesense">
+             <property name="toolTip">
+              <string>Edge sensitivity</string>
+             </property>
              <property name="prefix">
               <string>Sensitivity </string>
              </property>
@@ -1218,6 +1342,9 @@
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
             <widget class="QComboBox" name="tpulsemode">
+             <property name="toolTip">
+              <string>Pulse trigger comparison</string>
+             </property>
              <item>
               <property name="text">
                <string>+GREATER THAN</string>
@@ -1252,6 +1379,9 @@
            </item>
            <item>
             <widget class="QDoubleSpinBox" name="tpulswid">
+             <property name="toolTip">
+              <string>Pulse width for trigger</string>
+             </property>
              <property name="prefix">
               <string>Width </string>
              </property>
@@ -1271,6 +1401,9 @@
            </item>
            <item>
             <widget class="QDoubleSpinBox" name="tpulsesense">
+             <property name="toolTip">
+              <string>Trigger sensitivity</string>
+             </property>
              <property name="prefix">
               <string>Sensitivity </string>
              </property>
@@ -1301,6 +1434,9 @@
             <layout class="QGridLayout" name="gridLayout_13">
              <item row="0" column="0">
               <widget class="QComboBox" name="tslopemode">
+               <property name="toolTip">
+                <string>Slope trigger selection</string>
+               </property>
                <item>
                 <property name="text">
                  <string>+GREATER THAN</string>
@@ -1335,6 +1471,9 @@
              </item>
              <item row="1" column="0">
               <widget class="QComboBox" name="tslopewin">
+               <property name="toolTip">
+                <string>Window (P=+, N=-)</string>
+               </property>
                <item>
                 <property name="text">
                  <string>P_WIN_A</string>
@@ -1369,6 +1508,9 @@
              </item>
              <item row="0" column="2">
               <widget class="QDoubleSpinBox" name="tslopesense">
+               <property name="toolTip">
+                <string>Slope trigger sensitivity</string>
+               </property>
                <property name="prefix">
                 <string>Sensitivity </string>
                </property>
@@ -1388,6 +1530,9 @@
              </item>
              <item row="0" column="1">
               <widget class="QDoubleSpinBox" name="tslopetime">
+               <property name="toolTip">
+                <string>Slope trigger time</string>
+               </property>
                <property name="prefix">
                 <string>Time </string>
                </property>
@@ -1407,6 +1552,9 @@
              </item>
              <item row="1" column="1">
               <widget class="QDoubleSpinBox" name="tslopea">
+               <property name="toolTip">
+                <string>Slope A </string>
+               </property>
                <property name="decimals">
                 <number>3</number>
                </property>
@@ -1423,6 +1571,9 @@
              </item>
              <item row="1" column="2">
               <widget class="QDoubleSpinBox" name="tslopeb">
+               <property name="toolTip">
+                <string>Slope B</string>
+               </property>
                <property name="decimals">
                 <number>3</number>
                </property>
@@ -1459,7 +1610,7 @@
         <item>
          <widget class="QPushButton" name="updAcq_3">
           <property name="toolTip">
-           <string>Reads settings from scope</string>
+           <string>Reads settings from instrument</string>
           </property>
           <property name="text">
            <string>Read Scope</string>
@@ -1512,6 +1663,9 @@
                </item>
                <item row="2" column="1">
                 <widget class="QLabel" name="vmax1">
+                 <property name="toolTip">
+                  <string>Maximum voltage</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1529,6 +1683,9 @@
                </item>
                <item row="4" column="1">
                 <widget class="QLabel" name="vavg1">
+                 <property name="toolTip">
+                  <string>Average voltage</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1539,6 +1696,9 @@
                </item>
                <item row="3" column="1">
                 <widget class="QLabel" name="vmin1">
+                 <property name="toolTip">
+                  <string>Minimum voltage</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1559,6 +1719,9 @@
                </item>
                <item row="0" column="1">
                 <widget class="QLabel" name="vpp1">
+                 <property name="toolTip">
+                  <string>Peak to peak voltage</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1579,6 +1742,9 @@
                </item>
                <item row="5" column="1">
                 <widget class="QLabel" name="vrms1">
+                 <property name="toolTip">
+                  <string>RMS voltage</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1606,6 +1772,9 @@
                </item>
                <item row="0" column="5">
                 <widget class="QLabel" name="pwid1">
+                 <property name="toolTip">
+                  <string>Positive pulse width</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1616,6 +1785,9 @@
                </item>
                <item row="0" column="3">
                 <widget class="QLabel" name="vtop1">
+                 <property name="toolTip">
+                  <string>Flat top voltage</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1626,6 +1798,9 @@
                </item>
                <item row="0" column="7">
                 <widget class="QLabel" name="freq1">
+                 <property name="toolTip">
+                  <string>Frequency</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1643,6 +1818,9 @@
                </item>
                <item row="2" column="3">
                 <widget class="QLabel" name="vbas1">
+                 <property name="toolTip">
+                  <string>Flat base voltage</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1660,6 +1838,9 @@
                </item>
                <item row="2" column="5">
                 <widget class="QLabel" name="nwid1">
+                 <property name="toolTip">
+                  <string>Negative pulse width</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1677,6 +1858,9 @@
                </item>
                <item row="2" column="7">
                 <widget class="QLabel" name="per1">
+                 <property name="toolTip">
+                  <string>Period</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1694,6 +1878,9 @@
                </item>
                <item row="3" column="3">
                 <widget class="QLabel" name="over1">
+                 <property name="toolTip">
+                  <string>Edge overshoot percentage</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1711,6 +1898,9 @@
                </item>
                <item row="4" column="3">
                 <widget class="QLabel" name="pres1">
+                 <property name="toolTip">
+                  <string>Edge preshoot (undershoot) in percent</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1728,6 +1918,9 @@
                </item>
                <item row="3" column="5">
                 <widget class="QLabel" name="pdut1">
+                 <property name="toolTip">
+                  <string>Positive duty cycle</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1745,6 +1938,9 @@
                </item>
                <item row="4" column="5">
                 <widget class="QLabel" name="ndut1">
+                 <property name="toolTip">
+                  <string>Negative duty cycle</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1768,6 +1964,9 @@
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
+                 <property name="toolTip">
+                  <string>Rise time</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1785,6 +1984,9 @@
                </item>
                <item row="4" column="7">
                 <widget class="QLabel" name="fall1">
+                 <property name="toolTip">
+                  <string>Fall time</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1809,6 +2011,9 @@
                </item>
                <item row="5" column="5">
                 <widget class="QLabel" name="pdel1">
+                 <property name="toolTip">
+                  <string>Delay between Chan 1 and Chan 2 on rising edge</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1819,6 +2024,9 @@
                </item>
                <item row="5" column="7">
                 <widget class="QLabel" name="ndel1">
+                 <property name="toolTip">
+                  <string>Delay between Chan1 and Chan2 on falling edge</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1836,6 +2044,9 @@
                </item>
                <item row="5" column="3">
                 <widget class="QLabel" name="vamp1">
+                 <property name="toolTip">
+                  <string>Voltage between VTop and VBase</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1886,6 +2097,9 @@
                </item>
                <item row="2" column="1">
                 <widget class="QLabel" name="vmax2">
+                 <property name="toolTip">
+                  <string>Maximum voltage</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1903,6 +2117,9 @@
                </item>
                <item row="4" column="1">
                 <widget class="QLabel" name="vavg2">
+                 <property name="toolTip">
+                  <string>Average voltage</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1913,6 +2130,9 @@
                </item>
                <item row="3" column="1">
                 <widget class="QLabel" name="vmin2">
+                 <property name="toolTip">
+                  <string>Minimum voltage</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1933,6 +2153,9 @@
                </item>
                <item row="0" column="1">
                 <widget class="QLabel" name="vpp2">
+                 <property name="toolTip">
+                  <string>Peak to peak voltage</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1951,8 +2174,31 @@
                  </property>
                 </widget>
                </item>
+               <item row="0" column="6">
+                <widget class="QLabel" name="label_29">
+                 <property name="text">
+                  <string>Freq (Hz)</string>
+                 </property>
+                </widget>
+               </item>
                <item row="5" column="1">
                 <widget class="QLabel" name="vrms2">
+                 <property name="toolTip">
+                  <string>RMS voltage</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="textInteractionFlags">
+                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="5">
+                <widget class="QLabel" name="pwid2">
+                 <property name="toolTip">
+                  <string>Positive pulse width</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1971,15 +2217,11 @@
                  </property>
                 </widget>
                </item>
-               <item row="0" column="6">
-                <widget class="QLabel" name="label_29">
-                 <property name="text">
-                  <string>Freq (Hz)</string>
+               <item row="0" column="7">
+                <widget class="QLabel" name="freq2">
+                 <property name="toolTip">
+                  <string>Frequency</string>
                  </property>
-                </widget>
-               </item>
-               <item row="0" column="5">
-                <widget class="QLabel" name="pwid2">
                  <property name="text">
                   <string/>
                  </property>
@@ -1990,16 +2232,9 @@
                </item>
                <item row="0" column="3">
                 <widget class="QLabel" name="vtop2">
-                 <property name="text">
-                  <string/>
+                 <property name="toolTip">
+                  <string>Flat top voltage</string>
                  </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="7">
-                <widget class="QLabel" name="freq2">
                  <property name="text">
                   <string/>
                  </property>
@@ -2017,6 +2252,9 @@
                </item>
                <item row="2" column="3">
                 <widget class="QLabel" name="vbas2">
+                 <property name="toolTip">
+                  <string>Flat base voltage</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -2034,6 +2272,9 @@
                </item>
                <item row="2" column="5">
                 <widget class="QLabel" name="nwid2">
+                 <property name="toolTip">
+                  <string>Negative pulse width</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -2051,6 +2292,9 @@
                </item>
                <item row="2" column="7">
                 <widget class="QLabel" name="per2">
+                 <property name="toolTip">
+                  <string>Period</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -2068,6 +2312,9 @@
                </item>
                <item row="3" column="3">
                 <widget class="QLabel" name="over2">
+                 <property name="toolTip">
+                  <string>Edge overshoot percentage</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -2085,6 +2332,9 @@
                </item>
                <item row="4" column="3">
                 <widget class="QLabel" name="pres2">
+                 <property name="toolTip">
+                  <string>Edge preshoot (undershoot) in percent</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -2102,6 +2352,9 @@
                </item>
                <item row="3" column="5">
                 <widget class="QLabel" name="pdut2">
+                 <property name="toolTip">
+                  <string>Positive duty cycle</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -2119,18 +2372,14 @@
                </item>
                <item row="4" column="5">
                 <widget class="QLabel" name="ndut2">
+                 <property name="toolTip">
+                  <string>Negative duty cycle</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
                  <property name="textInteractionFlags">
                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="6">
-                <widget class="QLabel" name="label_37">
-                 <property name="text">
-                  <string>Rise Time (us)</string>
                  </property>
                 </widget>
                </item>
@@ -2141,6 +2390,9 @@
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="toolTip">
+                  <string>Rise time</string>
                  </property>
                  <property name="text">
                   <string/>
@@ -2159,6 +2411,9 @@
                </item>
                <item row="4" column="7">
                 <widget class="QLabel" name="fall2">
+                 <property name="toolTip">
+                  <string>Fall time</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -2183,6 +2438,9 @@
                </item>
                <item row="5" column="5">
                 <widget class="QLabel" name="pdel2">
+                 <property name="toolTip">
+                  <string>Delay between Chan 2 and Chan 1 on rising edge</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -2193,6 +2451,9 @@
                </item>
                <item row="5" column="7">
                 <widget class="QLabel" name="ndel2">
+                 <property name="toolTip">
+                  <string>Delay between Chan2 and Chan1 on falling edge</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -2210,11 +2471,21 @@
                </item>
                <item row="5" column="3">
                 <widget class="QLabel" name="vamp2">
+                 <property name="toolTip">
+                  <string>Voltage between VTop and VBase</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
                  <property name="textInteractionFlags">
                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="6">
+                <widget class="QLabel" name="label_37">
+                 <property name="text">
+                  <string>Rise Time (us)</string>
                  </property>
                 </widget>
                </item>
@@ -2233,6 +2504,9 @@
               <layout class="QGridLayout" name="gridLayout_5">
                <item row="0" column="0">
                 <widget class="QPushButton" name="measUpdate">
+                 <property name="toolTip">
+                  <string>Manually update measurements (will write a log record if logging is enabled)</string>
+                 </property>
                  <property name="text">
                   <string>&amp;Update</string>
                  </property>
@@ -2246,6 +2520,12 @@
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
+                 <property name="toolTip">
+                  <string>Automatic update on time schedule to the right</string>
+                 </property>
+                 <property name="statusTip">
+                  <string/>
+                 </property>
                  <property name="text">
                   <string>Auto Every</string>
                  </property>
@@ -2253,6 +2533,9 @@
                </item>
                <item row="0" column="2">
                 <widget class="QSpinBox" name="upInterval">
+                 <property name="toolTip">
+                  <string>Time for auto measure (untis to the right)</string>
+                 </property>
                  <property name="minimum">
                   <number>1</number>
                  </property>
@@ -2263,6 +2546,9 @@
                </item>
                <item row="0" column="3">
                 <widget class="QComboBox" name="updTimeScale">
+                 <property name="toolTip">
+                  <string>Units for auto measure time (to the left)</string>
+                 </property>
                  <property name="currentIndex">
                   <number>0</number>
                  </property>
@@ -2306,6 +2592,9 @@
                  <property name="enabled">
                   <bool>true</bool>
                  </property>
+                 <property name="toolTip">
+                  <string>When checked, any measurement (auto or manual) will append a record to the open log file</string>
+                 </property>
                  <property name="text">
                   <string>Log Enable</string>
                  </property>
@@ -2313,6 +2602,9 @@
                </item>
                <item row="2" column="3">
                 <widget class="QPushButton" name="mlogfileselect">
+                 <property name="toolTip">
+                  <string>Select log file (must select before enabling logging)</string>
+                 </property>
                  <property name="text">
                   <string>Select File</string>
                  </property>
@@ -2333,6 +2625,9 @@
                </item>
                <item row="1" column="2">
                 <widget class="QCheckBox" name="mlogstop">
+                 <property name="toolTip">
+                  <string>Check to turn off logging after a certain number of samples</string>
+                 </property>
                  <property name="text">
                   <string>Stop after</string>
                  </property>
@@ -2342,6 +2637,9 @@
                 <widget class="QSpinBox" name="mlogrepeat">
                  <property name="enabled">
                   <bool>true</bool>
+                 </property>
+                 <property name="toolTip">
+                  <string>Number of samples to take before stopping logging</string>
                  </property>
                  <property name="suffix">
                   <string> Captures</string>
@@ -2388,7 +2686,7 @@
           <layout class="QHBoxLayout" name="horizontalLayout_8">
            <item>
             <layout class="QGridLayout" name="gridLayout_4">
-             <item row="3" column="0">
+             <item row="4" column="0">
               <widget class="QCheckBox" name="wavesavecfg">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2399,6 +2697,9 @@
                <property name="focusPolicy">
                 <enum>Qt::TabFocus</enum>
                </property>
+               <property name="toolTip">
+                <string>Check to include key instrument parameters in the first part of the export</string>
+               </property>
                <property name="text">
                 <string>Save Config</string>
                </property>
@@ -2407,7 +2708,7 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="0">
+             <item row="1" column="0">
               <widget class="QCheckBox" name="wavec1">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2418,6 +2719,9 @@
                <property name="focusPolicy">
                 <enum>Qt::TabFocus</enum>
                </property>
+               <property name="toolTip">
+                <string>Select which items are exported</string>
+               </property>
                <property name="text">
                 <string>Chan1</string>
                </property>
@@ -2426,7 +2730,7 @@
                </property>
               </widget>
              </item>
-             <item row="4" column="0">
+             <item row="5" column="0">
               <widget class="QCheckBox" name="wavehead">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2437,6 +2741,9 @@
                <property name="focusPolicy">
                 <enum>Qt::TabFocus</enum>
                </property>
+               <property name="toolTip">
+                <string>Check to include a header before the data export</string>
+               </property>
                <property name="text">
                 <string>Header</string>
                </property>
@@ -2446,25 +2753,6 @@
               </widget>
              </item>
              <item row="2" column="0">
-              <widget class="QCheckBox" name="wavetimeopt">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::TabFocus</enum>
-               </property>
-               <property name="text">
-                <string>Time</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
               <widget class="QCheckBox" name="wavec2">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2475,6 +2763,9 @@
                <property name="focusPolicy">
                 <enum>Qt::TabFocus</enum>
                </property>
+               <property name="toolTip">
+                <string>Select which items are exported</string>
+               </property>
                <property name="text">
                 <string>Chan2</string>
                </property>
@@ -2483,7 +2774,7 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="0">
+             <item row="6" column="0">
               <widget class="QCheckBox" name="waveraw">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2494,8 +2785,33 @@
                <property name="focusPolicy">
                 <enum>Qt::TabFocus</enum>
                </property>
+               <property name="toolTip">
+                <string>Check to record raw counts instead of voltages</string>
+               </property>
                <property name="text">
                 <string>Raw Counts</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="wavetimeopt">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::TabFocus</enum>
+               </property>
+               <property name="toolTip">
+                <string>Select which items are exported</string>
+               </property>
+               <property name="text">
+                <string>Time</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -2521,6 +2837,9 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="toolTip">
+              <string>Save current waveforms</string>
+             </property>
              <property name="text">
               <string>Save CSV File</string>
              </property>
@@ -2533,6 +2852,9 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Export to external plotting program</string>
              </property>
              <property name="text">
               <string>Plot</string>
@@ -2589,6 +2911,9 @@
   <action name="action_Diagnostic">
    <property name="text">
     <string>&amp;Diagnostic</string>
+   </property>
+   <property name="statusTip">
+    <string>Send commands directly to instrument</string>
    </property>
   </action>
  </widget>

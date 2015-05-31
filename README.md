@@ -33,6 +33,8 @@ respective owners.
 * No Icon (will fix)
 * Not all tool tip help is in place (will fix)
 * No help system (will fix)
+* Does not do XY, Delayed, or Roll mode
+
 
 # Screen Shots
 
