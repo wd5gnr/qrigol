@@ -26,13 +26,6 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui \
     plotdialog.ui
 
-INCLUDEPATH += /usr/include/qwt-qt4
-
-unix:!macx: LIBS += -lqwt-qt4
-
-unix:!macx: LIBS += -lmgl-qt4
-
-unix:!macx: LIBS += -lmgl
 
 OTHER_FILES += \
     README.md \
