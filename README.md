@@ -52,9 +52,15 @@ The trigger tab mutates depending on the type of trigger (EDGE, PULSE, and SLOPE
 
 ![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_129.jpg)
 
-This tab lets you export the data buffers or plot them with an external tool
+
+You can read all measurements and also log them to CSV format in a variety of way on demand or on a timer
 
 ![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_130.jpg)
+
+
+This tab lets you export the data buffers or plot them with an external tool
+
+![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_131.jpg)
 
 
 # Building

@@ -35,4 +35,5 @@ OTHER_FILES += \
     screenshots/screenshot_127.jpg \
     screenshots/screenshot_128.jpg \
     screenshots/screenshot_129.jpg \
-    screenshots/screenshot_130.jpg
+    screenshots/screenshot_130.jpg \
+    screenshots/screenshot_131.jpg
