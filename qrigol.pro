@@ -33,3 +33,12 @@ unix:!macx: LIBS += -lqwt-qt4
 unix:!macx: LIBS += -lmgl-qt4
 
 unix:!macx: LIBS += -lmgl
+
+OTHER_FILES += \
+    README.md \
+    COPYING \
+    LICENSE \
+    screenshots/screenshot_126.jpg \
+    screenshots/screenshot_127.jpg \
+    screenshots/screenshot_128.jpg \
+    screenshots/screenshot_129.jpg
