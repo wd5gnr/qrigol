@@ -36,7 +36,9 @@ respective owners.
 
 # Screen Shots (coming soon)
 
-!(https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_126.jpg)
-!(https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_127.jpg)
-!(https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_128.jpg)
-!(https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_129.jpg)
+!(https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_126.jpg "Status tab")
+!(https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_127.jpg "Vertical tab")
+!(https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_128.jpg "Horizontal tab")
+!(https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_129.jpg "Trigger tab")
+!(https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_130.jpg "Plot tab")
+
