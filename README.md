@@ -34,11 +34,25 @@ respective owners.
 * Not all tool tip help is in place (will fix)
 * No help system (will fix)
 
-# Screen Shots (coming soon)
+# Screen Shots
+
+The interface consists of tabs. This one lets you connect to the device and exercise basic control:
 
 ![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_126.jpg)
+
+Here's the vertical tab:
+
 ![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_127.jpg)
+
+The Horizontal tab:
+
 ![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_128.jpg)
+
+The trigger tab mutates depending on the type of trigger (EDGE, PULSE, and SLOPE currently supported)
+
 ![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_129.jpg)
+
+This tab lets you export the data buffers or plot them with an external tool
+
 ![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_130.jpg)
 
