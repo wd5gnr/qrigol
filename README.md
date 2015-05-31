@@ -35,3 +35,8 @@ respective owners.
 * No help system (will fix)
 
 # Screen Shots (coming soon)
+
+!(https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_126.jpg)
+!(https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_127.jpg)
+!(https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_128.jpg)
+!(https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_129.jpg)
