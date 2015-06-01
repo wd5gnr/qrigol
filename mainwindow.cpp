@@ -49,6 +49,16 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+// Helpers that take QString
+int MainWindow::command(const QString &cmd)
+{
+  return com.command(cmd.toLatin1());
+}
+
+float MainWindow::cmdFloat(const QString &cmd)
+{
+  return com.cmdFloat(cmd.toLatin1());
+}
 
 
 
@@ -241,7 +251,7 @@ void MainWindow::on_hardcopyBTN_clicked()  // scope's "hardcopy" function
 int MainWindow::cmdCharIndex(const QString &cmd,const QString &search,int bpos)
 {
     QChar c;
-    com.command(cmd.toLatin1());
+    command(cmd);
     c=com.buffer[bpos];
     return search.indexOf(c,0,Qt::CaseInsensitive);
 }
@@ -252,7 +262,7 @@ void MainWindow::setupChannel(int ch,QComboBox *probebox,QComboBox *scalebox)
     QString cmd;
     cmdbase+=QString::number(ch);
     cmd=cmdbase+":PROB?";
-    float probe=com.cmdFloat(cmd.toLatin1());
+    float probe=cmdFloat(cmd);
     probebox->setCurrentIndex(probebox->findText(QString::number(probe)+"X"));
     scalebox->clear();
     if (probe==1.0)
@@ -313,7 +323,7 @@ void MainWindow::setupChannel(int ch,QComboBox *probebox,QComboBox *scalebox)
         scalebox->addItem("10000.0");
     }
     cmd=cmdbase+":SCAL?";
-    probe=com.cmdFloat(cmd.toLatin1());
+    probe=cmdFloat(cmd);
     int n=0;
     while (scalebox->itemText(n).toFloat()!=probe)
         if (++n>=scalebox->count()) break;
@@ -445,12 +455,12 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
    QString cmd,cmdbase=":TRIG:";
    cmdbase=cmdbase+ui->tmode->currentText();
    cmd=cmdbase+":SOUR?";
-   com.command(cmd.toLatin1());
+   command(cmd);
    if (com.buffer[2]=='1') strcpy(com.buffer,"CHAN1");
    if (com.buffer[2]=='2') strcpy(com.buffer,"CHAN2");
    ui->tsource->setCurrentIndex(ui->tsource->findText(com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
    cmd=cmdbase+":SWE?";
-   com.command(cmd.toLatin1()); // scope doesn't seem to care what trigger type is active
+   command(cmd); // scope doesn't seem to care what trigger type is active
    ui->tsweep->setCurrentIndex(ui->tsweep->findText(com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
 
    float hold=com.cmdFloat(":TRIG:HOLD?");
@@ -461,11 +471,11 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
    cmd=cmdbase+":LEV?";
    if (ui->tmode->currentText()!="Slope")
    {
-    off=com.cmdFloat(cmd.toLatin1());
+    off=cmdFloat(cmd);
     ui->tlevel->setValue(off);
    }
     cmd=cmdbase+=":COUP?";
-    com.command(cmd.toLatin1());
+    command(cmd);
     ui->tcouple->setCurrentIndex(ui->tcouple->findText(com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
 
     com.command(":TRIG:EDGE:SLOP?");
@@ -532,7 +542,7 @@ void MainWindow::on_acqType_currentIndexChanged(int index)
         break;
     }
     ui->acqAvg->setEnabled(index==1);
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 void MainWindow::on_acqMode_currentIndexChanged(int index)
@@ -548,7 +558,7 @@ void MainWindow::on_acqMode_currentIndexChanged(int index)
         cmd+="ETIM";
         break;
     }
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
@@ -558,7 +568,7 @@ void MainWindow::on_acqAvg_currentIndexChanged(int index)
     if (!com.connected()||nocommands) return;
     QString num=QString::number(1<<(index+1));
     cmd+=num;
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 
@@ -567,13 +577,14 @@ void MainWindow::on_acqMem_clicked()
     QString cmd=":ACQ:MEMD ";
     if (!com.connected()) return;
     if (ui->acqMem->isChecked()) cmd+="LONG"; else cmd+="NORM";
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 
 
 void MainWindow::on_hscale_currentIndexChanged(int index)
 {
+    Q_UNUSED(index);
     if (!com.connected()||nocommands) return;
     com.command((":TIM:SCAL " + ui->hscale->currentText()).toLatin1());
 }
@@ -583,7 +594,7 @@ void MainWindow::on_cdisp1_clicked()
     if (!com.connected()) return;
     QString cmd=":CHAN1:DISP ";
     if (ui->cdisp1->checkState()) cmd+="ON"; else cmd+="OFF";
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 void MainWindow::on_updAcq_2_clicked()
@@ -596,7 +607,7 @@ void MainWindow::on_cdisp2_clicked()
     if (!com.connected()) return;
     QString cmd=":CHAN2:DISP ";
     if (ui->cdisp2->checkState()) cmd+="ON"; else cmd+="OFF";
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
@@ -605,7 +616,7 @@ void MainWindow::on_c1bw_clicked()
     if (!com.connected()) return;
     QString cmd=":CHAN1:BWL ";
     if (ui->c1bw->checkState()) cmd+="ON"; else cmd+="OFF";
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
@@ -614,7 +625,7 @@ void MainWindow::on_c2bw_clicked()
     if (!com.connected()) return;
     QString cmd=":CHAN2:BWL ";
     if (ui->c2bw->checkState()) cmd+="ON"; else cmd+="OFF";
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
@@ -623,7 +634,7 @@ void MainWindow::on_c1inv_clicked()
     if (!com.connected()) return;
     QString cmd=":CHAN1:INV ";
     if (ui->c1inv->checkState()) cmd+="ON"; else cmd+="OFF";
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
@@ -632,7 +643,7 @@ void MainWindow::on_c2inv_clicked()
     if (!com.connected()) return;
     QString cmd=":CHAN2:INV ";
     if (ui->c2inv->checkState()) cmd+="ON"; else cmd+="OFF";
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
@@ -641,7 +652,7 @@ void MainWindow::on_c1filt_clicked()
     if (!com.connected()) return;
     QString cmd=":CHAN1:FILT ";
     if (ui->c1filt->checkState()) cmd+="ON"; else cmd+="OFF";
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
@@ -650,49 +661,54 @@ void MainWindow::on_c2filt_clicked()
     if (!com.connected()) return;
     QString cmd=":CHAN2:FILT ";
     if (ui->c2filt->checkState()) cmd+="ON"; else cmd+="OFF";
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
+    Q_UNUSED(index);
     if (!com.connected()) return;
     on_updAcq_clicked();  // refresh from scope when switching tabs
 }
 
 void MainWindow::on_c1probe_currentIndexChanged(int index)
 {
+    Q_UNUSED(index);
     if (!com.connected()||nocommands) return;
     QString cmd=":CHAN1:PROB ";
     cmd+=ui->c1probe->currentText().remove('X');
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
 void MainWindow::on_c2probe_currentIndexChanged(int index)
 {
+    Q_UNUSED(index);
     if (!com.connected()||nocommands) return;
     QString cmd=":CHAN2:PROB ";
     cmd+=ui->c2probe->currentText().remove('X');
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 
 }
 
 void MainWindow::on_c1coup_currentIndexChanged(int index)
 {
+    Q_UNUSED(index);
     if (!com.connected()||nocommands) return;
     QString cmd=":CHAN1:COUP ";
     cmd+=ui->c1coup->currentText();
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 void MainWindow::on_c2coup_currentIndexChanged(int index)
 {
+    Q_UNUSED(index);
     if (!com.connected()||nocommands) return;
     QString cmd=":CHAN2:COUP ";
     cmd+=ui->c2coup->currentText();
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
@@ -702,7 +718,7 @@ void MainWindow::on_hoffsetspin_valueChanged(double arg1)
     float arg=arg1/1000000.0f;  // convert to seconds
     if (!com.connected()||nocommands) return;
     QString cmd=QString(":TIM:OFFS ")+QString::number(arg);
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 void MainWindow::on_hoffincr_valueChanged(double arg1)
@@ -715,33 +731,37 @@ void MainWindow::on_hoffincr_valueChanged(double arg1)
 
 void MainWindow::on_c1offspin_valueChanged(double arg1)
 {
+    Q_UNUSED(arg1);
     if (!com.connected()||nocommands) return;
     QString cmd=":CHAN1:OFFS ";
     cmd+=QString::number(ui->c1offspin->value());
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 void MainWindow::on_c2offspin_valueChanged(double arg1)
 {
+    Q_UNUSED(arg1);
     if (!com.connected()||nocommands) return;
     QString cmd=":CHAN2:OFFS ";
     cmd+=QString::number(ui->c2offspin->value());
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
 void MainWindow::on_c1vscale_currentIndexChanged(int index)
 {
+    Q_UNUSED(index);
     if (!com.connected()||nocommands) return;
     QString cmd=":CHAN1:SCAL "+ui->c1vscale->currentText();
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 void MainWindow::on_c2vscale_currentIndexChanged(int index)
 {
+    Q_UNUSED(index);
     if (!com.connected()||nocommands) return;
     QString cmd=":CHAN2:SCAL "+ui->c2vscale->currentText();
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
@@ -791,14 +811,14 @@ void MainWindow::on_tmode_currentIndexChanged(int index)
     ui->tcouple->setEnabled(index<3);
     if (!com.connected()||nocommands) return;
     cmd+=ui->tmode->currentText();
-    com.command(cmd.toLatin1());
+    command(cmd);
     QString cmdbase=":TRIG:";
     cmdbase=cmdbase+ui->tmode->currentText();
     cmd=cmdbase+":SOUR?";
-    com.command(cmd.toLatin1());
+    command(cmd);
     ui->tsource->setCurrentIndex(ui->tsource->findText(com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
     cmd=cmdbase+":SWE?";
-    com.command(cmd.toLatin1());
+    command(cmd);
     ui->tsweep->setCurrentIndex(ui->tsweep->findText(com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
 // This seems like a good idea, but the scope doesn't shift gears fast enough
 // For example, going to slope mode where the trigger channel is invalid and back to edge does not
@@ -809,19 +829,21 @@ void MainWindow::on_tmode_currentIndexChanged(int index)
 
 void MainWindow::on_tsweep_currentIndexChanged(const QString &arg1)
 {
+    Q_UNUSED(arg1);
     QString cmd=":TRIG:";
     if (!com.connected()||nocommands) return;
     cmd+=ui->tmode->currentText()+":SWE ";
     cmd+=ui->tsweep->currentText();
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 void MainWindow::on_tsource_currentIndexChanged(int index)
 {
+    Q_UNUSED(index);
     QString cmd=":TRIG:";
     if (!com.connected()||nocommands) return;
     cmd+=ui->tmode->currentText()+":SOUR "+ui->tsource->currentText();
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 void MainWindow::on_tholdoff_valueChanged(double arg1)
@@ -831,7 +853,7 @@ void MainWindow::on_tholdoff_valueChanged(double arg1)
     arg1/=1000000.0f; // convert to seconds
     cmd=":TRIG:HOLD ";
     cmd+=QString::number(arg1,'f');
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 void MainWindow::on_tfifty_clicked()
@@ -848,10 +870,11 @@ void MainWindow::on_tforce_clicked()
 
 void MainWindow::on_tlevel_valueChanged(double arg1)
 {
+    Q_UNUSED(arg1);
     QString cmd=":TRIG:";
     if (!com.connected()||nocommands) return;
     cmd+=ui->tmode->currentText()+":LEV " + QString::number(ui->tlevel->value());
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 void MainWindow::on_tcouple_currentIndexChanged(const QString &arg1)
@@ -859,7 +882,7 @@ void MainWindow::on_tcouple_currentIndexChanged(const QString &arg1)
     QString cmd=":TRIG:";
     if (!com.connected()||nocommands) return;
     cmd+=ui->tmode->currentText()+":COUP " +arg1;
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 void MainWindow::on_tposneg_currentIndexChanged(int index)
@@ -868,7 +891,7 @@ void MainWindow::on_tposneg_currentIndexChanged(int index)
     if (!com.connected()||nocommands) return;
     cmd=":TRIG:EDGE:SLOP ";
     if (index) cmd+="NEG"; else cmd+="POS";
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 void MainWindow::on_tedgesense_valueChanged(double arg1)
@@ -877,7 +900,7 @@ void MainWindow::on_tedgesense_valueChanged(double arg1)
     if (!com.connected()||nocommands) return;
     cmd=":TRIG:EDGE:SENS ";
     cmd+=QString::number(arg1);
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 void MainWindow::on_tpulsesense_valueChanged(double arg1)
@@ -886,7 +909,7 @@ void MainWindow::on_tpulsesense_valueChanged(double arg1)
     if (!com.connected()||nocommands) return;
     cmd=":TRIG:PULS:SENS ";
     cmd+=QString::number(arg1);
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 void MainWindow::on_tpulswid_valueChanged(double arg1)
@@ -896,7 +919,7 @@ void MainWindow::on_tpulswid_valueChanged(double arg1)
     arg1/=1000000.0f; // convert to seconds
     cmd=":TRIG:PULS:WIDT ";
     cmd+=QString::number(arg1,'f');
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 
@@ -907,7 +930,7 @@ void MainWindow::on_tpulsemode_currentIndexChanged(const QString &arg1)
     arg=arg.remove(' ');
     cmd+=arg;
     if (!com.connected()||nocommands) return;
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 
@@ -932,7 +955,7 @@ int MainWindow::convertbuf(int chan, const QString &cmd, bool time, bool raw)
     int i,size;
     double t=0.0;
     if (!config.set) setConfig();
-    size=com.command(cmd.toLatin1());
+    size=command(cmd);
     if (size==-1) return -1;
     for (i=0;i<size;i++)
     {
@@ -994,7 +1017,7 @@ void MainWindow::on_mathdisp_clicked()
     if (!com.connected()) return;
     QString cmd=":MATH:DISP ";
     cmd+=ui->mathdisp->isChecked()?"ON":"OFF";
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
@@ -1003,7 +1026,7 @@ void MainWindow::on_mathsel_currentIndexChanged(const QString &arg1)
     QString cmd=":MATH:OPER ";
     cmd+=arg1;
     if (!com.connected()||nocommands) return;
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
@@ -1015,7 +1038,7 @@ void MainWindow::on_tslopemode_currentIndexChanged(const QString &arg1)
     QString cmd,arg=arg1;
     arg=arg.remove(' ');
     cmd=":TRIG:SLOP:MODE "+arg;
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
@@ -1026,46 +1049,49 @@ void MainWindow::on_tslopewin_currentIndexChanged(const QString &arg1)
     QString cmd,arg=arg1;
     arg=arg.replace("_WIN_","");
     cmd=":TRIG:SLOP:WIND "+arg;
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
 void MainWindow::on_tslopetime_valueChanged(double arg1)
 {
+    Q_UNUSED(arg1);
     // convert uS
     if (!com.connected()||nocommands) return;
     QString cmd=":TRIG:SLOP:TIME "+QString::number(ui->tslopetime->value()/1000000.0f);
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
 void MainWindow::on_tslopea_valueChanged(double arg1)
 {
+    Q_UNUSED(arg1);
     if (!com.connected()||nocommands) return;
     QString cmd=":TRIG:SLOP:LEVA "+QString::number(ui->tslopea->value());
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
 void MainWindow::on_tslopesense_valueChanged(double arg1)
 {
+    Q_UNUSED(arg1);
     if (!com.connected()||nocommands) return;
     QString cmd=":TRIG:SLOP:SENS "+QString::number(ui->tslopesense->value());
-    com.command(cmd.toLatin1());
+    command(cmd);
 }
 
 void MainWindow::on_tslopeb_valueChanged(double arg1)
 {
+    Q_UNUSED(arg1);
     if (!com.connected()||nocommands) return;
     QString cmd=":TRIG:SLOP:LEVB "+QString::number(ui->tslopeb->value());
-    com.command(cmd.toLatin1());
+    command(cmd);
 
 }
 
 int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool wconfig, bool raw, QFile *file)
 {
     int asize,wsize;
-    double t;
     // for now but TODO we ought to figure out :WAV:POIN:MODE?
     asize=1024*1024;
     // make sure connected
@@ -1093,8 +1119,9 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
     }
     // Stop instrument
     com.command(":STOP");   // only way to be sure we sync chan1 and chan2 that I can tell
-    // however, it takes a bit for it to "settle"
-    usleep(100000);
+    // however, it takes a bit for it to "settle" If you get a short sample, just run it again
+    // since the scope is stopped it will be ok
+    usleep(500000);
     setConfig();
     // Acquire each channel (as requested)
     if (c1)
@@ -1197,7 +1224,7 @@ void MainWindow::on_action_Diagnostic_triggered()
     if (!com.connected()) return;
     QString cmd=QInputDialog::getText(this,"Enter Diagnostic Command","Command:",QLineEdit::Normal,"",&ok);
     if (!ok || cmd.isEmpty()) return;
-    com.command(cmd.toLatin1());
+    command(cmd);
     if (cmd.right(1)[0]!='?') return;
     QMessageBox bx;
     bx.setText(com.buffer);

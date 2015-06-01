@@ -183,7 +183,8 @@ private:
     int exportEngine(bool dotime=true, bool c1=true, bool c2=true, bool wheader=true, bool wconfig=true, bool raw=false, QFile *file=NULL);
     QFile *mlog;
     MLogger mlogworker;
-
+    int command(const QString &cmd);
+    float cmdFloat(const QString &cmd);
 };
 
 #endif // MAINWINDOW_H
