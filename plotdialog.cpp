@@ -31,16 +31,6 @@ void PlotDialog::on_plotscript_textChanged()
      set.setValue("plot/script",script);
 }
 
-void PlotDialog::on_plotdefault_clicked()
-{
-    QSettings set;
-    command=defcmd;
-    script=defscript;
-    ui->plotcmd->setText(command);
-    ui->plotscript->setPlainText(script);
-    set.setValue("plot/command",command);
-    set.setValue("plot/script",script);
-}
 
 void PlotDialog::on_plotcmd_textChanged(const QString &arg1)
 {

@@ -21,8 +21,6 @@ private slots:
 
     void on_plotscript_textChanged();
 
-    void on_plotdefault_clicked();
-
     void on_plotcmd_textChanged(const QString &arg1);
 
 

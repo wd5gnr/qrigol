@@ -1089,15 +1089,53 @@ void MainWindow::on_tslopeb_valueChanged(double arg1)
 
 }
 
+// This function handles exporting for both CSV and plotting
 int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool wconfig, bool raw, QFile *file)
 {
     int asize,wsize;
-    // for now but TODO we ought to figure out :WAV:POIN:MODE?
-    asize=1024*1024;
+    bool running=false;
+
     // make sure connected
     if (!com.connected()) return -1;
-    // make sure one source selected
+    // we know we will be stopped so we are going to get
+    // either 8K/16K (based on display) or 512K/1M based on long memory mode
+    //
+    com.command(":TRIG:STAT?");
+    running=com.buffer[0]!='S';
+    if (running)
+    {
+         ui->cdisp1->setChecked(c1);
+         on_cdisp1_clicked();
+         ui->cdisp2->setChecked(c2);
+         on_cdisp2_clicked();
+    }
+    if ((c1 && !ui->cdisp1->isChecked()) || (c2 && !ui->cdisp2->isChecked()))
+    {
+       QMessageBox bx;
+       bx.setText("Channel not enabled and instrument in stop mode");
+       bx.exec();
+       return -1;
+    }
 
+    if (c1 && !ui->cdisp1->isChecked())
+    {
+        // if we are running we should enable chan1
+        // if we are already stopped, that won't help any
+        if (running)
+        {
+            com.command("CHAN1:DISP ON");
+            ui->cdisp1->setChecked(true);
+        } else
+        {
+            QMessageBox bx;
+            bx.setText("Channel 1 not enabled.");
+            bx.exec();
+            return -1;
+        }
+
+    }
+
+    // make sure one source selected
     if ((!c1)&&(!c2))
     {
         QMessageBox bx;
@@ -1105,6 +1143,14 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
         bx.exec();
         return -1;
     }
+    // Wait a bit in case we turned a channel on or off
+    usleep(500000);
+
+    // Now we can really compute the size
+    com.command(":WAV:POIN:MODE MAX");
+    asize=ui->acqMem->isChecked()?524288:8192;
+    if ((c1&&!c2) || (c2&&!c1)) asize*=2;   // one channel is double
+
     // allocate buffers
     if (dotime) chandata[0]=new double[asize];
     if (c1) chandata[1]=new double[asize];
