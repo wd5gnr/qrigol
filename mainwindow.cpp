@@ -12,6 +12,11 @@
 #include "unistd.h"
 #include "plotdialog.h"
 
+// TODO: Generate time on export to save chan[0] buffer
+// TODO: bash script to launch 2 gnuplots on plot examples
+// TODO: Read scales
+// TODO: Scan for stop when stopping scope instead of usleep
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -953,19 +958,18 @@ void MainWindow::setConfig(void)
 int MainWindow::convertbuf(int chan, const QString &cmd, bool time, bool raw)
 {
     int i,size;
-    double t=0.0;
+//    double t=0.0;
     if (!config.set) setConfig();
     size=command(cmd);
     if (size==-1) return -1;
     for (i=0;i<size;i++)
     {
         unsigned int rawdata=(unsigned char)(com.buffer[i]);
-        if (time)
-        {
-            chandata[0][i]=t;
-            t+=config.deltat;
-        }
-        //chandata[chan][i]=raw?((double)com.buffer[i]):((double)((125.0-(double)rawdata)/25.0f)*config.vscale[chan-1])-config.voffset[chan-1];
+//        if (time)
+//        {
+//            chandata[0][i]=t;
+//            t+=config.deltat;
+//        }
         chandata[chan][i]=raw?((double)rawdata):((double)(125.0-(double)rawdata)/25.0f);
         if (!raw)
         {
@@ -1152,7 +1156,7 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
     if ((c1&&!c2) || (c2&&!c1)) asize*=2;   // one channel is double
 
     // allocate buffers
-    if (dotime) chandata[0]=new double[asize];
+   // if (dotime) chandata[0]=new double[asize]; // never use channel 0 now
     if (c1) chandata[1]=new double[asize];
     if (c2) chandata[2]=new double[asize];
     if ((!chandata[0]) || (c1&&!chandata[1]) || (c2&&!chandata[2]))
@@ -1233,12 +1237,14 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
         if (c2) file->write("CHAN2");
         file->write("\n");
     }
+    float t=0.0;
     for (int idx=0;idx<wsize;idx++)
     {
         QString item;
         if (dotime)
         {
-            item=QString::number(chandata[0][idx]);
+            item=QString::number(t);
+            t+=config.deltat;
             item+=",";
         }
         if (c1)
@@ -1256,7 +1262,7 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
     // Close files
     file->close();
     // Free buffers
-    delete [] chandata[0];
+  //  delete [] chandata[0];
     if (c1) delete [] chandata[1];
     if (c2) delete [] chandata[2];
     return 0;

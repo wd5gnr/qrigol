@@ -74,17 +74,27 @@ pause -1</string>
      </item>
      <item>
       <property name="text">
-       <string>gnuplot screen</string>
+       <string>gnuplot screen (qt)</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>gnuplot print</string>
+       <string>gnuplot screen (x11)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>gnuplot pdf (/tmp/scope.pdf)</string>
       </property>
      </item>
      <item>
       <property name="text">
        <string>qtiplot</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>gnuplot 2 up</string>
       </property>
      </item>
     </widget>
