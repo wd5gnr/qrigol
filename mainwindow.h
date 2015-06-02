@@ -172,6 +172,12 @@ private slots:
 
     void on_wavecsv_clicked();
 
+    void on_actionRun_Stop_triggered();
+
+
+
+    void on_actionConnect_triggered();
+
 private:
     Ui::MainWindow *ui;
      QTimer *uTimer;

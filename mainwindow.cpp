@@ -78,9 +78,12 @@ void MainWindow::on_uiUpdate()  // periodic update of scope status -- this makes
 {
     if (!com.connected()) return;
     com.command(":TRIG:STAT?");
+    ui->actionRun_Stop->setChecked(*com.buffer!='S');
     ui->rsButton->setStyleSheet(*com.buffer!='S'?"background: green;":"background: red;");
     if (ui->unlockBtn->isChecked()) com.unlock();
     if (mlogworker.isFinished()) ui->measLogEnable->setChecked(false);
+    ui->actionConnect->setChecked(com.connected());
+
 
 
 }
@@ -90,6 +93,7 @@ void MainWindow::on_connectButton_clicked()
 
     if (!com.connected())
     {
+        ui->connectButton->setChecked(false);
         com.open(ui->deviceName->text().toLatin1());
         if (!com.connected())
         {
@@ -116,7 +120,7 @@ void MainWindow::on_connectButton_clicked()
         ui->connectButton->setText("&Disconnect");
         on_uiUpdate();
         on_updAcq_clicked();
-
+        ui->connectButton->setChecked(true);
 
     }
     else
@@ -127,6 +131,9 @@ void MainWindow::on_connectButton_clicked()
         com.close();
         ui->idstring->clear();
         ui->connectButton->setText("&Connect");
+
+
+
     }
 
 }
@@ -1336,4 +1343,19 @@ void MainWindow::on_wavecsv_clicked()
         done.setText(msg);
         done.exec();
     }
+}
+
+void MainWindow::on_actionRun_Stop_triggered()
+{
+    if (com.connected())
+       on_rsButton_clicked();
+    else ui->actionRun_Stop->setChecked(false);
+}
+
+
+void MainWindow::on_actionConnect_triggered()
+{
+    ui->connectButton->setChecked(!com.connected());
+    on_connectButton_clicked();
+
 }

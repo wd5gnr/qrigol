@@ -36,4 +36,11 @@ OTHER_FILES += \
     screenshots/screenshot_128.jpg \
     screenshots/screenshot_129.jpg \
     screenshots/screenshot_130.jpg \
-    screenshots/screenshot_131.jpg
+    screenshots/screenshot_131.jpg \
+    icons/greenlight.png \
+    icons/redlight.png \
+    icons/disconnect,png \
+    icons/connect.png
+
+RESOURCES += \
+    resources.qrc

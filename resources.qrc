@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/qrigol">
+        <file>icons/greenlight.png</file>
+        <file>icons/redlight.png</file>
+        <file>icons/connect.png</file>
+        <file>icons/disconnect,png</file>
+    </qresource>
+</RCC>
