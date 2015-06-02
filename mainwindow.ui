@@ -6,98 +6,149 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>647</width>
-    <height>783</height>
+    <width>791</width>
+    <height>787</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>QRigol by Al Williams</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_11">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>5</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="status">
        <attribute name="title">
         <string>Status</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout">
+       <layout class="QVBoxLayout" name="verticalLayout_11">
         <item>
-         <layout class="QFormLayout" name="formLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Device</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="deviceName">
-            <property name="toolTip">
-             <string>Device name (usually /dev/usbtmc0)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="connectButton">
-            <property name="toolTip">
-             <string>Connect/Disconnect with instrument</string>
-            </property>
-            <property name="text">
-             <string>&amp;Connect</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLabel" name="idstring">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QPushButton" name="rsButton">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="toolTip">
-             <string>Run or stop the instrument</string>
-            </property>
-            <property name="text">
-             <string>Run/Stop</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QPushButton" name="hardcopyBTN">
-            <property name="toolTip">
-             <string>Save screen image to USB stick</string>
-            </property>
-            <property name="text">
-             <string>Save USB</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QCheckBox" name="unlockBtn">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="toolTip">
-             <string>While operating, the software will lock out the instrument keyboard unless you check this box</string>
-            </property>
-            <property name="text">
-             <string>Unlock keyboard</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QGroupBox" name="groupBox_11">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Commands</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0">
+            <widget class="QPushButton" name="connectButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Connect/Disconnect with instrument</string>
+             </property>
+             <property name="text">
+              <string>&amp;Connect</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QCheckBox" name="unlockBtn">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>While operating, the software will lock out the instrument keyboard unless you check this box</string>
+             </property>
+             <property name="text">
+              <string>Unlock keyboard</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QPushButton" name="rsButton">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Run or stop the instrument</string>
+             </property>
+             <property name="text">
+              <string>Run/Stop</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLabel" name="idstring">
+             <property name="text">
+              <string>                                                                   </string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QPushButton" name="hardcopyBTN">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Save screen image to USB stick</string>
+             </property>
+             <property name="text">
+              <string>Save USB</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_12">
+          <property name="title">
+           <string>Setup</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout_4">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Device</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="deviceName">
+             <property name="toolTip">
+              <string>Device name (usually /dev/usbtmc0)</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>416</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -111,193 +162,189 @@
           <property name="title">
            <string>Channel 1</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_7">
-           <item>
-            <layout class="QGridLayout" name="gridLayout_9">
-             <item row="0" column="0">
-              <widget class="QCheckBox" name="cdisp1">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Display the specified channel</string>
-               </property>
-               <property name="text">
-                <string>Display</string>
-               </property>
-              </widget>
+          <layout class="QGridLayout" name="gridLayout_7">
+           <item row="0" column="0">
+            <widget class="QCheckBox" name="cdisp1">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Display the specified channel</string>
+             </property>
+             <property name="text">
+              <string>Display</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="c1coup">
+             <property name="toolTip">
+              <string>Select coupling</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>AC</string>
+              </property>
              </item>
-             <item row="1" column="3">
-              <widget class="QComboBox" name="c1vscale">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Vertical sensitivity</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>2mV</string>
-                </property>
-               </item>
-              </widget>
+             <item>
+              <property name="text">
+               <string>GND</string>
+              </property>
              </item>
-             <item row="1" column="0">
-              <widget class="QCheckBox" name="c1bw">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Enable bandwidth limiting</string>
-               </property>
-               <property name="text">
-                <string>BW Limit</string>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>DC</string>
+              </property>
              </item>
-             <item row="1" column="1">
-              <widget class="QCheckBox" name="c1filt">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Enable filtering</string>
-               </property>
-               <property name="text">
-                <string>Filter</string>
-               </property>
-              </widget>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QCheckBox" name="c1inv">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Invert signal</string>
+             </property>
+             <property name="text">
+              <string>Invert</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="3">
+            <widget class="QDoubleSpinBox" name="c1offspin">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Set vertical offset (tip: use mouse wheel)</string>
+             </property>
+             <property name="prefix">
+              <string>Offset </string>
+             </property>
+             <property name="suffix">
+              <string>V</string>
+             </property>
+             <property name="decimals">
+              <number>3</number>
+             </property>
+             <property name="minimum">
+              <double>-40.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>40.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>0.100000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QCheckBox" name="c1bw">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Enable bandwidth limiting</string>
+             </property>
+             <property name="text">
+              <string>BW Limit</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QCheckBox" name="c1filt">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Enable filtering</string>
+             </property>
+             <property name="text">
+              <string>Filter</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QComboBox" name="c1probe">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Configure to match the probe attentuation for the specificed channel</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>1X</string>
+              </property>
              </item>
-             <item row="0" column="2">
-              <widget class="QCheckBox" name="c1inv">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Invert signal</string>
-               </property>
-               <property name="text">
-                <string>Invert</string>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>5X</string>
+              </property>
              </item>
-             <item row="0" column="1">
-              <widget class="QComboBox" name="c1coup">
-               <property name="toolTip">
-                <string>Select coupling</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>AC</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>GND</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>DC</string>
-                </property>
-               </item>
-              </widget>
+             <item>
+              <property name="text">
+               <string>10X</string>
+              </property>
              </item>
-             <item row="1" column="2">
-              <widget class="QComboBox" name="c1probe">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Configure to match the probe attentuation for the specificed channel</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>1X</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>5X</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>10X</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>50X</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>100X</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>500X</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>1000X</string>
-                </property>
-               </item>
-              </widget>
+             <item>
+              <property name="text">
+               <string>50X</string>
+              </property>
              </item>
-             <item row="0" column="3">
-              <widget class="QDoubleSpinBox" name="c1offspin">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Set vertical offset (tip: use mouse wheel)</string>
-               </property>
-               <property name="prefix">
-                <string>Offset </string>
-               </property>
-               <property name="suffix">
-                <string>V</string>
-               </property>
-               <property name="decimals">
-                <number>3</number>
-               </property>
-               <property name="minimum">
-                <double>-40.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>40.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.100000000000000</double>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>100X</string>
+              </property>
              </item>
-            </layout>
+             <item>
+              <property name="text">
+               <string>500X</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>1000X</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="1" column="3">
+            <widget class="QComboBox" name="c1vscale">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Vertical sensitivity</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>2mV</string>
+              </property>
+             </item>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -307,187 +354,195 @@
           <property name="title">
            <string>Channel 2</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_8">
-           <item>
-            <layout class="QGridLayout" name="gridLayout_10">
-             <item row="1" column="2">
-              <widget class="QComboBox" name="c2probe">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Configure to match the probe attentuation for the specificed channel</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>1X</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>5X</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>10X</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>50X</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>100X</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>500X</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>1000X</string>
-                </property>
-               </item>
-              </widget>
+          <layout class="QGridLayout" name="gridLayout_8">
+           <item row="0" column="0">
+            <widget class="QCheckBox" name="cdisp2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Display the specified channel</string>
+             </property>
+             <property name="text">
+              <string>Display</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="c2coup">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Select coupling</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>AC</string>
+              </property>
              </item>
-             <item row="1" column="3">
-              <widget class="QComboBox" name="c2vscale">
-               <property name="toolTip">
-                <string>Vertical sensitivity</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>2mV</string>
-                </property>
-               </item>
-              </widget>
+             <item>
+              <property name="text">
+               <string>GND</string>
+              </property>
              </item>
-             <item row="1" column="1">
-              <widget class="QCheckBox" name="c2filt">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Enable filtering</string>
-               </property>
-               <property name="text">
-                <string>Filter</string>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>DC</string>
+              </property>
              </item>
-             <item row="0" column="2">
-              <widget class="QCheckBox" name="c2inv">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Invert signal</string>
-               </property>
-               <property name="text">
-                <string>Invert</string>
-               </property>
-              </widget>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QCheckBox" name="c2inv">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Invert signal</string>
+             </property>
+             <property name="text">
+              <string>Invert</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="3">
+            <widget class="QDoubleSpinBox" name="c2offspin">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Set vertical offset (tip: use mouse wheel)</string>
+             </property>
+             <property name="prefix">
+              <string>Offset </string>
+             </property>
+             <property name="suffix">
+              <string>V</string>
+             </property>
+             <property name="decimals">
+              <number>3</number>
+             </property>
+             <property name="minimum">
+              <double>-40.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>40.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>0.100000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QCheckBox" name="c2bw">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Enable bandwidth limiting</string>
+             </property>
+             <property name="text">
+              <string>BW Limit</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QCheckBox" name="c2filt">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Enable filtering</string>
+             </property>
+             <property name="text">
+              <string>Filter</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QComboBox" name="c2probe">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Configure to match the probe attentuation for the specificed channel</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>1X</string>
+              </property>
              </item>
-             <item row="1" column="0">
-              <widget class="QCheckBox" name="c2bw">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Enable bandwidth limiting</string>
-               </property>
-               <property name="text">
-                <string>BW Limit</string>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>5X</string>
+              </property>
              </item>
-             <item row="0" column="1">
-              <widget class="QComboBox" name="c2coup">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Select coupling</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>AC</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>GND</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>DC</string>
-                </property>
-               </item>
-              </widget>
+             <item>
+              <property name="text">
+               <string>10X</string>
+              </property>
              </item>
-             <item row="0" column="3">
-              <widget class="QDoubleSpinBox" name="c2offspin">
-               <property name="toolTip">
-                <string>Set vertical offset (tip: use mouse wheel)</string>
-               </property>
-               <property name="prefix">
-                <string>Offset </string>
-               </property>
-               <property name="suffix">
-                <string>V</string>
-               </property>
-               <property name="decimals">
-                <number>3</number>
-               </property>
-               <property name="minimum">
-                <double>-40.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>40.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.100000000000000</double>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>50X</string>
+              </property>
              </item>
-             <item row="0" column="0">
-              <widget class="QCheckBox" name="cdisp2">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Display the specified channel</string>
-               </property>
-               <property name="text">
-                <string>Display</string>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>100X</string>
+              </property>
              </item>
-            </layout>
+             <item>
+              <property name="text">
+               <string>500X</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>1000X</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="1" column="3">
+            <widget class="QComboBox" name="c2vscale">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Vertical sensitivity</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>2mV</string>
+              </property>
+             </item>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -556,6 +611,19 @@
          </widget>
         </item>
         <item>
+         <spacer name="verticalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>302</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="QPushButton" name="updAcq_2">
           <property name="toolTip">
            <string>Reads settings from instrument</string>
@@ -577,313 +645,328 @@
           <property name="title">
            <string>Timebase</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_5">
-           <item>
-            <layout class="QGridLayout" name="gridLayout_2">
-             <item row="2" column="2">
-              <widget class="QLabel" name="srate">
-               <property name="toolTip">
-                <string>Shows the sample rate (samples/second) used by the instrument with the current settings</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_45">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Position</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QDoubleSpinBox" name="hoffsetspin">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Horizontal position (tip: use scroll wheel)</string>
+             </property>
+             <property name="suffix">
+              <string>uS</string>
+             </property>
+             <property name="decimals">
+              <number>3</number>
+             </property>
+             <property name="minimum">
+              <double>-500000000.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>500000000.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QDoubleSpinBox" name="hoffincr">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Sets the increment used to adjust the horizontal position</string>
+             </property>
+             <property name="prefix">
+              <string> Increment </string>
+             </property>
+             <property name="suffix">
+              <string>us</string>
+             </property>
+             <property name="decimals">
+              <number>3</number>
+             </property>
+             <property name="minimum">
+              <double>0.001000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>99999.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>0.100000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="3">
+            <widget class="QPushButton" name="hoffclear">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Reset horizontal position to 0</string>
+             </property>
+             <property name="text">
+              <string>Clear</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="4">
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>188</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_46">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Scale</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QComboBox" name="hscale">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Horizontal scale</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>2ns</string>
+              </property>
              </item>
-             <item row="0" column="2">
-              <widget class="QDoubleSpinBox" name="hoffsetspin">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Horizontal position (tip: use scroll wheel)</string>
-               </property>
-               <property name="suffix">
-                <string>uS</string>
-               </property>
-               <property name="decimals">
-                <number>3</number>
-               </property>
-               <property name="minimum">
-                <double>-500000000.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>500000000.000000000000000</double>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>5ns</string>
+              </property>
              </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_46">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Scale</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>10ns</string>
+              </property>
              </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_45">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Position</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>20ns</string>
+              </property>
              </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_47">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Sample Rate</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>50ns</string>
+              </property>
              </item>
-             <item row="1" column="2">
-              <widget class="QComboBox" name="hscale">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Horizontal scale</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>2ns</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>5ns</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>10ns</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>20ns</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>50ns</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>100ns</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>200ns</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>500ns</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>1us</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>2us</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>5us</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>10us</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>20us</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>50us</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>100us</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>200us</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>500us</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>1ms</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>2ms</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>5ms</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>10ms</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>20ms</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>50ms</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>100ms</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>200ms</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>500ms</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>1s</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>2s</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>5s</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>10s</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>20s</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>50s</string>
-                </property>
-               </item>
-              </widget>
+             <item>
+              <property name="text">
+               <string>100ns</string>
+              </property>
              </item>
-             <item row="0" column="3">
-              <widget class="QDoubleSpinBox" name="hoffincr">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Sets the increment used to adjust the horizontal position</string>
-               </property>
-               <property name="prefix">
-                <string> Increment </string>
-               </property>
-               <property name="suffix">
-                <string>us</string>
-               </property>
-               <property name="decimals">
-                <number>3</number>
-               </property>
-               <property name="minimum">
-                <double>0.001000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>99999.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.100000000000000</double>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>200ns</string>
+              </property>
              </item>
-             <item row="0" column="4">
-              <widget class="QPushButton" name="hoffclear">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Reset horizontal position to 0</string>
-               </property>
-               <property name="text">
-                <string>Clear</string>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>500ns</string>
+              </property>
              </item>
-            </layout>
+             <item>
+              <property name="text">
+               <string>1us</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>2us</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>5us</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>10us</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>20us</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>50us</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>100us</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>200us</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>500us</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>1ms</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>2ms</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>5ms</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>10ms</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>20ms</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>50ms</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>100ms</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>200ms</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>500ms</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>1s</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>2s</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>5s</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>10s</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>20s</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>50s</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_47">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Sample Rate</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLabel" name="srate">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Shows the sample rate (samples/second) used by the instrument with the current settings</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -896,7 +979,7 @@
           <property name="alignment">
            <set>Qt::AlignHCenter|Qt::AlignTop</set>
           </property>
-          <layout class="QFormLayout" name="formLayout_2">
+          <layout class="QGridLayout" name="gridLayout_9">
            <item row="0" column="0">
             <widget class="QLabel" name="label_42">
              <property name="sizePolicy">
@@ -940,6 +1023,19 @@
               </property>
              </item>
             </widget>
+           </item>
+           <item row="0" column="2">
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>578</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="label_43">
@@ -1072,6 +1168,19 @@
          </widget>
         </item>
         <item>
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>290</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="QPushButton" name="updAcq">
           <property name="toolTip">
            <string>Reads settings from instrument</string>
@@ -1087,218 +1196,229 @@
        <attribute name="title">
         <string>Trigger</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_9">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
-         <layout class="QGridLayout" name="gridLayout_12">
-          <item row="0" column="1">
-           <widget class="QComboBox" name="tmode">
-            <property name="toolTip">
-             <string>Trigger mode - The bottom of this tab will change to show mode-specific options</string>
-            </property>
-            <item>
+         <widget class="QGroupBox" name="groupBox_13">
+          <property name="title">
+           <string/>
+          </property>
+          <layout class="QFormLayout" name="formLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_48">
              <property name="text">
-              <string>Edge</string>
+              <string>Mode</string>
              </property>
-            </item>
-            <item>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="tmode">
+             <property name="toolTip">
+              <string>Trigger mode - The bottom of this tab will change to show mode-specific options</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>Edge</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Pulse</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Slope</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_50">
              <property name="text">
-              <string>Pulse</string>
+              <string>Source</string>
              </property>
-            </item>
-            <item>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QComboBox" name="tsource">
+             <property name="toolTip">
+              <string>Trigger source</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_51">
              <property name="text">
-              <string>Slope</string>
+              <string>Sweep</string>
              </property>
-            </item>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_52">
-            <property name="text">
-             <string>Coupling</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QComboBox" name="tcouple">
-            <item>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QComboBox" name="tsweep">
+             <property name="toolTip">
+              <string>Type of sweep: Normal, Manual, Single</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>Auto</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Normal</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Single</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_49">
              <property name="text">
-              <string>DC</string>
+              <string>Level</string>
              </property>
-            </item>
-            <item>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QDoubleSpinBox" name="tlevel">
+             <property name="toolTip">
+              <string>Trigger level (tip: use mouse wheel)</string>
+             </property>
+             <property name="suffix">
+              <string>V</string>
+             </property>
+             <property name="decimals">
+              <number>3</number>
+             </property>
+             <property name="minimum">
+              <double>-60.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>60.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>0.100000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_52">
              <property name="text">
-              <string>AC</string>
+              <string>Coupling</string>
              </property>
-            </item>
-            <item>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QComboBox" name="tcouple">
+             <item>
+              <property name="text">
+               <string>DC</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>AC</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>HF</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>LF</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="label_53">
              <property name="text">
-              <string>HF</string>
+              <string>Hold off</string>
              </property>
-            </item>
-            <item>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QDoubleSpinBox" name="tholdoff">
+             <property name="suffix">
+              <string>uS</string>
+             </property>
+             <property name="decimals">
+              <number>3</number>
+             </property>
+             <property name="minimum">
+              <double>0.500000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>1500000.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QPushButton" name="tfifty">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Set trigger level to 50%</string>
+             </property>
              <property name="text">
-              <string>LF</string>
+              <string>50%</string>
              </property>
-            </item>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_48">
-            <property name="text">
-             <string>Mode</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="tlevel">
-            <property name="toolTip">
-             <string>Trigger level (tip: use mouse wheel)</string>
-            </property>
-            <property name="suffix">
-             <string>V</string>
-            </property>
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="minimum">
-             <double>-60.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>60.000000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>0.100000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="tsource">
-            <property name="toolTip">
-             <string>Trigger source</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_49">
-            <property name="text">
-             <string>Level</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_51">
-            <property name="text">
-             <string>Sweep</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_53">
-            <property name="text">
-             <string>Hold off</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QComboBox" name="tsweep">
-            <property name="toolTip">
-             <string>Type of sweep: Normal, Manual, Single</string>
-            </property>
-            <item>
+            </widget>
+           </item>
+           <item row="6" column="1">
+            <widget class="QPushButton" name="tforce">
+             <property name="statusTip">
+              <string>Force trigger</string>
+             </property>
              <property name="text">
-              <string>Auto</string>
+              <string>Force</string>
              </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Normal</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Single</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QDoubleSpinBox" name="tholdoff">
-            <property name="suffix">
-             <string>uS</string>
-            </property>
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="minimum">
-             <double>0.500000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>1500000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_50">
-            <property name="text">
-             <string>Source</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QPushButton" name="tfifty">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="toolTip">
-             <string>Set trigger level to 50%</string>
-            </property>
-            <property name="text">
-             <string>50%</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QPushButton" name="tforce">
-            <property name="statusTip">
-             <string>Force trigger</string>
-            </property>
-            <property name="text">
-             <string>Force</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </item>
         <item>
          <widget class="QGroupBox" name="tboxedge">
           <property name="title">
            <string>Edge</string>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout">
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
             <widget class="QComboBox" name="tposneg">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="statusTip">
               <string>Select which edge is the trigger</string>
              </property>
@@ -1316,6 +1436,12 @@
            </item>
            <item>
             <widget class="QDoubleSpinBox" name="tedgesense">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="toolTip">
               <string>Edge sensitivity</string>
              </property>
@@ -1336,6 +1462,19 @@
              </property>
             </widget>
            </item>
+           <item>
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>499</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
           </layout>
          </widget>
         </item>
@@ -1344,9 +1483,15 @@
           <property name="title">
            <string>Pulse</string>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
             <widget class="QComboBox" name="tpulsemode">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="toolTip">
               <string>Pulse trigger comparison</string>
              </property>
@@ -1384,6 +1529,12 @@
            </item>
            <item>
             <widget class="QDoubleSpinBox" name="tpulswid">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="toolTip">
               <string>Pulse width for trigger</string>
              </property>
@@ -1406,6 +1557,12 @@
            </item>
            <item>
             <widget class="QDoubleSpinBox" name="tpulsesense">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="toolTip">
               <string>Trigger sensitivity</string>
              </property>
@@ -1426,6 +1583,19 @@
              </property>
             </widget>
            </item>
+           <item>
+            <spacer name="horizontalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>277</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
           </layout>
          </widget>
         </item>
@@ -1434,183 +1604,233 @@
           <property name="title">
            <string>Slope</string>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
-           <item>
-            <layout class="QGridLayout" name="gridLayout_13">
-             <item row="0" column="0">
-              <widget class="QComboBox" name="tslopemode">
-               <property name="toolTip">
-                <string>Slope trigger selection</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>+GREATER THAN</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>+LESS THAN</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>+EQUAL</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>-GREATER THAN</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>-LESS THAN</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>-EQUAL</string>
-                </property>
-               </item>
-              </widget>
+          <layout class="QGridLayout" name="gridLayout_10">
+           <item row="0" column="0">
+            <widget class="QComboBox" name="tslopemode">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Slope trigger selection</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>+GREATER THAN</string>
+              </property>
              </item>
-             <item row="1" column="0">
-              <widget class="QComboBox" name="tslopewin">
-               <property name="toolTip">
-                <string>Window (P=+, N=-)</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>P_WIN_A</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>P_WIN_B</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>P_WIN_AB</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>N_WIN_A</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>N_WIN_B</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>N_WIN_AB</string>
-                </property>
-               </item>
-              </widget>
+             <item>
+              <property name="text">
+               <string>+LESS THAN</string>
+              </property>
              </item>
-             <item row="0" column="2">
-              <widget class="QDoubleSpinBox" name="tslopesense">
-               <property name="toolTip">
-                <string>Slope trigger sensitivity</string>
-               </property>
-               <property name="prefix">
-                <string>Sensitivity </string>
-               </property>
-               <property name="suffix">
-                <string> div</string>
-               </property>
-               <property name="minimum">
-                <double>0.100000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>1.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.100000000000000</double>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>+EQUAL</string>
+              </property>
              </item>
-             <item row="0" column="1">
-              <widget class="QDoubleSpinBox" name="tslopetime">
-               <property name="toolTip">
-                <string>Slope trigger time</string>
-               </property>
-               <property name="prefix">
-                <string>Time </string>
-               </property>
-               <property name="suffix">
-                <string>us</string>
-               </property>
-               <property name="minimum">
-                <double>0.020000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>10000000.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.100000000000000</double>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>-GREATER THAN</string>
+              </property>
              </item>
-             <item row="1" column="1">
-              <widget class="QDoubleSpinBox" name="tslopea">
-               <property name="toolTip">
-                <string>Slope A </string>
-               </property>
-               <property name="decimals">
-                <number>3</number>
-               </property>
-               <property name="minimum">
-                <double>-60.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>60.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.100000000000000</double>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>-LESS THAN</string>
+              </property>
              </item>
-             <item row="1" column="2">
-              <widget class="QDoubleSpinBox" name="tslopeb">
-               <property name="toolTip">
-                <string>Slope B</string>
-               </property>
-               <property name="decimals">
-                <number>3</number>
-               </property>
-               <property name="minimum">
-                <double>-60.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>60.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.100000000000000</double>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>-EQUAL</string>
+              </property>
              </item>
-            </layout>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QDoubleSpinBox" name="tslopetime">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Slope trigger time</string>
+             </property>
+             <property name="prefix">
+              <string>Time </string>
+             </property>
+             <property name="suffix">
+              <string>us</string>
+             </property>
+             <property name="minimum">
+              <double>0.020000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>10000000.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>0.100000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QDoubleSpinBox" name="tslopesense">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Slope trigger sensitivity</string>
+             </property>
+             <property name="prefix">
+              <string>Sensitivity </string>
+             </property>
+             <property name="suffix">
+              <string> div</string>
+             </property>
+             <property name="minimum">
+              <double>0.100000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>1.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>0.100000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="3">
+            <spacer name="horizontalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>285</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="1" column="0">
+            <widget class="QComboBox" name="tslopewin">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Window (P=+, N=-)</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>P_WIN_A</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>P_WIN_B</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>P_WIN_AB</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>N_WIN_A</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>N_WIN_B</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>N_WIN_AB</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QDoubleSpinBox" name="tslopea">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Slope A </string>
+             </property>
+             <property name="prefix">
+              <string>Level A </string>
+             </property>
+             <property name="decimals">
+              <number>3</number>
+             </property>
+             <property name="minimum">
+              <double>-60.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>60.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>0.100000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QDoubleSpinBox" name="tslopeb">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Slope B</string>
+             </property>
+             <property name="prefix">
+              <string>Level B </string>
+             </property>
+             <property name="decimals">
+              <number>3</number>
+             </property>
+             <property name="minimum">
+              <double>-60.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>60.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>0.100000000000000</double>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
         </item>
         <item>
-         <widget class="QGroupBox" name="tboxvideo">
-          <property name="title">
-           <string>Video</string>
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="tboxalt">
-          <property name="title">
-           <string>Alt</string>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>56</height>
+           </size>
           </property>
-         </widget>
+         </spacer>
         </item>
         <item>
          <widget class="QPushButton" name="updAcq_3">
@@ -1636,431 +1856,532 @@
             <property name="title">
              <string>Channel 1</string>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <item>
-              <layout class="QGridLayout" name="gridLayout">
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_3">
-                 <property name="text">
-                  <string>Maximum (V)</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="0">
-                <widget class="QLabel" name="label_6">
-                 <property name="text">
-                  <string>RMS (V)</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="2">
-                <widget class="QLabel" name="label_12">
-                 <property name="text">
-                  <string>Top (V)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QLabel" name="vmax1">
-                 <property name="toolTip">
-                  <string>Maximum voltage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="4">
-                <widget class="QLabel" name="label_14">
-                 <property name="text">
-                  <string>+ Width (ms)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="1">
-                <widget class="QLabel" name="vavg1">
-                 <property name="toolTip">
-                  <string>Average voltage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QLabel" name="vmin1">
-                 <property name="toolTip">
-                  <string>Minimum voltage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_5">
-                 <property name="text">
-                  <string>Average (V)</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QLabel" name="vpp1">
-                 <property name="toolTip">
-                  <string>Peak to peak voltage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_2">
-                 <property name="text">
-                  <string>Peak to Peak (V)</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="1">
-                <widget class="QLabel" name="vrms1">
-                 <property name="toolTip">
-                  <string>RMS voltage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_4">
-                 <property name="text">
-                  <string>Minimum (V)</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="6">
-                <widget class="QLabel" name="label_13">
-                 <property name="text">
-                  <string>Freq (Hz)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="5">
-                <widget class="QLabel" name="pwid1">
-                 <property name="toolTip">
-                  <string>Positive pulse width</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="3">
-                <widget class="QLabel" name="vtop1">
-                 <property name="toolTip">
-                  <string>Flat top voltage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="7">
-                <widget class="QLabel" name="freq1">
-                 <property name="toolTip">
-                  <string>Frequency</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="2">
-                <widget class="QLabel" name="label_15">
-                 <property name="text">
-                  <string>Base (V)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="3">
-                <widget class="QLabel" name="vbas1">
-                 <property name="toolTip">
-                  <string>Flat base voltage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="4">
-                <widget class="QLabel" name="label_16">
-                 <property name="text">
-                  <string>- Width (ms)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="5">
-                <widget class="QLabel" name="nwid1">
-                 <property name="toolTip">
-                  <string>Negative pulse width</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="6">
-                <widget class="QLabel" name="label_17">
-                 <property name="text">
-                  <string>Period (ms)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="7">
-                <widget class="QLabel" name="per1">
-                 <property name="toolTip">
-                  <string>Period</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="2">
-                <widget class="QLabel" name="label_18">
-                 <property name="text">
-                  <string>Overshoot (%)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="3">
-                <widget class="QLabel" name="over1">
-                 <property name="toolTip">
-                  <string>Edge overshoot percentage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="2">
-                <widget class="QLabel" name="label_20">
-                 <property name="text">
-                  <string>Preshoot (%)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="3">
-                <widget class="QLabel" name="pres1">
-                 <property name="toolTip">
-                  <string>Edge preshoot (undershoot) in percent</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="4">
-                <widget class="QLabel" name="label_22">
-                 <property name="text">
-                  <string>+ Duty Cycle (%)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="5">
-                <widget class="QLabel" name="pdut1">
-                 <property name="toolTip">
-                  <string>Positive duty cycle</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="4">
-                <widget class="QLabel" name="label_24">
-                 <property name="text">
-                  <string>- Duty Cycle (%)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="5">
-                <widget class="QLabel" name="ndut1">
-                 <property name="toolTip">
-                  <string>Negative duty cycle</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="6">
-                <widget class="QLabel" name="label_26">
-                 <property name="text">
-                  <string>Rise Time (us)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="7">
-                <widget class="QLabel" name="rise1">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="toolTip">
-                  <string>Rise time</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="6">
-                <widget class="QLabel" name="label_28">
-                 <property name="text">
-                  <string>Fall Time (us)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="7">
-                <widget class="QLabel" name="fall1">
-                 <property name="toolTip">
-                  <string>Fall time</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="4">
-                <widget class="QLabel" name="label_19">
-                 <property name="text">
-                  <string>+ Delay (ms)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="6">
-                <widget class="QLabel" name="label_21">
-                 <property name="text">
-                  <string>- Delay (ms)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="5">
-                <widget class="QLabel" name="pdel1">
-                 <property name="toolTip">
-                  <string>Delay between Chan 1 and Chan 2 on rising edge</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="7">
-                <widget class="QLabel" name="ndel1">
-                 <property name="toolTip">
-                  <string>Delay between Chan1 and Chan2 on falling edge</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="2">
-                <widget class="QLabel" name="label_23">
-                 <property name="text">
-                  <string>Amplitude (V)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="3">
-                <widget class="QLabel" name="vamp1">
-                 <property name="toolTip">
-                  <string>Voltage between VTop and VBase</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Peak to Peak (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="vpp1">
+               <property name="toolTip">
+                <string>Peak to peak voltage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>Top (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLabel" name="vtop1">
+               <property name="toolTip">
+                <string>Flat top voltage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="4">
+              <widget class="QLabel" name="label_14">
+               <property name="text">
+                <string>+ Width (ms)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="5">
+              <widget class="QLabel" name="pwid1">
+               <property name="toolTip">
+                <string>Positive pulse width</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="6">
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string>Freq (Hz)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="7">
+              <widget class="QLabel" name="freq1">
+               <property name="toolTip">
+                <string>Frequency</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Maximum (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLabel" name="vmax1">
+               <property name="toolTip">
+                <string>Maximum voltage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLabel" name="label_15">
+               <property name="text">
+                <string>Base (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QLabel" name="vbas1">
+               <property name="toolTip">
+                <string>Flat base voltage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="4">
+              <widget class="QLabel" name="label_16">
+               <property name="text">
+                <string>- Width (ms)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="5">
+              <widget class="QLabel" name="nwid1">
+               <property name="toolTip">
+                <string>Negative pulse width</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="6">
+              <widget class="QLabel" name="label_17">
+               <property name="text">
+                <string>Period (ms)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="7">
+              <widget class="QLabel" name="per1">
+               <property name="toolTip">
+                <string>Period</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>Minimum (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="vmin1">
+               <property name="toolTip">
+                <string>Minimum voltage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLabel" name="label_18">
+               <property name="text">
+                <string>Overshoot (%)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
+              <widget class="QLabel" name="over1">
+               <property name="toolTip">
+                <string>Edge overshoot percentage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="4">
+              <widget class="QLabel" name="label_22">
+               <property name="text">
+                <string>+ Duty Cycle (%)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="5">
+              <widget class="QLabel" name="pdut1">
+               <property name="toolTip">
+                <string>Positive duty cycle</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="6">
+              <widget class="QLabel" name="label_26">
+               <property name="text">
+                <string>Rise Time (us)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="7">
+              <widget class="QLabel" name="rise1">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Rise time</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>Average (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLabel" name="vavg1">
+               <property name="toolTip">
+                <string>Average voltage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="QLabel" name="label_20">
+               <property name="text">
+                <string>Preshoot (%)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="3">
+              <widget class="QLabel" name="pres1">
+               <property name="toolTip">
+                <string>Edge preshoot (undershoot) in percent</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="4">
+              <widget class="QLabel" name="label_24">
+               <property name="text">
+                <string>- Duty Cycle (%)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="5">
+              <widget class="QLabel" name="ndut1">
+               <property name="toolTip">
+                <string>Negative duty cycle</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="6">
+              <widget class="QLabel" name="label_28">
+               <property name="text">
+                <string>Fall Time (us)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="7">
+              <widget class="QLabel" name="fall1">
+               <property name="toolTip">
+                <string>Fall time</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_6">
+               <property name="text">
+                <string>RMS (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QLabel" name="vrms1">
+               <property name="toolTip">
+                <string>RMS voltage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="2">
+              <widget class="QLabel" name="label_23">
+               <property name="text">
+                <string>Amplitude (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="3">
+              <widget class="QLabel" name="vamp1">
+               <property name="toolTip">
+                <string>Voltage between VTop and VBase</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="4">
+              <widget class="QLabel" name="label_19">
+               <property name="text">
+                <string>+ Delay (ms)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="5">
+              <widget class="QLabel" name="pdel1">
+               <property name="toolTip">
+                <string>Delay between Chan 1 and Chan 2 on rising edge</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="6">
+              <widget class="QLabel" name="label_21">
+               <property name="text">
+                <string>- Delay (ms)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="7">
+              <widget class="QLabel" name="ndel1">
+               <property name="toolTip">
+                <string>Delay between Chan1 and Chan2 on falling edge</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -2070,431 +2391,532 @@
             <property name="title">
              <string>Channel 2</string>
             </property>
-            <layout class="QGridLayout" name="gridLayout_6">
+            <layout class="QGridLayout" name="gridLayout_3">
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_7">
+               <property name="text">
+                <string>Maximum (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="5">
+              <widget class="QLabel" name="pwid2">
+               <property name="toolTip">
+                <string>Positive pulse width</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="6">
+              <widget class="QLabel" name="label_38">
+               <property name="text">
+                <string>Fall Time (us)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="3">
+              <widget class="QLabel" name="vamp2">
+               <property name="toolTip">
+                <string>Voltage between VTop and VBase</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="2">
+              <widget class="QLabel" name="label_41">
+               <property name="text">
+                <string>Amplitude (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="5">
+              <widget class="QLabel" name="ndut2">
+               <property name="toolTip">
+                <string>Negative duty cycle</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="vpp2">
+               <property name="toolTip">
+                <string>Peak to peak voltage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLabel" name="vmax2">
+               <property name="toolTip">
+                <string>Maximum voltage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
              <item row="0" column="0">
-              <layout class="QGridLayout" name="gridLayout_3">
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_7">
-                 <property name="text">
-                  <string>Maximum (V)</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="0">
-                <widget class="QLabel" name="label_8">
-                 <property name="text">
-                  <string>RMS (V)</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="2">
-                <widget class="QLabel" name="label_25">
-                 <property name="text">
-                  <string>Top (V)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QLabel" name="vmax2">
-                 <property name="toolTip">
-                  <string>Maximum voltage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="4">
-                <widget class="QLabel" name="label_27">
-                 <property name="text">
-                  <string>+ Width (ms)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="1">
-                <widget class="QLabel" name="vavg2">
-                 <property name="toolTip">
-                  <string>Average voltage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QLabel" name="vmin2">
-                 <property name="toolTip">
-                  <string>Minimum voltage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_9">
-                 <property name="text">
-                  <string>Average (V)</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QLabel" name="vpp2">
-                 <property name="toolTip">
-                  <string>Peak to peak voltage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_10">
-                 <property name="text">
-                  <string>Peak to Peak (V)</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="6">
-                <widget class="QLabel" name="label_29">
-                 <property name="text">
-                  <string>Freq (Hz)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="1">
-                <widget class="QLabel" name="vrms2">
-                 <property name="toolTip">
-                  <string>RMS voltage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="5">
-                <widget class="QLabel" name="pwid2">
-                 <property name="toolTip">
-                  <string>Positive pulse width</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_11">
-                 <property name="text">
-                  <string>Minimum (V)</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="7">
-                <widget class="QLabel" name="freq2">
-                 <property name="toolTip">
-                  <string>Frequency</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="3">
-                <widget class="QLabel" name="vtop2">
-                 <property name="toolTip">
-                  <string>Flat top voltage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="2">
-                <widget class="QLabel" name="label_30">
-                 <property name="text">
-                  <string>Base (V)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="3">
-                <widget class="QLabel" name="vbas2">
-                 <property name="toolTip">
-                  <string>Flat base voltage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="4">
-                <widget class="QLabel" name="label_31">
-                 <property name="text">
-                  <string>- Width (ms)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="5">
-                <widget class="QLabel" name="nwid2">
-                 <property name="toolTip">
-                  <string>Negative pulse width</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="6">
-                <widget class="QLabel" name="label_32">
-                 <property name="text">
-                  <string>Period (ms)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="7">
-                <widget class="QLabel" name="per2">
-                 <property name="toolTip">
-                  <string>Period</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="2">
-                <widget class="QLabel" name="label_33">
-                 <property name="text">
-                  <string>Overshoot (%)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="3">
-                <widget class="QLabel" name="over2">
-                 <property name="toolTip">
-                  <string>Edge overshoot percentage</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="2">
-                <widget class="QLabel" name="label_34">
-                 <property name="text">
-                  <string>Preshoot (%)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="3">
-                <widget class="QLabel" name="pres2">
-                 <property name="toolTip">
-                  <string>Edge preshoot (undershoot) in percent</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="4">
-                <widget class="QLabel" name="label_35">
-                 <property name="text">
-                  <string>+ Duty Cycle (%)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="5">
-                <widget class="QLabel" name="pdut2">
-                 <property name="toolTip">
-                  <string>Positive duty cycle</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="4">
-                <widget class="QLabel" name="label_36">
-                 <property name="text">
-                  <string>- Duty Cycle (%)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="5">
-                <widget class="QLabel" name="ndut2">
-                 <property name="toolTip">
-                  <string>Negative duty cycle</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="7">
-                <widget class="QLabel" name="rise2">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="toolTip">
-                  <string>Rise time</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="6">
-                <widget class="QLabel" name="label_38">
-                 <property name="text">
-                  <string>Fall Time (us)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="7">
-                <widget class="QLabel" name="fall2">
-                 <property name="toolTip">
-                  <string>Fall time</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="4">
-                <widget class="QLabel" name="label_39">
-                 <property name="text">
-                  <string>+ Delay (ms)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="6">
-                <widget class="QLabel" name="label_40">
-                 <property name="text">
-                  <string>- Delay (ms)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="5">
-                <widget class="QLabel" name="pdel2">
-                 <property name="toolTip">
-                  <string>Delay between Chan 2 and Chan 1 on rising edge</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="7">
-                <widget class="QLabel" name="ndel2">
-                 <property name="toolTip">
-                  <string>Delay between Chan2 and Chan1 on falling edge</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="2">
-                <widget class="QLabel" name="label_41">
-                 <property name="text">
-                  <string>Amplitude (V)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="3">
-                <widget class="QLabel" name="vamp2">
-                 <property name="toolTip">
-                  <string>Voltage between VTop and VBase</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="6">
-                <widget class="QLabel" name="label_37">
-                 <property name="text">
-                  <string>Rise Time (us)</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QLabel" name="label_10">
+               <property name="text">
+                <string>Peak to Peak (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLabel" name="label_30">
+               <property name="text">
+                <string>Base (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_8">
+               <property name="text">
+                <string>RMS (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="6">
+              <widget class="QLabel" name="label_37">
+               <property name="text">
+                <string>Rise Time (us)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="5">
+              <widget class="QLabel" name="nwid2">
+               <property name="toolTip">
+                <string>Negative pulse width</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
+              <widget class="QLabel" name="over2">
+               <property name="toolTip">
+                <string>Edge overshoot percentage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="5">
+              <widget class="QLabel" name="pdel2">
+               <property name="toolTip">
+                <string>Delay between Chan 2 and Chan 1 on rising edge</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLabel" name="vtop2">
+               <property name="toolTip">
+                <string>Flat top voltage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLabel" name="label_33">
+               <property name="text">
+                <string>Overshoot (%)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QLabel" name="vbas2">
+               <property name="toolTip">
+                <string>Flat base voltage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="7">
+              <widget class="QLabel" name="ndel2">
+               <property name="toolTip">
+                <string>Delay between Chan2 and Chan1 on falling edge</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="6">
+              <widget class="QLabel" name="label_40">
+               <property name="text">
+                <string>- Delay (ms)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="7">
+              <widget class="QLabel" name="fall2">
+               <property name="toolTip">
+                <string>Fall time</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="QLabel" name="label_34">
+               <property name="text">
+                <string>Preshoot (%)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="7">
+              <widget class="QLabel" name="freq2">
+               <property name="toolTip">
+                <string>Frequency</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="4">
+              <widget class="QLabel" name="label_27">
+               <property name="text">
+                <string>+ Width (ms)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLabel" name="vavg2">
+               <property name="toolTip">
+                <string>Average voltage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="7">
+              <widget class="QLabel" name="per2">
+               <property name="toolTip">
+                <string>Period</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="6">
+              <widget class="QLabel" name="label_29">
+               <property name="text">
+                <string>Freq (Hz)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="3">
+              <widget class="QLabel" name="pres2">
+               <property name="toolTip">
+                <string>Edge preshoot (undershoot) in percent</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_11">
+               <property name="text">
+                <string>Minimum (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="4">
+              <widget class="QLabel" name="label_36">
+               <property name="text">
+                <string>- Duty Cycle (%)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="7">
+              <widget class="QLabel" name="rise2">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Rise time</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="4">
+              <widget class="QLabel" name="label_31">
+               <property name="text">
+                <string>- Width (ms)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="4">
+              <widget class="QLabel" name="label_35">
+               <property name="text">
+                <string>+ Duty Cycle (%)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="vmin2">
+               <property name="toolTip">
+                <string>Minimum voltage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="4">
+              <widget class="QLabel" name="label_39">
+               <property name="text">
+                <string>+ Delay (ms)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_9">
+               <property name="text">
+                <string>Average (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="5">
+              <widget class="QLabel" name="pdut2">
+               <property name="toolTip">
+                <string>Positive duty cycle</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="label_25">
+               <property name="text">
+                <string>Top (V)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QLabel" name="vrms2">
+               <property name="toolTip">
+                <string>RMS voltage</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="6">
+              <widget class="QLabel" name="label_32">
+               <property name="text">
+                <string>Period (ms)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -2504,163 +2926,195 @@
             <property name="title">
              <string>Logging</string>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_6">
-             <item>
-              <layout class="QGridLayout" name="gridLayout_5">
-               <item row="0" column="0">
-                <widget class="QPushButton" name="measUpdate">
-                 <property name="toolTip">
-                  <string>Manually update measurements (will write a log record if logging is enabled)</string>
-                 </property>
-                 <property name="text">
-                  <string>&amp;Update</string>
-                 </property>
-                </widget>
+            <layout class="QGridLayout" name="gridLayout_5">
+             <item row="0" column="0">
+              <widget class="QPushButton" name="measUpdate">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Manually update measurements (will write a log record if logging is enabled)</string>
+               </property>
+               <property name="text">
+                <string>&amp;Update</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QCheckBox" name="autoUpdate">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Automatic update on time schedule to the right</string>
+               </property>
+               <property name="statusTip">
+                <string/>
+               </property>
+               <property name="text">
+                <string>Auto Every</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QSpinBox" name="upInterval">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Time for auto measure (untis to the right)</string>
+               </property>
+               <property name="minimum">
+                <number>1</number>
+               </property>
+               <property name="maximum">
+                <number>999</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QComboBox" name="updTimeScale">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Units for auto measure time (to the left)</string>
+               </property>
+               <property name="currentIndex">
+                <number>0</number>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Milliseconds</string>
+                </property>
                </item>
-               <item row="0" column="1">
-                <widget class="QCheckBox" name="autoUpdate">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="toolTip">
-                  <string>Automatic update on time schedule to the right</string>
-                 </property>
-                 <property name="statusTip">
-                  <string/>
-                 </property>
-                 <property name="text">
-                  <string>Auto Every</string>
-                 </property>
-                </widget>
+               <item>
+                <property name="text">
+                 <string>Seconds</string>
+                </property>
                </item>
-               <item row="0" column="2">
-                <widget class="QSpinBox" name="upInterval">
-                 <property name="toolTip">
-                  <string>Time for auto measure (untis to the right)</string>
-                 </property>
-                 <property name="minimum">
-                  <number>1</number>
-                 </property>
-                 <property name="maximum">
-                  <number>999</number>
-                 </property>
-                </widget>
+               <item>
+                <property name="text">
+                 <string>Minutes</string>
+                </property>
                </item>
-               <item row="0" column="3">
-                <widget class="QComboBox" name="updTimeScale">
-                 <property name="toolTip">
-                  <string>Units for auto measure time (to the left)</string>
-                 </property>
-                 <property name="currentIndex">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <property name="text">
-                   <string>Milliseconds</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Seconds</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Minutes</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Hours</string>
-                  </property>
-                 </item>
-                </widget>
+               <item>
+                <property name="text">
+                 <string>Hours</string>
+                </property>
                </item>
-               <item row="1" column="1">
-                <widget class="QCheckBox" name="measlogheader">
-                 <property name="toolTip">
-                  <string>Check this box to get a header row written to new files only.</string>
-                 </property>
-                 <property name="text">
-                  <string>Header</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QCheckBox" name="measLogEnable">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="toolTip">
-                  <string>When checked, any measurement (auto or manual) will append a record to the open log file</string>
-                 </property>
-                 <property name="text">
-                  <string>Log Enable</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="3">
-                <widget class="QPushButton" name="mlogfileselect">
-                 <property name="toolTip">
-                  <string>Select log file (must select before enabling logging)</string>
-                 </property>
-                 <property name="text">
-                  <string>Select File</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0" colspan="3">
-                <widget class="QLabel" name="mlogfilename">
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="wordWrap">
-                  <bool>true</bool>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="2">
-                <widget class="QCheckBox" name="mlogstop">
-                 <property name="toolTip">
-                  <string>Check to turn off logging after a certain number of samples</string>
-                 </property>
-                 <property name="text">
-                  <string>Stop after</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="3">
-                <widget class="QSpinBox" name="mlogrepeat">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="toolTip">
-                  <string>Number of samples to take before stopping logging</string>
-                 </property>
-                 <property name="suffix">
-                  <string> Captures</string>
-                 </property>
-                 <property name="prefix">
-                  <string/>
-                 </property>
-                 <property name="minimum">
-                  <number>1</number>
-                 </property>
-                 <property name="maximum">
-                  <number>65535</number>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="measLogEnable">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="toolTip">
+                <string>When checked, any measurement (auto or manual) will append a record to the open log file</string>
+               </property>
+               <property name="text">
+                <string>Log Enable</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QCheckBox" name="measlogheader">
+               <property name="toolTip">
+                <string>Check this box to get a header row written to new files only.</string>
+               </property>
+               <property name="text">
+                <string>Header</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QCheckBox" name="mlogstop">
+               <property name="toolTip">
+                <string>Check to turn off logging after a certain number of samples</string>
+               </property>
+               <property name="text">
+                <string>Stop after</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QSpinBox" name="mlogrepeat">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Number of samples to take before stopping logging</string>
+               </property>
+               <property name="suffix">
+                <string> Captures</string>
+               </property>
+               <property name="prefix">
+                <string/>
+               </property>
+               <property name="minimum">
+                <number>1</number>
+               </property>
+               <property name="maximum">
+                <number>65535</number>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="4">
+              <widget class="QPushButton" name="mlogfileselect">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Select log file (must select before enabling logging)</string>
+               </property>
+               <property name="text">
+                <string>Select File</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" colspan="4">
+              <widget class="QLabel" name="mlogfilename">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -2679,7 +3133,7 @@
        <attribute name="title">
         <string>Waveform</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_10">
+       <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
          <widget class="QGroupBox" name="groupBox_10">
           <property name="title">
@@ -2827,10 +3281,10 @@
            <string>Commands</string>
           </property>
           <property name="alignment">
-           <set>Qt::AlignHCenter|Qt::AlignTop</set>
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
           </property>
-          <layout class="QFormLayout" name="formLayout_4">
-           <item row="0" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout_7">
+           <item>
             <widget class="QPushButton" name="wavecsv">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2846,7 +3300,7 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
+           <item>
             <widget class="QPushButton" name="wavplot">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2865,6 +3319,19 @@
           </layout>
          </widget>
         </item>
+        <item>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>326</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
        </layout>
       </widget>
      </widget>
@@ -2876,7 +3343,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>647</width>
+     <width>791</width>
      <height>30</height>
     </rect>
    </property>
@@ -2919,6 +3386,79 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>connectButton</tabstop>
+  <tabstop>unlockBtn</tabstop>
+  <tabstop>rsButton</tabstop>
+  <tabstop>hardcopyBTN</tabstop>
+  <tabstop>deviceName</tabstop>
+  <tabstop>cdisp1</tabstop>
+  <tabstop>c1coup</tabstop>
+  <tabstop>c1inv</tabstop>
+  <tabstop>c1offspin</tabstop>
+  <tabstop>c1bw</tabstop>
+  <tabstop>c1filt</tabstop>
+  <tabstop>c1probe</tabstop>
+  <tabstop>c1vscale</tabstop>
+  <tabstop>cdisp2</tabstop>
+  <tabstop>c2coup</tabstop>
+  <tabstop>c2inv</tabstop>
+  <tabstop>c2offspin</tabstop>
+  <tabstop>c2bw</tabstop>
+  <tabstop>c2filt</tabstop>
+  <tabstop>c2probe</tabstop>
+  <tabstop>c2vscale</tabstop>
+  <tabstop>mathdisp</tabstop>
+  <tabstop>mathsel</tabstop>
+  <tabstop>updAcq_2</tabstop>
+  <tabstop>hoffsetspin</tabstop>
+  <tabstop>hoffincr</tabstop>
+  <tabstop>hoffclear</tabstop>
+  <tabstop>hscale</tabstop>
+  <tabstop>acqType</tabstop>
+  <tabstop>acqMode</tabstop>
+  <tabstop>acqAvg</tabstop>
+  <tabstop>acqMem</tabstop>
+  <tabstop>updAcq</tabstop>
+  <tabstop>tmode</tabstop>
+  <tabstop>tsource</tabstop>
+  <tabstop>tsweep</tabstop>
+  <tabstop>tlevel</tabstop>
+  <tabstop>tcouple</tabstop>
+  <tabstop>tholdoff</tabstop>
+  <tabstop>tforce</tabstop>
+  <tabstop>tfifty</tabstop>
+  <tabstop>tposneg</tabstop>
+  <tabstop>tedgesense</tabstop>
+  <tabstop>tpulsemode</tabstop>
+  <tabstop>tpulswid</tabstop>
+  <tabstop>tpulsesense</tabstop>
+  <tabstop>tslopemode</tabstop>
+  <tabstop>tslopetime</tabstop>
+  <tabstop>tslopesense</tabstop>
+  <tabstop>tslopewin</tabstop>
+  <tabstop>tslopea</tabstop>
+  <tabstop>tslopeb</tabstop>
+  <tabstop>updAcq_3</tabstop>
+  <tabstop>measUpdate</tabstop>
+  <tabstop>autoUpdate</tabstop>
+  <tabstop>upInterval</tabstop>
+  <tabstop>updTimeScale</tabstop>
+  <tabstop>measLogEnable</tabstop>
+  <tabstop>measlogheader</tabstop>
+  <tabstop>mlogstop</tabstop>
+  <tabstop>mlogrepeat</tabstop>
+  <tabstop>mlogfileselect</tabstop>
+  <tabstop>wavetimeopt</tabstop>
+  <tabstop>wavec1</tabstop>
+  <tabstop>wavec2</tabstop>
+  <tabstop>wavesavecfg</tabstop>
+  <tabstop>wavehead</tabstop>
+  <tabstop>waveraw</tabstop>
+  <tabstop>wavecsv</tabstop>
+  <tabstop>wavplot</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

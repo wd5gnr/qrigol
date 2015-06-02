@@ -15,7 +15,6 @@
 
 // TODO: Read scales
 // TODO: The plot example UI probably doesn't work well with a keyboard
-// TODO: Fix odd layouts
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -35,10 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->hoffincr->setValue(set.value("Options/hincr",100.0).toFloat());
     ui->deviceName->setText(dev);
     ui->hoffsetspin->setSingleStep(ui->hoffincr->value());
-    ui->tboxalt->setVisible(false);
     ui->tboxpulse->setVisible(false);
     ui->tboxslope->setVisible(false);
-    ui->tboxvideo->setVisible(false);
 
 // set up uTimer (for measure acq) and uiTimer (for updating RS button and handling unlock)
     uTimer=new QTimer(this);
@@ -816,8 +813,6 @@ void MainWindow::on_tmode_currentIndexChanged(int index)
     ui->tboxedge->setVisible(index==0);
     ui->tboxpulse->setVisible(index==1);
     ui->tboxslope->setVisible(index==2);
-    ui->tboxvideo->setVisible(index==3);
-    ui->tboxalt->setVisible(index==4);
     ui->tsource->clear();
     ui->tsource->addItem("CHAN1");
     ui->tsource->addItem("CHAN2");

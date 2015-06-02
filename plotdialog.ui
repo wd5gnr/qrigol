@@ -33,7 +33,7 @@
    <item row="0" column="1" colspan="2">
     <widget class="QLineEdit" name="plotcmd">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -43,6 +43,19 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="3">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>91</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
@@ -50,7 +63,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="3">
+   <item row="2" column="0" colspan="4">
     <widget class="QPlainTextEdit" name="plotscript">
      <property name="plainText">
       <string>set terminal X11
@@ -60,7 +73,7 @@ pause -1</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2">
+   <item row="3" column="0" colspan="3">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Use {FILE} or {SCRIPT} to stand in for the data file or script file name.</string>
@@ -70,18 +83,14 @@ pause -1</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Open</set>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
+   <item row="4" column="0" colspan="2">
     <widget class="QComboBox" name="comboBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <item>
       <property name="text">
        <string>Load Examples</string>
@@ -114,8 +123,23 @@ pause -1</string>
      </item>
     </widget>
    </item>
+   <item row="4" column="2" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Open</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>plotcmd</tabstop>
+  <tabstop>plotscript</tabstop>
+  <tabstop>comboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
