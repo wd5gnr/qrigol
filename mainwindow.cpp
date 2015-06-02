@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QMessageBox>
 #include <QSettings>
+#include <QTime>
 #include <QTimer>
 #include <QFile>
 #include <QTemporaryFile>
@@ -13,7 +14,8 @@
 #include "plotdialog.h"
 
 // TODO: Read scales
-// TODO: Now that chan[0] is never used, remove [2] and shift channels to be zero based internally
+// TODO: The plot example UI probably doesn't work well with a keyboard
+// TODO: Fix odd layouts
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -66,10 +68,12 @@ float MainWindow::cmdFloat(const QString &cmd)
 // More helpers
 void MainWindow::waitForStop(void)
 {
+    QTime timeout;
+    timeout.start();
     do
     {
         com.command(":TRIG:STAT?");
-    } while (*com.buffer!='S');  // TODO: probably should time out here?
+    } while (*com.buffer!='S' && timeout.elapsed()<2000);  // Wait for stop or 2 seconds
 
 }
 
@@ -1094,10 +1098,8 @@ void MainWindow::on_tslopeb_valueChanged(double arg1)
 
 }
 
-// This function handles exporting for both CSV and plotting
-int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool wconfig, bool raw, QFile *file)
+int MainWindow::prepExport(bool c1, bool c2)
 {
-    int asize,wsize;
     bool running=false;
 
     // make sure connected
@@ -1148,8 +1150,14 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
         bx.exec();
         return -1;
     }
-    // Wait a bit in case we turned a channel on or off
-    usleep(500000);
+   return 0;
+}
+
+// This function handles exporting for both CSV and plotting
+int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool wconfig, bool raw, QFile *file)
+{
+    int asize,wsize;
+
 
     // Now we can really compute the size
     com.command(":WAV:POIN:MODE MAX");
@@ -1203,7 +1211,9 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
         file=new QFile(fn);
         if (!file->open(QIODevice::WriteOnly|QIODevice::Text))
         {
-            // TODO bad file
+            QMessageBox bx;
+            bx.setText("Can't open file for writing!");
+            return -1;
             return -1;
         }
 
@@ -1286,6 +1296,11 @@ void MainWindow::on_wavplot_clicked()
 {
     PlotDialog *dlg=new PlotDialog(this);
     QString cmd,script;
+
+    if (prepExport(ui->wavec1->isChecked(),ui->wavec2->isChecked())) return;
+
+    bool c1=ui->wavec1->isChecked();
+    bool c2=ui->wavec2->isChecked();
     if (!dlg->exec()) return;
     QTemporaryFile *file=new QTemporaryFile; // don't know the lifetime of this so...
     QTemporaryFile *scriptfile=new QTemporaryFile;
@@ -1298,8 +1313,6 @@ void MainWindow::on_wavplot_clicked()
     scriptfile->write(script.toLatin1());
     scriptfile->close();
     // generate temporary file
-    bool c1=ui->wavec1->isChecked();
-    bool c2=ui->wavec2->isChecked();
     exportEngine(true,c1,c2,true,false,false,file);
     // execute command
     cmd=dlg->command;
@@ -1311,6 +1324,7 @@ void MainWindow::on_wavplot_clicked()
 
 void MainWindow::on_wavecsv_clicked()
 {
+    if (prepExport(ui->wavec1->isChecked(),ui->wavec2->isChecked())) return;
     bool dotime=ui->wavetimeopt->isChecked();
     bool c1=ui->wavec1->isChecked();
     bool c2=ui->wavec2->isChecked();

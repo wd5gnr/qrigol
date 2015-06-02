@@ -186,6 +186,7 @@ private:
     int command(const QString &cmd);
     float cmdFloat(const QString &cmd);
     void waitForStop(void);
+    int prepExport(bool c1, bool c2);
 };
 
 #endif // MAINWINDOW_H
