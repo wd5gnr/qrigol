@@ -961,10 +961,11 @@ void MainWindow::setConfig(void)
     config.set=true;
 }
 
-int MainWindow::convertbuf(int chan, const QString &cmd, bool time, bool raw)
+int MainWindow::convertbuf(int chan, const QString &cmd, bool raw)
 {
     int i,size;
     if (!config.set) setConfig();
+    chan--;
     size=command(cmd);
     if (size==-1) return -1;
     for (i=0;i<size;i++)
@@ -973,8 +974,8 @@ int MainWindow::convertbuf(int chan, const QString &cmd, bool time, bool raw)
         chandata[chan][i]=raw?((double)rawdata):((double)(125.0-(double)rawdata)/25.0f);
         if (!raw)
         {
-            chandata[chan][i]*=config.vscale[chan-1];
-            chandata[chan][i]-=config.voffset[chan-1];
+            chandata[chan][i]*=config.vscale[chan];
+            chandata[chan][i]-=config.voffset[chan];
         }
     }
   chansize=size;
@@ -1156,9 +1157,9 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
     if ((c1&&!c2) || (c2&&!c1)) asize*=2;   // one channel is double
 
     // allocate buffers
-    if (c1) chandata[1]=new double[asize];
-    if (c2) chandata[2]=new double[asize];
-    if ((!chandata[0]) || (c1&&!chandata[1]) || (c2&&!chandata[2]))
+    if (c1) chandata[0]=new double[asize];
+    if (c2) chandata[1]=new double[asize];
+    if (((c1&&!chandata[0]) || (c2&&!chandata[1])))
     {
         QMessageBox bx;
         bx.setText("Sorry, insufficient memory.");
@@ -1175,7 +1176,7 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
     // Acquire each channel (as requested)
     if (c1)
     {
-        wsize=convertbuf(1,":WAV:DATA? CHAN1",dotime,raw);
+        wsize=convertbuf(1,":WAV:DATA? CHAN1",raw);
         if (wsize<0)
         {
             QMessageBox bx;
@@ -1185,7 +1186,7 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
     }
     if (c2)
     {
-        wsize=convertbuf(2,":WAV:DATA? CHAN2",dotime,raw);
+        wsize=convertbuf(2,":WAV:DATA? CHAN2",raw);
         if (wsize<0)
         {
             QMessageBox bx;
@@ -1248,12 +1249,12 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
         }
         if (c1)
         {
-            item+=QString::number(chandata[1][idx]);
+            item+=QString::number(chandata[0][idx]);
             if (c2) item+=",";
         }
         if (c2)
         {
-            item+=QString::number(chandata[2][idx]);
+            item+=QString::number(chandata[1][idx]);
         }
      item+="\n";
      file->write(item.toLatin1());
@@ -1261,8 +1262,8 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
     // Close files
     file->close();
     // Free buffers
-    if (c1) delete [] chandata[1];
-    if (c2) delete [] chandata[2];
+    if (c1) delete [] chandata[0];
+    if (c2) delete [] chandata[1];
     return 0;
 }
 

@@ -33,10 +33,10 @@ public:
     } config;
 
     void setConfig(void);
-    int convertbuf(int chan, const QString &cmd, bool time, bool raw);
+    int convertbuf(int chan, const QString &cmd, bool raw);
 
-    //double chandata[3][16*1024];
-    double *chandata[3];
+
+    double *chandata[2];
     int chansize;
 
 private slots:
