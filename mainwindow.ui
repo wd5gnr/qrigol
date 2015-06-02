@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1251</width>
-    <height>755</height>
+    <width>647</width>
+    <height>783</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="status">
        <attribute name="title">
@@ -497,8 +497,11 @@
           <property name="title">
            <string>Math</string>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
-           <item>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+          <layout class="QFormLayout" name="formLayout_3">
+           <item row="0" column="0">
             <widget class="QCheckBox" name="mathdisp">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -514,8 +517,14 @@
              </property>
             </widget>
            </item>
-           <item>
+           <item row="0" column="1">
             <widget class="QComboBox" name="mathsel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="toolTip">
               <string>Select math function</string>
              </property>
@@ -2679,139 +2688,135 @@
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
-            <layout class="QGridLayout" name="gridLayout_4">
-             <item row="4" column="0">
-              <widget class="QCheckBox" name="wavesavecfg">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::TabFocus</enum>
-               </property>
-               <property name="toolTip">
-                <string>Check to include key instrument parameters in the first part of the export</string>
-               </property>
-               <property name="text">
-                <string>Save Config</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QCheckBox" name="wavec1">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::TabFocus</enum>
-               </property>
-               <property name="toolTip">
-                <string>Select which items are exported</string>
-               </property>
-               <property name="text">
-                <string>Chan1</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="0">
-              <widget class="QCheckBox" name="wavehead">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::TabFocus</enum>
-               </property>
-               <property name="toolTip">
-                <string>Check to include a header before the data export</string>
-               </property>
-               <property name="text">
-                <string>Header</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QCheckBox" name="wavec2">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::TabFocus</enum>
-               </property>
-               <property name="toolTip">
-                <string>Select which items are exported</string>
-               </property>
-               <property name="text">
-                <string>Chan2</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="0">
-              <widget class="QCheckBox" name="waveraw">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::TabFocus</enum>
-               </property>
-               <property name="toolTip">
-                <string>Check to record raw counts instead of voltages</string>
-               </property>
-               <property name="text">
-                <string>Raw Counts</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QCheckBox" name="wavetimeopt">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::TabFocus</enum>
-               </property>
-               <property name="toolTip">
-                <string>Select which items are exported</string>
-               </property>
-               <property name="text">
-                <string>Time</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
+            <widget class="QCheckBox" name="wavetimeopt">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::TabFocus</enum>
+             </property>
+             <property name="toolTip">
+              <string>Select which items are exported</string>
+             </property>
+             <property name="text">
+              <string>Time</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="wavec1">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::TabFocus</enum>
+             </property>
+             <property name="toolTip">
+              <string>Select which items are exported</string>
+             </property>
+             <property name="text">
+              <string>Chan1</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="wavec2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::TabFocus</enum>
+             </property>
+             <property name="toolTip">
+              <string>Select which items are exported</string>
+             </property>
+             <property name="text">
+              <string>Chan2</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="wavesavecfg">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::TabFocus</enum>
+             </property>
+             <property name="toolTip">
+              <string>Check to include key instrument parameters in the first part of the export</string>
+             </property>
+             <property name="text">
+              <string>Save Config</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="wavehead">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::TabFocus</enum>
+             </property>
+             <property name="toolTip">
+              <string>Check to include a header before the data export</string>
+             </property>
+             <property name="text">
+              <string>Header</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="waveraw">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::TabFocus</enum>
+             </property>
+             <property name="toolTip">
+              <string>Check to record raw counts instead of voltages</string>
+             </property>
+             <property name="text">
+              <string>Raw Counts</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -2822,10 +2827,10 @@
            <string>Commands</string>
           </property>
           <property name="alignment">
-           <set>Qt::AlignCenter</set>
+           <set>Qt::AlignHCenter|Qt::AlignTop</set>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_12">
-           <item>
+          <layout class="QFormLayout" name="formLayout_4">
+           <item row="0" column="0">
             <widget class="QPushButton" name="wavecsv">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2841,7 +2846,7 @@
              </property>
             </widget>
            </item>
-           <item>
+           <item row="1" column="0">
             <widget class="QPushButton" name="wavplot">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2871,7 +2876,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1251</width>
+     <width>647</width>
      <height>30</height>
     </rect>
    </property>

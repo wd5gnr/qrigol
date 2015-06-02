@@ -185,6 +185,7 @@ private:
     MLogger mlogworker;
     int command(const QString &cmd);
     float cmdFloat(const QString &cmd);
+    void waitForStop(void);
 };
 
 #endif // MAINWINDOW_H
