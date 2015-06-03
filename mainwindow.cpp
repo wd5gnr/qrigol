@@ -472,7 +472,6 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
    }
    else
    {
-       qDebug()<<"Unsupported trigger mode "<<com.buffer;
        ui->statusBar->showMessage(QString("Unsupported trigger mode ")+com.buffer);
        ui->tmode->findText(com.buffer,static_cast<Qt::MatchFlags>(Qt::MatchFixedString));
    }
@@ -1288,12 +1287,17 @@ void MainWindow::on_action_Diagnostic_triggered()
     bool ok;
     if (!com.connected()) return;
     QString cmd=QInputDialog::getText(this,"Enter Diagnostic Command","Command:",QLineEdit::Normal,"",&ok);
-    if (!ok || cmd.isEmpty()) return;
- // Could check to see that command starts with : or * TODO
-    command(cmd);
-    if (cmd.right(1)[0]!='?') return;
     QMessageBox bx;
-    bx.setText(com.buffer);
+    if (!ok || cmd.isEmpty()) return;
+ // Could check to see that command starts with : or *
+    if (cmd.left(1)==":" || cmd.left(1)=="*")
+    {
+       command(cmd);
+       if (cmd.right(1)[0]!='?') return;
+       bx.setText(com.buffer);
+    }
+    else
+        bx.setText("Commands should start with : or * to be valid. No command sent.");
     bx.exec();
 }
 
@@ -1307,8 +1311,8 @@ void MainWindow::on_wavplot_clicked()
     bool c1=ui->wavec1->isChecked();
     bool c2=ui->wavec2->isChecked();
     if (!dlg->exec()) return;
-    QTemporaryFile *file=new QTemporaryFile("qrigoldata_XXXXXX"); // don't know the lifetime of this so...
-    QTemporaryFile *scriptfile=new QTemporaryFile("qrigolscript_XXXXXX");
+    QTemporaryFile *file=new QTemporaryFile(QDir::tempPath()+"/qrigoldata_XXXXXX.csv");
+    QTemporaryFile *scriptfile=new QTemporaryFile(QDir::tempPath()+"/qrigolscript_XXXXXX");
     file->setAutoRemove(false);
     scriptfile->setAutoRemove(false);
     scriptfile->open();
@@ -1316,15 +1320,18 @@ void MainWindow::on_wavplot_clicked()
     script=dlg->script;
     script=script.replace("{FILE}",file->fileName());  // does not work unless file is open!
     scriptfile->write(script.toLatin1());
+    cmd=dlg->command;
+    cmd=cmd.replace("{SCRIPT}",scriptfile->fileName());
+    cmd=cmd.replace("{FILE}",file->fileName());
+// get names before close
     scriptfile->close();
     // generate temporary file
     exportEngine(true,c1,c2,true,false,false,file);
     // execute command
-    cmd=dlg->command;
-    cmd=cmd.replace("{SCRIPT}",scriptfile->fileName());
-    cmd=cmd.replace("{FILE}",file->fileName());
     QProcess proc;
     proc.startDetached(cmd);
+    delete file;
+    delete scriptfile; // really should have made these on the stack
 }
 
 void MainWindow::on_wavecsv_clicked()
@@ -1346,6 +1353,7 @@ void MainWindow::on_wavecsv_clicked()
         done.setText(msg);
         done.exec();
     }
+    // TODO: Files not deleted here!
 }
 
 void MainWindow::on_actionRun_Stop_triggered()
@@ -1407,11 +1415,11 @@ void MainWindow::on_exportOLS_clicked()
         }
     }
     file.close();
-        QMessageBox done;
-        QString msg;
-        msg="Wrote ";
-        msg+=QString::number(chansize)+" records";
-        done.setText(msg);
-        done.exec();
+    QMessageBox done;
+    QString msg;
+    msg="Wrote ";
+    msg+=QString::number(chansize)+" records";
+    done.setText(msg);
+    done.exec();
 
 }

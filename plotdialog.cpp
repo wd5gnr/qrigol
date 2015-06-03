@@ -8,7 +8,8 @@ const char *defcmds[] =
     "gnuplot {SCRIPT}",
     "gnuplot {SCRIPT}",
     "qtiplot {FILE}",
-    "bash {SCRIPT}"
+    "bash {SCRIPT}",
+    "libreoffice --calc {FILE}"
 
 };
 
@@ -44,6 +45,7 @@ const char *defscripts[]=
     "plot \\\"{FILE}\\\" using 1:3 with lines  title columnhead(3)  lc \\\"blue\\\";\n"
     "pause mouse button3 ;\n"
     "\"   &\n",
+    ""
 };
 
 PlotDialog::PlotDialog(QWidget *parent) :
