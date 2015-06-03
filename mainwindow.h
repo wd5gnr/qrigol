@@ -196,6 +196,7 @@ private:
     void waitForStop(void);
     int prepExport(bool c1, bool c2);
     int fillExportBuffer(bool c1, bool c2,bool raw);
+    bool isChannelDisplayed(int chan);
 };
 
 #endif // MAINWINDOW_H

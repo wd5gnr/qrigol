@@ -350,6 +350,17 @@ void MainWindow::setupChannel(int ch,QComboBox *probebox,QComboBox *scalebox)
 
 }
 
+
+bool MainWindow::isChannelDisplayed(int chan)
+{
+    // Note the manual says this returns ON/OFF, but we see it returns 0 and 1 so..
+    QString cmd=":CHAN";
+    cmd+=QString::number(chan)+":DISP?";
+    command(cmd);
+    return com.buffer[1]=='N' || com.buffer[0]=='1';   // just in case programming guide is right for old fw
+}
+
+
 void MainWindow::on_updAcq_clicked()  // this function updates the ui from the scope
 // called from several ui buttons and also on start up or switching of tabs
 {
@@ -424,12 +435,8 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
         sscale.append("s");
     }
    ui->hscale->setCurrentIndex(ui->hscale->findText(sscale));
-   com.command(":CHAN1:DISP?");
-   if (com.buffer[1]=='N') com.buffer[0]='1';   // just in case programming guide is right for old fw
-   ui->cdisp1->setChecked(com.buffer[0]=='1');  // programming guide is wrong!
-   com.command(":CHAN2:DISP?");
-   if (com.buffer[1]=='N') com.buffer[0]='1';   // just in case programming guide is right for old fw
-   ui->cdisp2->setChecked(com.buffer[0]=='1');  // programming guide is wrong!
+   ui->cdisp1->setChecked(isChannelDisplayed(1));  // programming guide is wrong!
+   ui->cdisp2->setChecked(isChannelDisplayed(2));  // programming guide is wrong!
    com.command(":CHAN1:BWL?");
    ui->c1bw->setChecked(com.buffer[1]=='N');
    com.command(":CHAN2:BWL?");
@@ -534,7 +541,7 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
 
 
     com.command(":MATH:DISP?");
-    ui->mathdisp->setChecked(com.buffer[1]=='N');
+    ui->mathdisp->setChecked(com.buffer[1]=='N'||com.buffer[0]=='1');
     com.command(":MATH:OPER?");
     ui->mathsel->setCurrentIndex(ui->mathsel->findText(com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
 
@@ -1115,11 +1122,13 @@ int MainWindow::prepExport(bool c1, bool c2)
     {
          ui->cdisp1->setChecked(c1);
          on_cdisp1_clicked();
+         usleep(250000);
          ui->cdisp2->setChecked(c2);
          on_cdisp2_clicked();
+         usleep(250000);
     }
-    // we ought to actually check in case user manually turned on off in stop mode TODO
-    if ((c1 && !ui->cdisp1->isChecked()) || (c2 && !ui->cdisp2->isChecked()))
+
+    if ((c1 && !isChannelDisplayed(1)) || (c2 && !isChannelDisplayed(2)))
     {
        QMessageBox bx;
        bx.setText("Channel not enabled and instrument in stop mode");
@@ -1127,23 +1136,6 @@ int MainWindow::prepExport(bool c1, bool c2)
        return -1;
     }
 
-    if (c1 && !ui->cdisp1->isChecked())
-    {
-        // if we are running we should enable chan1
-        // if we are already stopped, that won't help any
-        if (running)
-        {
-            com.command("CHAN1:DISP ON");
-            ui->cdisp1->setChecked(true);
-        } else
-        {
-            QMessageBox bx;
-            bx.setText("Channel 1 not enabled.");
-            bx.exec();
-            return -1;
-        }
-
-    }
 
     // make sure one source selected
     if ((!c1)&&(!c2))
@@ -1161,7 +1153,9 @@ int MainWindow::fillExportBuffer(bool c1, bool c2,bool raw)
     int asize,wsize;
     // Now we can really compute the size
     com.command(":WAV:POIN:MODE MAX");
-    asize=ui->acqMem->isChecked()?524288:8192;   // won't be right if user manually meddels TODO
+//    asize=ui->acqMem->isChecked()?524288:8192;   // won't be right if user manually meddels TODO
+    com.command(":ACQ:MEMD?");
+    asize=com.buffer[0]=='L'?524288:8192;   // now it will be right
     if ((c1&&!c2) || (c2&&!c1)) asize*=2;   // one channel is double
 
     // allocate buffers
@@ -1211,7 +1205,7 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
 {
     int wsize;
 
-    if (wsize=fillExportBuffer(c1,c2,raw)<0) return -1;
+    if ((wsize=fillExportBuffer(c1,c2,raw))<0) return -1;
 
     // Get file name
     if (file==NULL)
@@ -1295,6 +1289,7 @@ void MainWindow::on_action_Diagnostic_triggered()
     if (!com.connected()) return;
     QString cmd=QInputDialog::getText(this,"Enter Diagnostic Command","Command:",QLineEdit::Normal,"",&ok);
     if (!ok || cmd.isEmpty()) return;
+ // Could check to see that command starts with : or * TODO
     command(cmd);
     if (cmd.right(1)[0]!='?') return;
     QMessageBox bx;
@@ -1312,8 +1307,8 @@ void MainWindow::on_wavplot_clicked()
     bool c1=ui->wavec1->isChecked();
     bool c2=ui->wavec2->isChecked();
     if (!dlg->exec()) return;
-    QTemporaryFile *file=new QTemporaryFile; // don't know the lifetime of this so...
-    QTemporaryFile *scriptfile=new QTemporaryFile;
+    QTemporaryFile *file=new QTemporaryFile("qrigoldata_XXXXXX"); // don't know the lifetime of this so...
+    QTemporaryFile *scriptfile=new QTemporaryFile("qrigolscript_XXXXXX");
     file->setAutoRemove(false);
     scriptfile->setAutoRemove(false);
     scriptfile->open();
