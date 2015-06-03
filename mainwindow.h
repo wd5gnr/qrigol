@@ -178,6 +178,8 @@ private slots:
 
     void on_actionConnect_triggered();
 
+    void on_exportOLS_clicked();
+
 private:
     Ui::MainWindow *ui;
      QTimer *uTimer;
@@ -193,6 +195,7 @@ private:
     float cmdFloat(const QString &cmd);
     void waitForStop(void);
     int prepExport(bool c1, bool c2);
+    int fillExportBuffer(bool c1, bool c2,bool raw);
 };
 
 #endif // MAINWINDOW_H

@@ -993,7 +993,7 @@ int MainWindow::convertbuf(int chan, const QString &cmd, bool raw)
 
 void MainWindow::on_mlogfileselect_clicked()
 {
-    QString fn=QFileDialog::getSaveFileName(this,"Select log file to create or append to",QString(),"Comma Separate Value Files (*.csv);;All files (*.*)",0,QFileDialog::DontConfirmOverwrite);
+    QString fn=QFileDialog::getSaveFileName(this,"Select log file to create or append to",QString(),"Comma Separated Value Files (*.csv);;All files (*.*)",0,QFileDialog::DontConfirmOverwrite);
     if (fn.isEmpty()) return;
     ui->mlogfilename->setText(fn);
 
@@ -1118,6 +1118,7 @@ int MainWindow::prepExport(bool c1, bool c2)
          ui->cdisp2->setChecked(c2);
          on_cdisp2_clicked();
     }
+    // we ought to actually check in case user manually turned on off in stop mode TODO
     if ((c1 && !ui->cdisp1->isChecked()) || (c2 && !ui->cdisp2->isChecked()))
     {
        QMessageBox bx;
@@ -1155,15 +1156,12 @@ int MainWindow::prepExport(bool c1, bool c2)
    return 0;
 }
 
-// This function handles exporting for both CSV and plotting
-int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool wconfig, bool raw, QFile *file)
+int MainWindow::fillExportBuffer(bool c1, bool c2,bool raw)
 {
     int asize,wsize;
-
-
     // Now we can really compute the size
     com.command(":WAV:POIN:MODE MAX");
-    asize=ui->acqMem->isChecked()?524288:8192;
+    asize=ui->acqMem->isChecked()?524288:8192;   // won't be right if user manually meddels TODO
     if ((c1&&!c2) || (c2&&!c1)) asize*=2;   // one channel is double
 
     // allocate buffers
@@ -1182,6 +1180,7 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
     // however, it takes a bit for it to "settle" If you get a short sample, just run it again
     // since the scope is stopped it will be ok
     waitForStop();
+    usleep(500000);  // if you don't delay you get short buffer first time even with wait for stop ???
     setConfig();
     // Acquire each channel (as requested)
     if (c1)
@@ -1204,6 +1203,15 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
             bx.exec();
         }
     }
+   return wsize;
+}
+
+// This function handles exporting for both CSV and plotting
+int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool wconfig, bool raw, QFile *file)
+{
+    int wsize;
+
+    if (wsize=fillExportBuffer(c1,c2,raw)<0) return -1;
 
     // Get file name
     if (file==NULL)
@@ -1357,5 +1365,58 @@ void MainWindow::on_actionConnect_triggered()
 {
     ui->connectButton->setChecked(!com.connected());
     on_connectButton_clicked();
+
+}
+
+void MainWindow::on_exportOLS_clicked()
+{
+    if (prepExport(ui->wavec1->isChecked(),ui->wavec2->isChecked())) return;
+    bool c1=ui->wavec1->isChecked();
+    bool c2=ui->wavec2->isChecked();
+    int i,lastdat;
+    QString line;
+
+    QString fn;
+    float thresh=ui->logicThresh->value();
+    if (fillExportBuffer(c1,c2,false)<0) return;
+    fn=QFileDialog::getSaveFileName(this,"OLS Export File Name",QString(),"OLS Files (*.ols);; All Files (*.*)");
+    if (fn.isEmpty()) return;
+    QFile file(fn);
+    file.open(QIODevice::WriteOnly);
+    line=";Rate: ";
+    line+=QString().sprintf("%d\n",(int)config.srate);
+    file.write(line.toLatin1());
+    line=";Channels: ";
+    i=0;
+    if (c1) i++;
+    if (c2) i++;
+    line+=QString::number(i)+"\n";
+    file.write(line.toLatin1());
+    i=0;
+    if (c1) i|=1;
+    if (c2) i|=2;
+    line="EnabledChannels: ";
+    line+=QString::number(i)+"\n";
+    file.write(line.toLatin1());
+    lastdat=-1;
+    for (i=0;i<chansize;i++)
+    {
+        int dat=0;
+        if (c1 && chandata[0][i]>thresh) dat|=1;
+        if (c2 && chandata[1][i]>thresh) dat|=2;
+        if (dat!=lastdat)
+        {
+            line.sprintf("%X@%d\n",dat,i);
+            file.write(line.toLatin1());
+            lastdat=dat;
+        }
+    }
+    file.close();
+        QMessageBox done;
+        QString msg;
+        msg="Wrote ";
+        msg+=QString::number(chansize)+" records";
+        done.setText(msg);
+        done.exec();
 
 }
