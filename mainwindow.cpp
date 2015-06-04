@@ -5,13 +5,11 @@
 #include <QTime>
 #include <QTimer>
 #include <QFile>
-#include <QTemporaryFile>
 #include <QDebug>
 #include <QFileDialog>
 #include <QInputDialog>
-#include <QProcess>
 #include "unistd.h"
-#include "plotdialog.h"
+#include "scopedata.h"
 
 // TODO: Read scales
 // TODO: The plot example UI probably doesn't work well with a keyboard
@@ -22,7 +20,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    scopedata(this)
 {
     ui->setupUi(this);
     scopedata.setComm(&com);
@@ -77,6 +76,22 @@ void MainWindow::waitForStop(void)
     } while (*com.buffer!='S' && timeout.elapsed()<2000);  // Wait for stop or 2 seconds
 
 }
+
+void MainWindow::chanDisp(int chan, bool disp)
+{
+    if (chan==1)
+    {
+        ui->cdisp1->setChecked(disp);
+        on_cdisp1_clicked();
+    }
+    else
+    {
+        ui->cdisp2->setChecked(disp);
+        on_cdisp2_clicked();
+    }
+    usleep(250000);
+}
+
 
 void MainWindow::on_uiUpdate()  // periodic update of scope status -- this makes it impossible to unlock so we need a supression
 {
@@ -459,13 +474,13 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
    ui->c1coup->setCurrentIndex(ui->c1coup->findText(com.buffer));
    com.command(":CHAN2:COUP?");
    ui->c2coup->setCurrentIndex(ui->c2coup->findText(com.buffer));
-   float off=scopeData.config.hoffset;
+   float off=scopedata.config.hoffset;
    // convert to uS
    off*=1000000.0f;
    ui->hoffsetspin->setValue(off);
-   off=config.vscale[0];
+   off=scopedata.config.vscale[0];
    ui->c1offspin->setValue(off);
-   off=config.vscale[1];
+   off=scopedata.config.vscale[1];
    ui->c2offspin->setValue(off);
 
    com.command(":TRIG:MODE?");
@@ -1113,3 +1128,23 @@ void MainWindow::on_actionConnect_triggered()
 
 }
 
+
+void MainWindow::on_wavecsv_clicked()
+{
+    scopedata.do_export_csv(ui->wavec1->isChecked(),ui->wavec2->isChecked(),ui->wavetimeopt->isChecked(),ui->wavehead->isChecked(),ui->wavesavecfg->isChecked(),ui->waveraw->isChecked());
+}
+
+void MainWindow::on_wavplot_clicked()
+{
+    scopedata.do_wave_plot(ui->wavec1->isChecked(),ui->wavec2->isChecked());
+}
+
+void MainWindow::on_exportOLS_clicked()
+{
+    scopedata.do_export_ols(ui->wavec1->isChecked(),ui->wavec2->isChecked(),ui->logicThresh->value());
+}
+
+void MainWindow::on_exportSigrok_clicked()
+{
+    scopedata.do_export_sigrok(ui->wavec1->isChecked(),ui->wavec2->isChecked(),ui->logicThresh->value());
+}

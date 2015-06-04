@@ -8,6 +8,7 @@
 #include "mlogger.h"
 #include "scopedata.h"
 
+
 namespace Ui {
 class MainWindow;
 }
@@ -21,6 +22,11 @@ public:
     ~MainWindow();
 
     float lastMeasure[2][20];
+
+    void chanDisp(int chan,bool disp);
+    void waitForStop(void);
+    bool isChannelDisplayed(int chan);
+
 
 
 private slots:
@@ -152,15 +158,19 @@ private slots:
 
     void on_action_Diagnostic_triggered();
 
-    void on_wavplot_clicked();
 
-    void on_wavecsv_clicked();
 
     void on_actionRun_Stop_triggered();
 
 
 
     void on_actionConnect_triggered();
+
+
+
+    void on_wavecsv_clicked();
+
+    void on_wavplot_clicked();
 
     void on_exportOLS_clicked();
 
@@ -179,8 +189,6 @@ private:
     int cmdCharIndex(const QString &cmd,const QString &search,int bpos=0);
     QFile *mlog;
     MLogger mlogworker;
-    void waitForStop(void);
-    bool isChannelDisplayed(int chan);
     ScopeData scopedata;
 };
 

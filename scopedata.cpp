@@ -1,8 +1,17 @@
 #include "scopedata.h"
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QTemporaryFile>
+#include <QProcess>
+#include <QDebug>
+#include "mainwindow.h"
+#include "plotdialog.h"
+#include <unistd.h>
 
 ScopeData::ScopeData(QObject *parent) :
     QObject(parent)
 {
+    win=(MainWindow *)parent;
 }
 
 
@@ -33,7 +42,7 @@ void ScopeData::setConfig(void)
 }
 
 
-int MainWindow::convertbuf(int chan, const QString &cmd, bool raw)
+int ScopeData::convertbuf(int chan, const QString &cmd, bool raw)
 {
     int i,size;
     if (!config.set) setConfig();
@@ -55,12 +64,12 @@ int MainWindow::convertbuf(int chan, const QString &cmd, bool raw)
 }
 
 
-int MainWindow::prepExport(bool c1, bool c2)
+int ScopeData::prepExport(bool c1, bool c2)
 {
     bool running=false;
 
     // make sure connected
-    if (!com.connected()) return -1;
+    if (!com->connected()) return -1;
     // we know we will be stopped so we are going to get
     // either 8K/16K (based on display) or 512K/1M based on long memory mode
     //
@@ -68,15 +77,11 @@ int MainWindow::prepExport(bool c1, bool c2)
     running=com->buffer[0]!='S';
     if (running)
     {
-         ui->cdisp1->setChecked(c1);
-         on_cdisp1_clicked();
-         usleep(250000);
-         ui->cdisp2->setChecked(c2);
-         on_cdisp2_clicked();
-         usleep(250000);
+         win->chanDisp(1,c1);
+         win->chanDisp(2,c2);
     }
 
-    if ((c1 && !isChannelDisplayed(1)) || (c2 && !isChannelDisplayed(2)))
+    if ((c1 && !win->isChannelDisplayed(1)) || (c2 && !win->isChannelDisplayed(2)))
     {
        QMessageBox bx;
        bx.setText("Channel not enabled and instrument in stop mode");
@@ -96,13 +101,13 @@ int MainWindow::prepExport(bool c1, bool c2)
    return 0;
 }
 
-int MainWindow::fillExportBuffer(bool c1, bool c2,bool raw)
+int ScopeData::fillExportBuffer(bool c1, bool c2,bool raw)
 {
     int asize,wsize;
     // Now we can really compute the size
-    com.command(":WAV:POIN:MODE MAX");
-    com.command(":ACQ:MEMD?");
-    asize=com.buffer[0]=='L'?524288:8192;   // now it will be right
+    command(":WAV:POIN:MODE MAX");
+    command(":ACQ:MEMD?");
+    asize=com->buffer[0]=='L'?524288:8192;   // now it will be right
     if ((c1&&!c2) || (c2&&!c1)) asize*=2;   // one channel is double
 
     // allocate buffers
@@ -117,10 +122,10 @@ int MainWindow::fillExportBuffer(bool c1, bool c2,bool raw)
 
     }
     // Stop instrument
-    com.command(":STOP");   // only way to be sure we sync chan1 and chan2 that I can tell
+    command(":STOP");   // only way to be sure we sync chan1 and chan2 that I can tell
     // however, it takes a bit for it to "settle" If you get a short sample, just run it again
     // since the scope is stopped it will be ok
-    waitForStop();
+    win->waitForStop();
     usleep(500000);  // if you don't delay you get short buffer first time even with wait for stop ???
     setConfig();
     // Acquire each channel (as requested)
@@ -148,7 +153,7 @@ int MainWindow::fillExportBuffer(bool c1, bool c2,bool raw)
 }
 
 // This function handles exporting for both CSV and plotting
-int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool wconfig, bool raw, QFile *file)
+int ScopeData::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool wconfig, bool raw, QFile *file)
 {
     int wsize;
 
@@ -157,7 +162,7 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
     // Get file name
     if (file==NULL)
     {
-        QString fn=QFileDialog::getSaveFileName(this,"Select log file to create or append to",QString(),"Comma Separate Value Files (*.csv);;All files (*.*)");
+        QString fn=QFileDialog::getSaveFileName(win,"Select log file to create or append to",QString(),"Comma Separate Value Files (*.csv);;All files (*.*)");
         if (fn.isEmpty()) return -1;
         file=new QFile(fn);
         if (!file->open(QIODevice::WriteOnly|QIODevice::Text))
@@ -228,15 +233,12 @@ int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool w
     return 0;
 }
 
-void MainWindow::on_wavplot_clicked()
+void ScopeData::do_wave_plot(bool c1, bool c2)
 {
-    PlotDialog *dlg=new PlotDialog(this);
+    PlotDialog *dlg=new PlotDialog(win);
     QString cmd,script;
 
-    if (prepExport(ui->wavec1->isChecked(),ui->wavec2->isChecked())) return;
-
-    bool c1=ui->wavec1->isChecked();
-    bool c2=ui->wavec2->isChecked();
+    if (prepExport(c1,c2)) return;
     if (!dlg->exec()) return;
     QTemporaryFile *file=new QTemporaryFile(QDir::tempPath()+"/qrigoldata_XXXXXX.csv");
     QTemporaryFile *scriptfile=new QTemporaryFile(QDir::tempPath()+"/qrigolscript_XXXXXX");
@@ -261,15 +263,9 @@ void MainWindow::on_wavplot_clicked()
     delete scriptfile; // really should have made these on the stack
 }
 
-void MainWindow::on_wavecsv_clicked()
+void ScopeData::do_export_csv(bool c1, bool c2, bool dotime, bool wheader, bool wconfig, bool raw)
 {
-    if (prepExport(ui->wavec1->isChecked(),ui->wavec2->isChecked())) return;
-    bool dotime=ui->wavetimeopt->isChecked();
-    bool c1=ui->wavec1->isChecked();
-    bool c2=ui->wavec2->isChecked();
-    bool wheader=ui->wavehead->isChecked();
-    bool wconfig=ui->wavesavecfg->isChecked();
-    bool raw=ui->waveraw->isChecked();
+    if (prepExport(c1,c2)) return;
 
     if (exportEngine(dotime,c1,c2,wheader,wconfig,raw)==0)
     {
@@ -283,18 +279,16 @@ void MainWindow::on_wavecsv_clicked()
     // TODO: Files not deleted here!
 }
 
-void MainWindow::on_exportOLS_clicked()
+void ScopeData::do_export_ols(bool c1, bool c2,float thresh)
 {
-    if (prepExport(ui->wavec1->isChecked(),ui->wavec2->isChecked())) return;
-    bool c1=ui->wavec1->isChecked();
-    bool c2=ui->wavec2->isChecked();
+    if (prepExport(c1,c2)) return;
+
     int i,lastdat;
     QString line;
 
     QString fn;
-    float thresh=ui->logicThresh->value();
     if (fillExportBuffer(c1,c2,false)<0) return;
-    fn=QFileDialog::getSaveFileName(this,"OLS Export File Name",QString(),"OLS Files (*.ols);; All Files (*.*)");
+    fn=QFileDialog::getSaveFileName(win,"OLS Export File Name",QString(),"OLS Files (*.ols);; All Files (*.*)");
     if (fn.isEmpty()) return;
     QFile file(fn);
     file.open(QIODevice::WriteOnly);
@@ -336,18 +330,15 @@ void MainWindow::on_exportOLS_clicked()
 
 }
 
-void MainWindow::on_exportSigrok_clicked()
+void ScopeData::do_export_sigrok(bool c1, bool c2, float thresh)
 {
-    if (prepExport(ui->wavec1->isChecked(),ui->wavec2->isChecked())) return;
-    bool c1=ui->wavec1->isChecked();
-    bool c2=ui->wavec2->isChecked();
+    if (prepExport(c1,c2)) return;
     int i;
     QString line;
 
     QString fn;
-    float thresh=ui->logicThresh->value();
     if (fillExportBuffer(c1,c2,false)<0) return;
-    fn=QFileDialog::getSaveFileName(this,"OLS Export File Name",QString(),"Sigrok Files (*.sr);; All Files (*.*)");
+    fn=QFileDialog::getSaveFileName(win,"OLS Export File Name",QString(),"Sigrok Files (*.sr);; All Files (*.*)");
     if (fn.isEmpty()) return;
     QTemporaryFile file(QDir::tempPath()+"/qrigoldata_XXXXXX.csv");
     file.setAutoRemove(false);
