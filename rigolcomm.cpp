@@ -27,7 +27,11 @@ RigolComm::~RigolComm()
 int RigolComm::open(const char *device)
 {
     fd=::open(device,O_RDWR);
-    if (fd>0) _buffer=(char *)malloc(max_resp_len+1);
+    if (fd>0)
+    {
+        _buffer=(char *)malloc(max_resp_len+1);
+        buffer=_buffer;
+    }
    return fd>0 && buffer!=NULL;
 }
 

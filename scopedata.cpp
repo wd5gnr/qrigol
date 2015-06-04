@@ -3,27 +3,42 @@
 #include <QFileDialog>
 #include <QTemporaryFile>
 #include <QProcess>
+#include <QTime>
 #include <QDebug>
 #include "mainwindow.h"
 #include "plotdialog.h"
 #include <unistd.h>
+
+// TODO: Need to detect bad QProcess starts
+// TODO: Need to check return value from sigrok
 
 ScopeData::ScopeData(QObject *parent) :
     QObject(parent)
 {
     win=(MainWindow *)parent;
 }
-
-
-// Helpers that take QString
-int ScopeData::command(const QString &cmd)
+QString ScopeData::id(void)
 {
-  return com->command(cmd.toLatin1());
+       *com.buffer='\0';
+       com.command("*IDN?");
+       return QString(com.buffer); }
+
+bool ScopeData::isChannelDisplayed(int chan)
+{
+    // Note the manual says this returns ON/OFF, but we see it returns 0 and 1 so..
+    QString cmd=":CHAN";
+    cmd+=QString::number(chan)+":DISP?";
+    command(cmd);
+    return com.buffer[1]=='N' || com.buffer[0]=='1';   // just in case programming guide is right for old fw
 }
 
-float ScopeData::cmdFloat(const QString &cmd)
+
+int ScopeData::cmdCharIndex(const QString &cmd,const QString &search,int bpos)
 {
-  return com->cmdFloat(cmd.toLatin1());
+    QChar c;
+    command(cmd);
+    c=com.buffer[bpos];
+    return search.indexOf(c,0,Qt::CaseInsensitive);
 }
 
 void ScopeData::setConfig(void)
@@ -51,7 +66,7 @@ int ScopeData::convertbuf(int chan, const QString &cmd, bool raw)
     if (size==-1) return -1;
     for (i=0;i<size;i++)
     {
-        unsigned int rawdata=(unsigned char)(com->buffer[i]);
+        unsigned int rawdata=(unsigned char)(com.buffer[i]);
         chandata[chan][i]=raw?((double)rawdata):((double)(125.0-(double)rawdata)/25.0f);
         if (!raw)
         {
@@ -63,25 +78,36 @@ int ScopeData::convertbuf(int chan, const QString &cmd, bool raw)
   return size;
 }
 
+void ScopeData::waitForStop(void)
+{
+    QTime timeout;
+    timeout.start();
+    do
+    {
+        command(":TRIG:STAT?");
+    } while (*(com.buffer)!='S' && timeout.elapsed()<2000);  // Wait for stop or 2 seconds
+
+}
+
 
 int ScopeData::prepExport(bool c1, bool c2)
 {
     bool running=false;
 
     // make sure connected
-    if (!com->connected()) return -1;
+    if (!com.connected()) return -1;
     // we know we will be stopped so we are going to get
     // either 8K/16K (based on display) or 512K/1M based on long memory mode
     //
     command(":TRIG:STAT?");
-    running=com->buffer[0]!='S';
+    running=com.buffer[0]!='S';
     if (running)
     {
          win->chanDisp(1,c1);
          win->chanDisp(2,c2);
     }
 
-    if ((c1 && !win->isChannelDisplayed(1)) || (c2 && !win->isChannelDisplayed(2)))
+    if ((c1 && !isChannelDisplayed(1)) || (c2 && !isChannelDisplayed(2)))
     {
        QMessageBox bx;
        bx.setText("Channel not enabled and instrument in stop mode");
@@ -107,7 +133,7 @@ int ScopeData::fillExportBuffer(bool c1, bool c2,bool raw)
     // Now we can really compute the size
     command(":WAV:POIN:MODE MAX");
     command(":ACQ:MEMD?");
-    asize=com->buffer[0]=='L'?524288:8192;   // now it will be right
+    asize=com.buffer[0]=='L'?524288:8192;   // now it will be right
     if ((c1&&!c2) || (c2&&!c1)) asize*=2;   // one channel is double
 
     // allocate buffers
@@ -125,7 +151,7 @@ int ScopeData::fillExportBuffer(bool c1, bool c2,bool raw)
     command(":STOP");   // only way to be sure we sync chan1 and chan2 that I can tell
     // however, it takes a bit for it to "settle" If you get a short sample, just run it again
     // since the scope is stopped it will be ok
-    win->waitForStop();
+    waitForStop();
     usleep(500000);  // if you don't delay you get short buffer first time even with wait for stop ???
     setConfig();
     // Acquire each channel (as requested)

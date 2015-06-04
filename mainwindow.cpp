@@ -9,22 +9,21 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include "unistd.h"
-#include "scopedata.h"
 
 // TODO: Read scales
 // TODO: The plot example UI probably doesn't work well with a keyboard
-// TODO: break up this file - put capture data in its own class
 // maybe a class per tab
 // TODO: Redo export UI
+// TODO: My goal is remove everything out of here having to do with direct command
+// and/or com.buffer but that is a work in progress
 
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    scopedata(this)
+    scope(this)
 {
     ui->setupUi(this);
-    scopedata.setComm(&com);
     nocommands=false;  // used to inhibit commands while updating UI
 // Force current tab
     ui->tabWidget->setCurrentIndex(0);
@@ -35,6 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     dev=set.value("Options/Device","/dev/usbtmc0").toString();
     ui->unlockBtn->setChecked(set.value("Options/Unlock",false).toBool());
     ui->hoffincr->setValue(set.value("Options/hincr",100.0).toFloat());
+    ui->exportFmt->setCurrentIndex(set.value("Options/exportselect",0).toInt());
+    // TODO restore wav* and logicthresh
     ui->deviceName->setText(dev);
     ui->hoffsetspin->setSingleStep(ui->hoffincr->value());
     ui->tboxpulse->setVisible(false);
@@ -50,32 +51,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    if (com.connected()) com.close();
+    if (scope.connected()) scope.close();
     delete ui;
 }
 
-// Helpers that take QString
-int MainWindow::command(const QString &cmd)
-{
-  return com.command(cmd.toLatin1());
-}
 
-float MainWindow::cmdFloat(const QString &cmd)
-{
-  return com.cmdFloat(cmd.toLatin1());
-}
-
-// More helpers
-void MainWindow::waitForStop(void)
-{
-    QTime timeout;
-    timeout.start();
-    do
-    {
-        com.command(":TRIG:STAT?");
-    } while (*com.buffer!='S' && timeout.elapsed()<2000);  // Wait for stop or 2 seconds
-
-}
 
 void MainWindow::chanDisp(int chan, bool disp)
 {
@@ -95,13 +75,14 @@ void MainWindow::chanDisp(int chan, bool disp)
 
 void MainWindow::on_uiUpdate()  // periodic update of scope status -- this makes it impossible to unlock so we need a supression
 {
-    if (!com.connected()) return;
-    com.command(":TRIG:STAT?");
-    ui->actionRun_Stop->setChecked(*com.buffer!='S');
-    ui->rsButton->setStyleSheet(*com.buffer!='S'?"background: green;":"background: red;");
-    if (ui->unlockBtn->isChecked()) com.unlock();
+    if (!scope.connected()) return;
+    int status=scope.trigStatus();
+
+    ui->actionRun_Stop->setChecked(status=='S');
+    ui->rsButton->setStyleSheet(status!='S'?"background: green;":"background: red;");
+    if (ui->unlockBtn->isChecked()) scope.unlock();
     if (mlogworker.isFinished()) ui->measLogEnable->setChecked(false);
-    ui->actionConnect->setChecked(com.connected());
+    ui->actionConnect->setChecked(scope.connected());
 
 
 
@@ -110,11 +91,11 @@ void MainWindow::on_uiUpdate()  // periodic update of scope status -- this makes
 void MainWindow::on_connectButton_clicked()
 {
 
-    if (!com.connected())
+    if (!scope.connected())
     {
         ui->connectButton->setChecked(false);
-        com.open(ui->deviceName->text().toLatin1());
-        if (!com.connected())
+        scope.open(ui->deviceName->text());
+        if (!scope.connected())
         {
             QMessageBox bx;
             bx.setText("Can't open device");
@@ -122,7 +103,8 @@ void MainWindow::on_connectButton_clicked()
             bx.exec();
             return;
         }
-        if (com.command("*IDN?") < 0)
+        QString id=scope.id();
+        if (id.isEmpty())
         {
             ui->idstring->setText("No response");
             ui->statusBar->showMessage("No response");
@@ -130,9 +112,9 @@ void MainWindow::on_connectButton_clicked()
         else
         {
             QSettings set;
-            ui->idstring->setText(com.buffer);
+            ui->idstring->setText(scope.com.buffer);
             set.setValue("Options/Device",ui->deviceName->text());
-            ui->statusBar->showMessage(com.buffer);
+            ui->statusBar->showMessage(scope.com.buffer);
         }
         ui->deviceName->setEnabled(false);
         ui->rsButton->setEnabled(true);
@@ -147,7 +129,7 @@ void MainWindow::on_connectButton_clicked()
         ui->statusBar->showMessage("Disconnected");
         ui->deviceName->setEnabled(true);
         ui->rsButton->setEnabled(false);
-        com.close();
+        scope.close();
         ui->idstring->clear();
         ui->connectButton->setText("&Connect");
 
@@ -159,15 +141,14 @@ void MainWindow::on_connectButton_clicked()
 
 void MainWindow::on_rsButton_clicked()
 {
-    int rs;
-    if (!com.connected()) return;
-    com.command(":TRIG:STAT?");
-    rs=*com.buffer!='S';
+    bool rs;
+    if (!scope.connected()) return;
+    rs=scope.trigStatus()!='S';
 
     if (rs)
     {
         rs=0;
-        com.send(":STOP");
+        scope.stop();
         ui->rsButton->setStyleSheet("background: red;");
         ui->hoffsetspin->setMinimum(-500000000.0f);
         ui->hoffsetspin->setMaximum(500000000.0f);
@@ -176,7 +157,7 @@ void MainWindow::on_rsButton_clicked()
     {
         //float hmax=1.0f;
         rs=1;
-        com.send(":RUN");
+        scope.run();
         ui->rsButton->setStyleSheet("background: green;");
        // ui->hoffsetspin->setMinimum(0.0f);
 // TODO: Need to read current scale
@@ -189,54 +170,54 @@ void MainWindow::on_rsButton_clicked()
 
 void MainWindow::on_measUpdate_clicked()
 {
-    if (!com.connected()) return;
-    ui->vpp1->setText(QString::number(lastMeasure[0][0]=com.cmdFloat(":MEAS:VPP? CHAN1")));
-    ui->vmax1->setText(QString::number(lastMeasure[0][1]=com.cmdFloat(":MEAS:VMAX? CHAN1")));
-    ui->vmin1->setText(QString::number(lastMeasure[0][2]=com.cmdFloat(":MEAS:VMIN? CHAN1")));
-    ui->vavg1->setText(QString::number(lastMeasure[0][3]=com.cmdFloat(":MEAS:VAV? CHAN1")));
-    ui->vamp1->setText(QString::number(lastMeasure[0][4]=com.cmdFloat(":MEAS:VAMP? CHAN1")));
-    ui->vrms1->setText(QString::number(lastMeasure[0][5]=com.cmdFloat(":MEAS:VRMS? CHAN1")));
-    ui->vtop1->setText(QString::number(lastMeasure[0][6]=com.cmdFloat(":MEAS:VTOP? CHAN1")));
-    ui->vbas1->setText(QString::number(lastMeasure[0][7]=com.cmdFloat(":MEAS:VBAS? CHAN1")));
-    ui->pwid1->setText(QString::number(lastMeasure[0][8]=com.cmdFloat(":MEAS:PWID? CHAN1")*1000.0));
-    ui->nwid1->setText(QString::number(lastMeasure[0][9]=com.cmdFloat(":MEAS:NWID? CHAN1")*1000.0));
-    ui->freq1->setText(QString::number(lastMeasure[0][10]=com.cmdFloat(":MEAS:FREQ? CHAN1")));
-    ui->per1->setText(QString::number(lastMeasure[0][11]=com.cmdFloat(":MEAS:PER? CHAN1")*1000.0));
-    ui->over1->setText(QString::number(lastMeasure[0][12]=com.cmdFloat(":MEAS:OVER? CHAN1")*100.0));
-    ui->pres1->setText(QString::number(lastMeasure[0][13]=com.cmdFloat(":MEAS:PRES? CHAN1")*100.0));
-    ui->rise1->setText("<" + QString::number(lastMeasure[0][14]=com.cmdFloatlt(":MEAS:RIS? CHAN1")*1E6));
-    ui->fall1->setText("<" + QString::number(lastMeasure[0][15]=com.cmdFloatlt(":MEAS:FALL? CHAN1")*1E6));
-    ui->pdut1->setText(QString::number(lastMeasure[0][16]=com.cmdFloat(":MEAS:PDUT? CHAN1")*100.0));
-    ui->ndut1->setText(QString::number(lastMeasure[0][17]=com.cmdFloat(":MEAS:NDUT? CHAN1")*100.0));
-    ui->pdel1->setText(QString::number(lastMeasure[0][18]=com.cmdFloat(":MEAS:PDEL? CHAN1")*1000.0));
-    ui->ndel1->setText(QString::number(lastMeasure[0][19]=com.cmdFloat(":MEAS:NDEL? CHAN1")*1000.0));
+    if (!scope.connected()) return;
+    ui->vpp1->setText(QString::number(lastMeasure[0][0]=scope.cmdFloat(":MEAS:VPP? CHAN1")));
+    ui->vmax1->setText(QString::number(lastMeasure[0][1]=scope.cmdFloat(":MEAS:VMAX? CHAN1")));
+    ui->vmin1->setText(QString::number(lastMeasure[0][2]=scope.cmdFloat(":MEAS:VMIN? CHAN1")));
+    ui->vavg1->setText(QString::number(lastMeasure[0][3]=scope.cmdFloat(":MEAS:VAV? CHAN1")));
+    ui->vamp1->setText(QString::number(lastMeasure[0][4]=scope.cmdFloat(":MEAS:VAMP? CHAN1")));
+    ui->vrms1->setText(QString::number(lastMeasure[0][5]=scope.cmdFloat(":MEAS:VRMS? CHAN1")));
+    ui->vtop1->setText(QString::number(lastMeasure[0][6]=scope.cmdFloat(":MEAS:VTOP? CHAN1")));
+    ui->vbas1->setText(QString::number(lastMeasure[0][7]=scope.cmdFloat(":MEAS:VBAS? CHAN1")));
+    ui->pwid1->setText(QString::number(lastMeasure[0][8]=scope.cmdFloat(":MEAS:PWID? CHAN1")*1000.0));
+    ui->nwid1->setText(QString::number(lastMeasure[0][9]=scope.cmdFloat(":MEAS:NWID? CHAN1")*1000.0));
+    ui->freq1->setText(QString::number(lastMeasure[0][10]=scope.cmdFloat(":MEAS:FREQ? CHAN1")));
+    ui->per1->setText(QString::number(lastMeasure[0][11]=scope.cmdFloat(":MEAS:PER? CHAN1")*1000.0));
+    ui->over1->setText(QString::number(lastMeasure[0][12]=scope.cmdFloat(":MEAS:OVER? CHAN1")*100.0));
+    ui->pres1->setText(QString::number(lastMeasure[0][13]=scope.cmdFloat(":MEAS:PRES? CHAN1")*100.0));
+    ui->rise1->setText("<" + QString::number(lastMeasure[0][14]=scope.cmdFloatlt(":MEAS:RIS? CHAN1")*1E6));
+    ui->fall1->setText("<" + QString::number(lastMeasure[0][15]=scope.cmdFloatlt(":MEAS:FALL? CHAN1")*1E6));
+    ui->pdut1->setText(QString::number(lastMeasure[0][16]=scope.cmdFloat(":MEAS:PDUT? CHAN1")*100.0));
+    ui->ndut1->setText(QString::number(lastMeasure[0][17]=scope.cmdFloat(":MEAS:NDUT? CHAN1")*100.0));
+    ui->pdel1->setText(QString::number(lastMeasure[0][18]=scope.cmdFloat(":MEAS:PDEL? CHAN1")*1000.0));
+    ui->ndel1->setText(QString::number(lastMeasure[0][19]=scope.cmdFloat(":MEAS:NDEL? CHAN1")*1000.0));
 
 
-    ui->vpp2->setText(QString::number(lastMeasure[1][0]=com.cmdFloat(":MEAS:VPP? CHAN2")));
-    ui->vmax2->setText(QString::number(lastMeasure[1][1]=com.cmdFloat(":MEAS:VMAX? CHAN2")));
-    ui->vmin2->setText(QString::number(lastMeasure[1][2]=com.cmdFloat(":MEAS:VMIN? CHAN2")));
-    ui->vavg2->setText(QString::number(lastMeasure[1][3]=com.cmdFloat(":MEAS:VAV? CHAN2")));
-    ui->vamp2->setText(QString::number(lastMeasure[1][4]=com.cmdFloat(":MEAS:VAMP? CHAN2")));
-    ui->vrms2->setText(QString::number(lastMeasure[1][5]=com.cmdFloat(":MEAS:VRMS? CHAN2")));
-    ui->vtop2->setText(QString::number(lastMeasure[1][6]=com.cmdFloat(":MEAS:VTOP? CHAN2")));
-    ui->vbas2->setText(QString::number(lastMeasure[1][7]=com.cmdFloat(":MEAS:VBAS? CHAN2")));
-    ui->pwid2->setText(QString::number(lastMeasure[1][8]=com.cmdFloat(":MEAS:PWID? CHAN2")*1000.0));
-    ui->nwid2->setText(QString::number(lastMeasure[1][9]=com.cmdFloat(":MEAS:NWID? CHAN2")*1000.0));
-    ui->freq2->setText(QString::number(lastMeasure[1][10]=com.cmdFloat(":MEAS:FREQ? CHAN2")));
-    ui->per2->setText(QString::number(lastMeasure[1][11]=com.cmdFloat(":MEAS:PER? CHAN2")*1000.0));
-    ui->over2->setText(QString::number(lastMeasure[1][12]=com.cmdFloat(":MEAS:OVER? CHAN2")*100.0));
-    ui->pres2->setText(QString::number(lastMeasure[1][13]=com.cmdFloat(":MEAS:PRES? CHAN2")*100.0));
-    ui->rise2->setText("<" + QString::number(lastMeasure[1][14]=com.cmdFloatlt(":MEAS:RIS? CHAN2")*1E6));
-    ui->fall2->setText("<" + QString::number(lastMeasure[1][15]=com.cmdFloatlt(":MEAS:FALL? CHAN2")*1E6));
-    ui->pdut2->setText(QString::number(lastMeasure[1][16]=com.cmdFloat(":MEAS:PDUT? CHAN2")*100.0));
-    ui->ndut2->setText(QString::number(lastMeasure[1][17]=com.cmdFloat(":MEAS:NDUT? CHAN2")*100.0));
-    ui->pdel2->setText(QString::number(lastMeasure[1][18]=com.cmdFloat(":MEAS:PDEL? CHAN2")*1000.0));
-    ui->ndel2->setText(QString::number(lastMeasure[1][19]=com.cmdFloat(":MEAS:NDEL? CHAN2")*1000.0));
+    ui->vpp2->setText(QString::number(lastMeasure[1][0]=scope.cmdFloat(":MEAS:VPP? CHAN2")));
+    ui->vmax2->setText(QString::number(lastMeasure[1][1]=scope.cmdFloat(":MEAS:VMAX? CHAN2")));
+    ui->vmin2->setText(QString::number(lastMeasure[1][2]=scope.cmdFloat(":MEAS:VMIN? CHAN2")));
+    ui->vavg2->setText(QString::number(lastMeasure[1][3]=scope.cmdFloat(":MEAS:VAV? CHAN2")));
+    ui->vamp2->setText(QString::number(lastMeasure[1][4]=scope.cmdFloat(":MEAS:VAMP? CHAN2")));
+    ui->vrms2->setText(QString::number(lastMeasure[1][5]=scope.cmdFloat(":MEAS:VRMS? CHAN2")));
+    ui->vtop2->setText(QString::number(lastMeasure[1][6]=scope.cmdFloat(":MEAS:VTOP? CHAN2")));
+    ui->vbas2->setText(QString::number(lastMeasure[1][7]=scope.cmdFloat(":MEAS:VBAS? CHAN2")));
+    ui->pwid2->setText(QString::number(lastMeasure[1][8]=scope.cmdFloat(":MEAS:PWID? CHAN2")*1000.0));
+    ui->nwid2->setText(QString::number(lastMeasure[1][9]=scope.cmdFloat(":MEAS:NWID? CHAN2")*1000.0));
+    ui->freq2->setText(QString::number(lastMeasure[1][10]=scope.cmdFloat(":MEAS:FREQ? CHAN2")));
+    ui->per2->setText(QString::number(lastMeasure[1][11]=scope.cmdFloat(":MEAS:PER? CHAN2")*1000.0));
+    ui->over2->setText(QString::number(lastMeasure[1][12]=scope.cmdFloat(":MEAS:OVER? CHAN2")*100.0));
+    ui->pres2->setText(QString::number(lastMeasure[1][13]=scope.cmdFloat(":MEAS:PRES? CHAN2")*100.0));
+    ui->rise2->setText("<" + QString::number(lastMeasure[1][14]=scope.cmdFloatlt(":MEAS:RIS? CHAN2")*1E6));
+    ui->fall2->setText("<" + QString::number(lastMeasure[1][15]=scope.cmdFloatlt(":MEAS:FALL? CHAN2")*1E6));
+    ui->pdut2->setText(QString::number(lastMeasure[1][16]=scope.cmdFloat(":MEAS:PDUT? CHAN2")*100.0));
+    ui->ndut2->setText(QString::number(lastMeasure[1][17]=scope.cmdFloat(":MEAS:NDUT? CHAN2")*100.0));
+    ui->pdel2->setText(QString::number(lastMeasure[1][18]=scope.cmdFloat(":MEAS:PDEL? CHAN2")*1000.0));
+    ui->ndel2->setText(QString::number(lastMeasure[1][19]=scope.cmdFloat(":MEAS:NDEL? CHAN2")*1000.0));
 
     if (ui->measLogEnable->isChecked())
     {
         mlogworker.inuse.lock();
-        for (int i=0;i<2;i++)  // should use std::copy (std::copy(&array[0][0],&array[0][0]+rows*columns,&dest[0][0]);
+        for (int i=0;i<2;i++)  // should use std::copy (std::copy(&array[0][0],&array[0][0]+rows*columns,&dest[0][0]); TODO
             for (int j=0;j<20;j++) mlogworker.data[i][j]=lastMeasure[i][j];
         mlogworker.sample.release();
         mlogworker.inuse.unlock();
@@ -282,17 +263,11 @@ void MainWindow::on_autoUpdate_clicked()  // if auto update measurements
 
 void MainWindow::on_hardcopyBTN_clicked()  // scope's "hardcopy" function
 {
-    if (!com.connected()) return;
-    com.command(":HARD");
+    if (!scope.connected()) return;
+    scope.command(":HARD");
 }
 
-int MainWindow::cmdCharIndex(const QString &cmd,const QString &search,int bpos)
-{
-    QChar c;
-    command(cmd);
-    c=com.buffer[bpos];
-    return search.indexOf(c,0,Qt::CaseInsensitive);
-}
+
 
 void MainWindow::setupChannel(int ch,QComboBox *probebox,QComboBox *scalebox)
 {
@@ -300,7 +275,7 @@ void MainWindow::setupChannel(int ch,QComboBox *probebox,QComboBox *scalebox)
     QString cmd;
     cmdbase+=QString::number(ch);
     cmd=cmdbase+":PROB?";
-    float probe=cmdFloat(cmd);
+    float probe=scope.cmdFloat(cmd);
     probebox->setCurrentIndex(probebox->findText(QString::number(probe)+"X"));
     scalebox->clear();
     if (probe==1.0)
@@ -361,7 +336,7 @@ void MainWindow::setupChannel(int ch,QComboBox *probebox,QComboBox *scalebox)
         scalebox->addItem("10000.0");
     }
     cmd=cmdbase+":SCAL?";
-    probe=cmdFloat(cmd);
+    probe=scope.cmdFloat(cmd);
     int n=0;
     while (scalebox->itemText(n).toFloat()!=probe)
         if (++n>=scalebox->count()) break;
@@ -370,14 +345,6 @@ void MainWindow::setupChannel(int ch,QComboBox *probebox,QComboBox *scalebox)
 }
 
 
-bool MainWindow::isChannelDisplayed(int chan)
-{
-    // Note the manual says this returns ON/OFF, but we see it returns 0 and 1 so..
-    QString cmd=":CHAN";
-    cmd+=QString::number(chan)+":DISP?";
-    command(cmd);
-    return com.buffer[1]=='N' || com.buffer[0]=='1';   // just in case programming guide is right for old fw
-}
 
 
 void MainWindow::on_updAcq_clicked()  // this function updates the ui from the scope
@@ -385,40 +352,50 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
 {
     bool savestate=nocommands;
     int tmp;
-    if (!com.connected()) return;
-    scopedata.setConfig();
+    if (!scope.connected()) return;
+    scope.setConfig();
     nocommands=true;   // stop ui changes from writing to scope
-    ui->acqType->setCurrentIndex(tmp=cmdCharIndex(":ACQ:TYPE?","NAP"));
+    ui->acqType->setCurrentIndex(tmp=scope.cmdCharIndex(":ACQ:TYPE?","NAP"));
     ui->acqAvg->setEnabled(tmp==1);
     // detect real or equal time
-    com.command(":ACQ:MODE?");
-    ui->acqMode->setCurrentIndex(*com.buffer=='R'?0:1);
-    com.command(":ACQ:AVER?");
+    ui->acqMode->setCurrentIndex(scope.acqMode()=='R'?0:1);
+    int samp=scope.average();
     int idx=0;
-    if (com.buffer[1]=='5') idx=7;
-    else if (com.buffer[0]=='1')
+    switch (samp)
     {
-        if (com.buffer[1]=='2') idx=6; else idx=3;
+    case 255: idx=7;
+              break;
+    case 128: idx=6;
+              break;
+    case 64:  idx=5;
+              break;
+    case 32:  idx=4;
+              break;
+    case 16:  idx=3;
+              break;
+    case 8:   idx=2;
+              break;
+    case 4:   idx=1;
+              break;
+    case 2:   idx=0;
+              break;
     }
-    else if (com.buffer[1]=='4') idx=5;
-    else if (com.buffer[1]=='2') idx=4;
-    else if (com.buffer[0]=='8') idx=2;
-    else if (com.buffer[0]=='4') idx=1;
+
     ui->acqAvg->setCurrentIndex(idx);
-    com.command(":ACQ:MEMD?");
-    ui->acqMem->setChecked(*com.buffer=='L');
-    com.command(":ACQ:SAMP?");
-    ui->srate->setText(com.buffer);
+    scope.command(":ACQ:MEMD?");
+    ui->acqMem->setChecked(*scope.com.buffer=='L');
+    scope.command(":ACQ:SAMP?");
+    ui->srate->setText(scope.com.buffer);
 
     on_tmode_currentIndexChanged(ui->tmode->currentIndex());
 
     // kind of ugly
-    com.command(":TIM:SCAL?");
-    int decade=QString(com.buffer).right(1).toInt();
-    char sign=QString(com.buffer).right(3).left(1)[0].toLatin1();
-    char *p=strchr(com.buffer,'.');
+    scope.command(":TIM:SCAL?");
+    int decade=QString(scope.com.buffer).right(1).toInt();
+    char sign=QString(scope.com.buffer).right(3).left(1)[0].toLatin1();
+    char *p=strchr(scope.com.buffer,'.');
     if (p) *p='\0';
-    int scale=QString(com.buffer).toInt();
+    int scale=QString(scope.com.buffer).toInt();
     QString sscale=QString::number(scale);
     switch (decade)
     {
@@ -454,60 +431,60 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
         sscale.append("s");
     }
    ui->hscale->setCurrentIndex(ui->hscale->findText(sscale));
-   ui->cdisp1->setChecked(isChannelDisplayed(1));  // programming guide is wrong!
-   ui->cdisp2->setChecked(isChannelDisplayed(2));  // programming guide is wrong!
-   com.command(":CHAN1:BWL?");
-   ui->c1bw->setChecked(com.buffer[1]=='N');
-   com.command(":CHAN2:BWL?");
-   ui->c2bw->setChecked(com.buffer[1]=='N');
-   com.command(":CHAN1:INV?");
-   ui->c1inv->setChecked(com.buffer[1]=='N');
-   com.command(":CHAN2:INV?");
-   ui->c2inv->setChecked(com.buffer[1]=='N');
-   com.command(":CHAN1:FILT?");
-   ui->c1filt->setChecked(com.buffer[1]=='N');
-   com.command(":CHAN2:FILT?");
-   ui->c2filt->setChecked(com.buffer[1]=='N');
+   ui->cdisp1->setChecked(scope.isChannelDisplayed(1));  // programming guide is wrong!
+   ui->cdisp2->setChecked(scope.isChannelDisplayed(2));  // programming guide is wrong!
+   scope.command(":CHAN1:BWL?");
+   ui->c1bw->setChecked(scope.com.buffer[1]=='N');
+   scope.command(":CHAN2:BWL?");
+   ui->c2bw->setChecked(scope.com.buffer[1]=='N');
+   scope.command(":CHAN1:INV?");
+   ui->c1inv->setChecked(scope.com.buffer[1]=='N');
+   scope.command(":CHAN2:INV?");
+   ui->c2inv->setChecked(scope.com.buffer[1]=='N');
+   scope.command(":CHAN1:FILT?");
+   ui->c1filt->setChecked(scope.com.buffer[1]=='N');
+   scope.command(":CHAN2:FILT?");
+   ui->c2filt->setChecked(scope.com.buffer[1]=='N');
    setupChannel(1,ui->c1probe,ui->c1vscale);
    setupChannel(2,ui->c2probe,ui->c2vscale);
-   com.command(":CHAN1:COUP?");
-   ui->c1coup->setCurrentIndex(ui->c1coup->findText(com.buffer));
-   com.command(":CHAN2:COUP?");
-   ui->c2coup->setCurrentIndex(ui->c2coup->findText(com.buffer));
-   float off=scopedata.config.hoffset;
+   scope.command(":CHAN1:COUP?");
+   ui->c1coup->setCurrentIndex(ui->c1coup->findText(scope.com.buffer));
+   scope.command(":CHAN2:COUP?");
+   ui->c2coup->setCurrentIndex(ui->c2coup->findText(scope.com.buffer));
+   float off=scope.config.hoffset;
    // convert to uS
    off*=1000000.0f;
    ui->hoffsetspin->setValue(off);
-   off=scopedata.config.vscale[0];
+   off=scope.config.vscale[0];
    ui->c1offspin->setValue(off);
-   off=scopedata.config.vscale[1];
+   off=scope.config.vscale[1];
    ui->c2offspin->setValue(off);
 
-   com.command(":TRIG:MODE?");
-   int  moden=ui->tmode->findText(com.buffer,static_cast<Qt::MatchFlags>(Qt::MatchFixedString));
+   scope.command(":TRIG:MODE?");
+   int  moden=ui->tmode->findText(scope.com.buffer,static_cast<Qt::MatchFlags>(Qt::MatchFixedString));
    if (moden!=-1)
    {
        ui->tmode->setCurrentIndex(moden);
    }
    else
    {
-       ui->statusBar->showMessage(QString("Unsupported trigger mode ")+com.buffer);
-       ui->tmode->findText(com.buffer,static_cast<Qt::MatchFlags>(Qt::MatchFixedString));
+       ui->statusBar->showMessage(QString("Unsupported trigger mode ")+scope.com.buffer);
+       ui->tmode->findText(scope.com.buffer,static_cast<Qt::MatchFlags>(Qt::MatchFixedString));
    }
    // since nocommands is set, this will just update ui
    on_tmode_currentIndexChanged(ui->tmode->currentIndex());
    QString cmd,cmdbase=":TRIG:";
    cmdbase=cmdbase+ui->tmode->currentText();
    cmd=cmdbase+":SOUR?";
-   command(cmd);
-   if (com.buffer[2]=='1') strcpy(com.buffer,"CHAN1");
-   if (com.buffer[2]=='2') strcpy(com.buffer,"CHAN2");
-   ui->tsource->setCurrentIndex(ui->tsource->findText(com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
+   scope.command(cmd);
+   if (scope.com.buffer[2]=='1') strcpy(scope.com.buffer,"CHAN1");
+   if (scope.com.buffer[2]=='2') strcpy(scope.com.buffer,"CHAN2");
+   ui->tsource->setCurrentIndex(ui->tsource->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
    cmd=cmdbase+":SWE?";
-   command(cmd); // scope doesn't seem to care what trigger type is active
-   ui->tsweep->setCurrentIndex(ui->tsweep->findText(com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
+   scope.command(cmd); // scope doesn't seem to care what trigger type is active
+   ui->tsweep->setCurrentIndex(ui->tsweep->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
 
-   float hold=com.cmdFloat(":TRIG:HOLD?");
+   float hold=scope.cmdFloat(":TRIG:HOLD?");
    hold*=1000000.0f;  // convert to uS
    ui->tholdoff->setValue(hold);
 
@@ -515,24 +492,24 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
    cmd=cmdbase+":LEV?";
    if (ui->tmode->currentText()!="Slope")
    {
-    off=cmdFloat(cmd);
+    off=scope.cmdFloat(cmd);
     ui->tlevel->setValue(off);
    }
     cmd=cmdbase+=":COUP?";
-    command(cmd);
-    ui->tcouple->setCurrentIndex(ui->tcouple->findText(com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
+    scope.command(cmd);
+    ui->tcouple->setCurrentIndex(ui->tcouple->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
 
-    com.command(":TRIG:EDGE:SLOP?");
-    ui->tposneg->setCurrentIndex(*com.buffer=='P'?0:1);
-    off=com.cmdFloat(":TRIG:EDGE:SENS?");
+    scope.command(":TRIG:EDGE:SLOP?");
+    ui->tposneg->setCurrentIndex(*scope.com.buffer=='P'?0:1);
+    off=scope.cmdFloat(":TRIG:EDGE:SENS?");
     ui->tedgesense->setValue(off);
-    off=com.cmdFloat(":TRIG:PULS:SENS?");
+    off=scope.cmdFloat(":TRIG:PULS:SENS?");
     ui->tpulsesense->setValue(off);
-    off=com.cmdFloat(":TRIG:PULS:WIDT?");
+    off=scope.cmdFloat(":TRIG:PULS:WIDT?");
     off*=1000000.0f;
     ui->tpulswid->setValue(off);
-    com.command(":TRIG:PULS:MODE?");
-    cmd=com.buffer;
+    scope.command(":TRIG:PULS:MODE?");
+    cmd=scope.com.buffer;
     for (tmp=0;tmp<ui->tpulsemode->count();tmp++)
     {
         if (ui->tpulsemode->itemText(tmp).remove(' ')==cmd)
@@ -542,26 +519,26 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
         }
     }
 
-    off=com.cmdFloat(":TRIG:SLOP:TIME?");
+    off=scope.cmdFloat(":TRIG:SLOP:TIME?");
     off*=1000000.0f;
     ui->tslopetime->setValue(off);
-    off=com.cmdFloat(":TRIG:SLOP:SENS?");
+    off=scope.cmdFloat(":TRIG:SLOP:SENS?");
     ui->tslopesense->setValue(off);
-    com.command(":TRIG:SLOP:MODE?");  // oddly this returns spaces but can't have them in the command
-    ui->tslopemode->setCurrentIndex(ui->tslopemode->findText(com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
-    com.command(":TRIG:SLOP:WIND?");
-    ui->tslopewin->setCurrentIndex(ui->tslopewin->findText(com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
-    off=com.cmdFloat(":TRIG:SLOP:LEVA?");
+    scope.command(":TRIG:SLOP:MODE?");  // oddly this returns spaces but can't have them in the command
+    ui->tslopemode->setCurrentIndex(ui->tslopemode->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
+    scope.command(":TRIG:SLOP:WIND?");
+    ui->tslopewin->setCurrentIndex(ui->tslopewin->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
+    off=scope.cmdFloat(":TRIG:SLOP:LEVA?");
     ui->tslopea->setValue(off);
-    off=com.cmdFloat(":TRIG:SLOP:LEVB?");
+    off=scope.cmdFloat(":TRIG:SLOP:LEVB?");
     ui->tslopeb->setValue(off);
 
 
 
-    com.command(":MATH:DISP?");
-    ui->mathdisp->setChecked(com.buffer[1]=='N'||com.buffer[0]=='1');
-    com.command(":MATH:OPER?");
-    ui->mathsel->setCurrentIndex(ui->mathsel->findText(com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
+    scope.command(":MATH:DISP?");
+    ui->mathdisp->setChecked(scope.com.buffer[1]=='N'||scope.com.buffer[0]=='1');
+    scope.command(":MATH:OPER?");
+    ui->mathsel->setCurrentIndex(ui->mathsel->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
 
 
 
@@ -572,7 +549,7 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
 void MainWindow::on_acqType_currentIndexChanged(int index)
 {
     QString cmd=":ACQ:TYPE ";
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     switch (index)
     {
     case 0:
@@ -586,13 +563,13 @@ void MainWindow::on_acqType_currentIndexChanged(int index)
         break;
     }
     ui->acqAvg->setEnabled(index==1);
-    command(cmd);
+    scope.command(cmd);
 }
 
 void MainWindow::on_acqMode_currentIndexChanged(int index)
 {
     QString cmd=":ACQ:MODE ";
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     switch (index)
     {
     case 0:
@@ -602,26 +579,26 @@ void MainWindow::on_acqMode_currentIndexChanged(int index)
         cmd+="ETIM";
         break;
     }
-    command(cmd);
+    scope.command(cmd);
 
 }
 
 void MainWindow::on_acqAvg_currentIndexChanged(int index)
 {
     QString cmd=":ACQ:AVER ";
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString num=QString::number(1<<(index+1));
     cmd+=num;
-    command(cmd);
+    scope.command(cmd);
 }
 
 
 void MainWindow::on_acqMem_clicked()
 {
     QString cmd=":ACQ:MEMD ";
-    if (!com.connected()) return;
+    if (!scope.connected()) return;
     if (ui->acqMem->isChecked()) cmd+="LONG"; else cmd+="NORM";
-    command(cmd);
+    scope.command(cmd);
 }
 
 
@@ -629,16 +606,16 @@ void MainWindow::on_acqMem_clicked()
 void MainWindow::on_hscale_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
-    if (!com.connected()||nocommands) return;
-    com.command((":TIM:SCAL " + ui->hscale->currentText()).toLatin1());
+    if (!scope.connected()||nocommands) return;
+    scope.command((":TIM:SCAL " + ui->hscale->currentText()).toLatin1());
 }
 
 void MainWindow::on_cdisp1_clicked()
 {
-    if (!com.connected()) return;
+    if (!scope.connected()) return;
     QString cmd=":CHAN1:DISP ";
     if (ui->cdisp1->checkState()) cmd+="ON"; else cmd+="OFF";
-    command(cmd);
+    scope.command(cmd);
 }
 
 void MainWindow::on_updAcq_2_clicked()
@@ -648,91 +625,91 @@ void MainWindow::on_updAcq_2_clicked()
 
 void MainWindow::on_cdisp2_clicked()
 {
-    if (!com.connected()) return;
+    if (!scope.connected()) return;
     QString cmd=":CHAN2:DISP ";
     if (ui->cdisp2->checkState()) cmd+="ON"; else cmd+="OFF";
-    command(cmd);
+    scope.command(cmd);
 
 }
 
 void MainWindow::on_c1bw_clicked()
 {
-    if (!com.connected()) return;
+    if (!scope.connected()) return;
     QString cmd=":CHAN1:BWL ";
     if (ui->c1bw->checkState()) cmd+="ON"; else cmd+="OFF";
-    command(cmd);
+    scope.command(cmd);
 
 }
 
 void MainWindow::on_c2bw_clicked()
 {
-    if (!com.connected()) return;
+    if (!scope.connected()) return;
     QString cmd=":CHAN2:BWL ";
     if (ui->c2bw->checkState()) cmd+="ON"; else cmd+="OFF";
-    command(cmd);
+    scope.command(cmd);
 
 }
 
 void MainWindow::on_c1inv_clicked()
 {
-    if (!com.connected()) return;
+    if (!scope.connected()) return;
     QString cmd=":CHAN1:INV ";
     if (ui->c1inv->checkState()) cmd+="ON"; else cmd+="OFF";
-    command(cmd);
+    scope.command(cmd);
 
 }
 
 void MainWindow::on_c2inv_clicked()
 {
-    if (!com.connected()) return;
+    if (!scope.connected()) return;
     QString cmd=":CHAN2:INV ";
     if (ui->c2inv->checkState()) cmd+="ON"; else cmd+="OFF";
-    command(cmd);
+    scope.command(cmd);
 
 }
 
 void MainWindow::on_c1filt_clicked()
 {
-    if (!com.connected()) return;
+    if (!scope.connected()) return;
     QString cmd=":CHAN1:FILT ";
     if (ui->c1filt->checkState()) cmd+="ON"; else cmd+="OFF";
-    command(cmd);
+    scope.command(cmd);
 
 }
 
 void MainWindow::on_c2filt_clicked()
 {
-    if (!com.connected()) return;
+    if (!scope.connected()) return;
     QString cmd=":CHAN2:FILT ";
     if (ui->c2filt->checkState()) cmd+="ON"; else cmd+="OFF";
-    command(cmd);
+    scope.command(cmd);
 
 }
 
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
     Q_UNUSED(index);
-    if (!com.connected()) return;
+    if (!scope.connected()) return;
     on_updAcq_clicked();  // refresh from scope when switching tabs
 }
 
 void MainWindow::on_c1probe_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString cmd=":CHAN1:PROB ";
     cmd+=ui->c1probe->currentText().remove('X');
-    command(cmd);
+    scope.command(cmd);
 
 }
 
 void MainWindow::on_c2probe_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString cmd=":CHAN2:PROB ";
     cmd+=ui->c2probe->currentText().remove('X');
-    command(cmd);
+    scope.command(cmd);
 
 
 }
@@ -740,19 +717,19 @@ void MainWindow::on_c2probe_currentIndexChanged(int index)
 void MainWindow::on_c1coup_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString cmd=":CHAN1:COUP ";
     cmd+=ui->c1coup->currentText();
-    command(cmd);
+    scope.command(cmd);
 }
 
 void MainWindow::on_c2coup_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString cmd=":CHAN2:COUP ";
     cmd+=ui->c2coup->currentText();
-    command(cmd);
+  scope.command(cmd);
 
 }
 
@@ -760,9 +737,9 @@ void MainWindow::on_c2coup_currentIndexChanged(int index)
 void MainWindow::on_hoffsetspin_valueChanged(double arg1)
 {
     float arg=arg1/1000000.0f;  // convert to seconds
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString cmd=QString(":TIM:OFFS ")+QString::number(arg);
-    command(cmd);
+    scope.command(cmd);
 }
 
 void MainWindow::on_hoffincr_valueChanged(double arg1)
@@ -776,36 +753,36 @@ void MainWindow::on_hoffincr_valueChanged(double arg1)
 void MainWindow::on_c1offspin_valueChanged(double arg1)
 {
     Q_UNUSED(arg1);
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString cmd=":CHAN1:OFFS ";
     cmd+=QString::number(ui->c1offspin->value());
-    command(cmd);
+    scope.command(cmd);
 }
 
 void MainWindow::on_c2offspin_valueChanged(double arg1)
 {
     Q_UNUSED(arg1);
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString cmd=":CHAN2:OFFS ";
     cmd+=QString::number(ui->c2offspin->value());
-    command(cmd);
+    scope.command(cmd);
 
 }
 
 void MainWindow::on_c1vscale_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString cmd=":CHAN1:SCAL "+ui->c1vscale->currentText();
-    command(cmd);
+    scope.command(cmd);
 }
 
 void MainWindow::on_c2vscale_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString cmd=":CHAN2:SCAL "+ui->c2vscale->currentText();
-    command(cmd);
+    scope.command(cmd);
 
 }
 
@@ -817,7 +794,7 @@ void MainWindow::on_unlockBtn_clicked()
 
 void MainWindow::on_hoffclear_clicked()
 {
-    if (!com.connected()) return;
+    if (!scope.connected()) return;
     ui->hoffsetspin->setValue(0.0);
 }
 
@@ -851,17 +828,17 @@ void MainWindow::on_tmode_currentIndexChanged(int index)
     ui->tsource->addItem("EXT");
     if (index==0) ui->tsource->addItem("ACLINE");
     ui->tcouple->setEnabled(index<3);
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     cmd+=ui->tmode->currentText();
-    command(cmd);
+    scope.command(cmd);
     QString cmdbase=":TRIG:";
     cmdbase=cmdbase+ui->tmode->currentText();
     cmd=cmdbase+":SOUR?";
-    command(cmd);
-    ui->tsource->setCurrentIndex(ui->tsource->findText(com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
+    scope.command(cmd);
+    ui->tsource->setCurrentIndex(ui->tsource->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
     cmd=cmdbase+":SWE?";
-    command(cmd);
-    ui->tsweep->setCurrentIndex(ui->tsweep->findText(com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
+    scope.command(cmd);
+    ui->tsweep->setCurrentIndex(ui->tsweep->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
 // This seems like a good idea, but the scope doesn't shift gears fast enough
 // For example, going to slope mode where the trigger channel is invalid and back to edge does not
 // update the channel source correctly
@@ -873,95 +850,95 @@ void MainWindow::on_tsweep_currentIndexChanged(const QString &arg1)
 {
     Q_UNUSED(arg1);
     QString cmd=":TRIG:";
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     cmd+=ui->tmode->currentText()+":SWE ";
     cmd+=ui->tsweep->currentText();
-    command(cmd);
+    scope.command(cmd);
 }
 
 void MainWindow::on_tsource_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
     QString cmd=":TRIG:";
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     cmd+=ui->tmode->currentText()+":SOUR "+ui->tsource->currentText();
-    command(cmd);
+    scope.command(cmd);
 }
 
 void MainWindow::on_tholdoff_valueChanged(double arg1)
 {
     QString cmd;
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     arg1/=1000000.0f; // convert to seconds
     cmd=":TRIG:HOLD ";
     cmd+=QString::number(arg1,'f');
-    command(cmd);
+    scope.command(cmd);
 }
 
 void MainWindow::on_tfifty_clicked()
 {
-    if (!com.connected()) return;
-    com.command(":TRIG%50");
+    if (!scope.connected()) return;
+    scope.command(":TRIG%50");
 }
 
 void MainWindow::on_tforce_clicked()
 {
-    if (!com.connected()) return;
-    com.command(":FORC");
+    if (!scope.connected()) return;
+    scope.command(":FORC");
 }
 
 void MainWindow::on_tlevel_valueChanged(double arg1)
 {
     Q_UNUSED(arg1);
     QString cmd=":TRIG:";
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     cmd+=ui->tmode->currentText()+":LEV " + QString::number(ui->tlevel->value());
-    command(cmd);
+    scope.command(cmd);
 }
 
 void MainWindow::on_tcouple_currentIndexChanged(const QString &arg1)
 {
     QString cmd=":TRIG:";
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     cmd+=ui->tmode->currentText()+":COUP " +arg1;
-    command(cmd);
+    scope.command(cmd);
 }
 
 void MainWindow::on_tposneg_currentIndexChanged(int index)
 {
     QString cmd;
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     cmd=":TRIG:EDGE:SLOP ";
     if (index) cmd+="NEG"; else cmd+="POS";
-    command(cmd);
+    scope.command(cmd);
 }
 
 void MainWindow::on_tedgesense_valueChanged(double arg1)
 {
     QString cmd;
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     cmd=":TRIG:EDGE:SENS ";
     cmd+=QString::number(arg1);
-    command(cmd);
+    scope.command(cmd);
 }
 
 void MainWindow::on_tpulsesense_valueChanged(double arg1)
 {
     QString cmd;
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     cmd=":TRIG:PULS:SENS ";
     cmd+=QString::number(arg1);
-    command(cmd);
+    scope.command(cmd);
 }
 
 void MainWindow::on_tpulswid_valueChanged(double arg1)
 {
     QString cmd;
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     arg1/=1000000.0f; // convert to seconds
     cmd=":TRIG:PULS:WIDT ";
     cmd+=QString::number(arg1,'f');
-    command(cmd);
+    scope.command(cmd);
 }
 
 
@@ -971,8 +948,8 @@ void MainWindow::on_tpulsemode_currentIndexChanged(const QString &arg1)
     QString cmd=":TRIG:PULS:MODE ", arg=arg1;
     arg=arg.remove(' ');
     cmd+=arg;
-    if (!com.connected()||nocommands) return;
-    command(cmd);
+    if (!scope.connected()||nocommands) return;
+    scope.command(cmd);
 }
 
 
@@ -1015,10 +992,10 @@ void MainWindow::on_measLogEnable_clicked()
 
 void MainWindow::on_mathdisp_clicked()
 {
-    if (!com.connected()) return;
+    if (!scope.connected()) return;
     QString cmd=":MATH:DISP ";
     cmd+=ui->mathdisp->isChecked()?"ON":"OFF";
-    command(cmd);
+    scope.command(cmd);
 
 }
 
@@ -1026,8 +1003,8 @@ void MainWindow::on_mathsel_currentIndexChanged(const QString &arg1)
 {
     QString cmd=":MATH:OPER ";
     cmd+=arg1;
-    if (!com.connected()||nocommands) return;
-    command(cmd);
+    if (!scope.connected()||nocommands) return;
+    scope.command(cmd);
 
 }
 
@@ -1035,22 +1012,22 @@ void MainWindow::on_mathsel_currentIndexChanged(const QString &arg1)
 void MainWindow::on_tslopemode_currentIndexChanged(const QString &arg1)
 {
     // Needs to have no spaces
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString cmd,arg=arg1;
     arg=arg.remove(' ');
     cmd=":TRIG:SLOP:MODE "+arg;
-    command(cmd);
+    scope.command(cmd);
 
 }
 
 void MainWindow::on_tslopewin_currentIndexChanged(const QString &arg1)
 {
     // need to convert P_WIN_A to PA, P_WIN_AB to PAB etc.
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString cmd,arg=arg1;
     arg=arg.replace("_WIN_","");
     cmd=":TRIG:SLOP:WIND "+arg;
-    command(cmd);
+    scope.command(cmd);
 
 }
 
@@ -1058,35 +1035,35 @@ void MainWindow::on_tslopetime_valueChanged(double arg1)
 {
     Q_UNUSED(arg1);
     // convert uS
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString cmd=":TRIG:SLOP:TIME "+QString::number(ui->tslopetime->value()/1000000.0f);
-    command(cmd);
+    scope.command(cmd);
 
 }
 
 void MainWindow::on_tslopea_valueChanged(double arg1)
 {
     Q_UNUSED(arg1);
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString cmd=":TRIG:SLOP:LEVA "+QString::number(ui->tslopea->value());
-    command(cmd);
+    scope.command(cmd);
 
 }
 
 void MainWindow::on_tslopesense_valueChanged(double arg1)
 {
     Q_UNUSED(arg1);
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString cmd=":TRIG:SLOP:SENS "+QString::number(ui->tslopesense->value());
-    command(cmd);
+    scope.command(cmd);
 }
 
 void MainWindow::on_tslopeb_valueChanged(double arg1)
 {
     Q_UNUSED(arg1);
-    if (!com.connected()||nocommands) return;
+    if (!scope.connected()||nocommands) return;
     QString cmd=":TRIG:SLOP:LEVB "+QString::number(ui->tslopeb->value());
-    command(cmd);
+    scope.command(cmd);
 
 }
 
@@ -1095,16 +1072,16 @@ void MainWindow::on_tslopeb_valueChanged(double arg1)
 void MainWindow::on_action_Diagnostic_triggered()
 {
     bool ok;
-    if (!com.connected()) return;
+    if (!scope.connected()) return;
     QString cmd=QInputDialog::getText(this,"Enter Diagnostic Command","Command:",QLineEdit::Normal,"",&ok);
     QMessageBox bx;
     if (!ok || cmd.isEmpty()) return;
  // Could check to see that command starts with : or *
     if (cmd.left(1)==":" || cmd.left(1)=="*")
     {
-       command(cmd);
-       if (cmd.right(1)[0]!='?') return;
-       bx.setText(com.buffer);
+       scope.command(cmd);
+       if (   cmd.right(1)[0]!='?') return;
+       bx.setText(scope.com.buffer);
     }
     else
         bx.setText("Commands should start with : or * to be valid. No command sent.");
@@ -1115,7 +1092,7 @@ void MainWindow::on_action_Diagnostic_triggered()
 
 void MainWindow::on_actionRun_Stop_triggered()
 {
-    if (com.connected())
+    if (scope.connected())
        on_rsButton_clicked();
     else ui->actionRun_Stop->setChecked(false);
 }
@@ -1123,28 +1100,64 @@ void MainWindow::on_actionRun_Stop_triggered()
 
 void MainWindow::on_actionConnect_triggered()
 {
-    ui->connectButton->setChecked(!com.connected());
+    ui->connectButton->setChecked(!scope.connected());
     on_connectButton_clicked();
 
 }
 
 
-void MainWindow::on_wavecsv_clicked()
+
+void MainWindow::on_exportButton_clicked()
 {
-    scopedata.do_export_csv(ui->wavec1->isChecked(),ui->wavec2->isChecked(),ui->wavetimeopt->isChecked(),ui->wavehead->isChecked(),ui->wavesavecfg->isChecked(),ui->waveraw->isChecked());
+    // TODO Save wave options
+    switch (ui->exportFmt->currentIndex())
+    {
+        case 0:
+            scope.do_export_csv(ui->wavec1->isChecked(),ui->wavec2->isChecked(),ui->wavetimeopt->isChecked(),ui->wavehead->isChecked(),ui->wavesavecfg->isChecked(),ui->waveraw->isChecked());
+            break;
+        case 1:
+            scope.do_export_ols(ui->wavec1->isChecked(),ui->wavec2->isChecked(),ui->logicThresh->value());
+            break;
+        case 2:
+            scope.do_export_sigrok(ui->wavec1->isChecked(),ui->wavec2->isChecked(),ui->logicThresh->value());
+            break;
+        case 3:
+            scope.do_wave_plot(ui->wavec1->isChecked(),ui->wavec2->isChecked());
+            break;
+
+    }
 }
 
-void MainWindow::on_wavplot_clicked()
+void MainWindow::on_exportFmt_currentIndexChanged(int index)
 {
-    scopedata.do_wave_plot(ui->wavec1->isChecked(),ui->wavec2->isChecked());
-}
+    // 0 = CSV, 1=OLS, 2=SIGROK, 3=PLOT/CUSTOM
+    switch (index)
+    {
+    case 0:
+        ui->wavehead->setEnabled(true);
+        ui->waveraw->setEnabled(true);
+        ui->wavetimeopt->setEnabled(true);
+        ui->wavesavecfg->setEnabled(true);
+        ui->logicThresh->setEnabled(false);
+        break;
+    case 1:
+    case 2:
+        ui->wavehead->setEnabled(false);
+        ui->waveraw->setEnabled(false);
+        ui->wavetimeopt->setEnabled(false);
+        ui->wavesavecfg->setEnabled(false);
+        ui->logicThresh->setEnabled(true);
+        break;
+    case 3:
+        ui->wavehead->setEnabled(false);
+        ui->waveraw->setEnabled(false);
+        ui->wavetimeopt->setEnabled(false);
+        ui->wavesavecfg->setEnabled(false);
+        ui->logicThresh->setEnabled(false);
 
-void MainWindow::on_exportOLS_clicked()
-{
-    scopedata.do_export_ols(ui->wavec1->isChecked(),ui->wavec2->isChecked(),ui->logicThresh->value());
-}
+        break;
 
-void MainWindow::on_exportSigrok_clicked()
-{
-    scopedata.do_export_sigrok(ui->wavec1->isChecked(),ui->wavec2->isChecked(),ui->logicThresh->value());
+    }
+    QSettings set;
+    set.setValue("Options/exportselect",index);
 }

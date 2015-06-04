@@ -24,7 +24,6 @@ public:
     float lastMeasure[2][20];
 
     void chanDisp(int chan,bool disp);
-    void waitForStop(void);
     bool isChannelDisplayed(int chan);
 
 
@@ -168,28 +167,20 @@ private slots:
 
 
 
-    void on_wavecsv_clicked();
+    void on_exportButton_clicked();
 
-    void on_wavplot_clicked();
-
-    void on_exportOLS_clicked();
-
-    void on_exportSigrok_clicked();
+    void on_exportFmt_currentIndexChanged(int index);
 
 private:
     Ui::MainWindow *ui;
      QTimer *uTimer;
      QTimer *uiTimer;
-    RigolComm com;
-    int command(const QString &cmd);
-    float cmdFloat(const QString &cmd);
 
     bool nocommands;
     void setupChannel(int ch, QComboBox *probebox, QComboBox *scalebox);
-    int cmdCharIndex(const QString &cmd,const QString &search,int bpos=0);
     QFile *mlog;
     MLogger mlogworker;
-    ScopeData scopedata;
+    ScopeData scope;
 };
 
 #endif // MAINWINDOW_H
