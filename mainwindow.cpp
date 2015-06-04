@@ -15,6 +15,9 @@
 
 // TODO: Read scales
 // TODO: The plot example UI probably doesn't work well with a keyboard
+// TODO: break up this file - put capture data in its own class
+// maybe a class per tab
+// TODO: Redo export UI
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -1152,7 +1155,6 @@ int MainWindow::fillExportBuffer(bool c1, bool c2,bool raw)
     int asize,wsize;
     // Now we can really compute the size
     com.command(":WAV:POIN:MODE MAX");
-//    asize=ui->acqMem->isChecked()?524288:8192;   // won't be right if user manually meddels TODO
     com.command(":ACQ:MEMD?");
     asize=com.buffer[0]=='L'?524288:8192;   // now it will be right
     if ((c1&&!c2) || (c2&&!c1)) asize*=2;   // one channel is double
@@ -1415,6 +1417,52 @@ void MainWindow::on_exportOLS_clicked()
         }
     }
     file.close();
+    QMessageBox done;
+    QString msg;
+    msg="Wrote ";
+    msg+=QString::number(chansize)+" records";
+    done.setText(msg);
+    done.exec();
+
+}
+
+void MainWindow::on_exportSigrok_clicked()
+{
+    if (prepExport(ui->wavec1->isChecked(),ui->wavec2->isChecked())) return;
+    bool c1=ui->wavec1->isChecked();
+    bool c2=ui->wavec2->isChecked();
+    int i;
+    QString line;
+
+    QString fn;
+    float thresh=ui->logicThresh->value();
+    if (fillExportBuffer(c1,c2,false)<0) return;
+    fn=QFileDialog::getSaveFileName(this,"OLS Export File Name",QString(),"Sigrok Files (*.sr);; All Files (*.*)");
+    if (fn.isEmpty()) return;
+    QTemporaryFile file(QDir::tempPath()+"/qrigoldata_XXXXXX.csv");
+    file.setAutoRemove(false);
+    file.open();
+    for (i=0;i<chansize;i++)
+    {
+        int dat=0;
+        if (c2 && chandata[1][i]>thresh) dat=1;
+        if (c1) dat<<=1;
+        if (c1 && chandata[0][i]>thresh) dat|=1;
+        line.sprintf("%d,%d\n",dat&1,(dat&2)?1:0);
+        file.write(line.toLatin1());
+    }
+
+
+    QProcess proc;
+    QStringList args;
+    QString srs;
+    srs=srs.sprintf("csv:samplerate=%d:numchannels=",(int)config.srate);
+    if (c1&&c2) srs+="2"; else srs+="1";
+    args<<"-I"<<srs<<"-i"<<file.fileName()<<"-o"<<fn;
+    file.close();
+    qDebug()<<args;
+    proc.start("sigrok-cli",args);
+    proc.waitForFinished();
     QMessageBox done;
     QString msg;
     msg="Wrote ";

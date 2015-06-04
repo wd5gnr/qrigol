@@ -3376,6 +3376,19 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QPushButton" name="exportSigrok">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Export Sigrok</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
         </item>
@@ -3387,7 +3400,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>252</height>
+            <height>212</height>
            </size>
           </property>
          </spacer>

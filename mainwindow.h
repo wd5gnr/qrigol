@@ -180,6 +180,8 @@ private slots:
 
     void on_exportOLS_clicked();
 
+    void on_exportSigrok_clicked();
+
 private:
     Ui::MainWindow *ui;
      QTimer *uTimer;
