@@ -6,6 +6,7 @@
 #include <QComboBox>
 #include <QThread>
 #include "mlogger.h"
+#include "scopedata.h"
 
 namespace Ui {
 class MainWindow;
@@ -21,23 +22,6 @@ public:
 
     float lastMeasure[2][20];
 
-    struct rigolwfmcfg
-    {
-        bool set;
-        float hscale;
-        float hoffset;
-        float vscale[2];
-        float voffset[2];
-        float srate;
-        float deltat;
-    } config;
-
-    void setConfig(void);
-    int convertbuf(int chan, const QString &cmd, bool raw);
-
-
-    double *chandata[2];
-    int chansize;
 
 private slots:
     void on_connectButton_clicked();
@@ -187,18 +171,17 @@ private:
      QTimer *uTimer;
      QTimer *uiTimer;
     RigolComm com;
+    int command(const QString &cmd);
+    float cmdFloat(const QString &cmd);
+
     bool nocommands;
     void setupChannel(int ch, QComboBox *probebox, QComboBox *scalebox);
     int cmdCharIndex(const QString &cmd,const QString &search,int bpos=0);
-    int exportEngine(bool dotime=true, bool c1=true, bool c2=true, bool wheader=true, bool wconfig=true, bool raw=false, QFile *file=NULL);
     QFile *mlog;
     MLogger mlogworker;
-    int command(const QString &cmd);
-    float cmdFloat(const QString &cmd);
     void waitForStop(void);
-    int prepExport(bool c1, bool c2);
-    int fillExportBuffer(bool c1, bool c2,bool raw);
     bool isChannelDisplayed(int chan);
+    ScopeData scopedata;
 };
 
 #endif // MAINWINDOW_H

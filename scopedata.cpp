@@ -1,0 +1,383 @@
+#include "scopedata.h"
+
+ScopeData::ScopeData(QObject *parent) :
+    QObject(parent)
+{
+}
+
+
+// Helpers that take QString
+int ScopeData::command(const QString &cmd)
+{
+  return com->command(cmd.toLatin1());
+}
+
+float ScopeData::cmdFloat(const QString &cmd)
+{
+  return com->cmdFloat(cmd.toLatin1());
+}
+
+void ScopeData::setConfig(void)
+{
+    QString cmdbase,cmd;
+    config.hscale=cmdFloat(":TIM:SCAL?");
+    config.hoffset=cmdFloat(":TIM:OFFS?");
+
+    config.vscale[0]=cmdFloat(":CHAN1:SCAL?");
+    config.voffset[0]=cmdFloat(":CHAN1:OFFS?");
+    config.vscale[1]=cmdFloat(":CHAN2:SCAL?");
+    config.voffset[1]=cmdFloat(":CHAN2:OFFS?");
+    config.srate=cmdFloat(":ACQ:SAMP? CHAN1");
+    config.deltat=1.0f/config.srate;
+    config.set=true;
+}
+
+
+int MainWindow::convertbuf(int chan, const QString &cmd, bool raw)
+{
+    int i,size;
+    if (!config.set) setConfig();
+    chan--;
+    size=command(cmd);
+    if (size==-1) return -1;
+    for (i=0;i<size;i++)
+    {
+        unsigned int rawdata=(unsigned char)(com->buffer[i]);
+        chandata[chan][i]=raw?((double)rawdata):((double)(125.0-(double)rawdata)/25.0f);
+        if (!raw)
+        {
+            chandata[chan][i]*=config.vscale[chan];
+            chandata[chan][i]-=config.voffset[chan];
+        }
+    }
+  chansize=size;
+  return size;
+}
+
+
+int MainWindow::prepExport(bool c1, bool c2)
+{
+    bool running=false;
+
+    // make sure connected
+    if (!com.connected()) return -1;
+    // we know we will be stopped so we are going to get
+    // either 8K/16K (based on display) or 512K/1M based on long memory mode
+    //
+    command(":TRIG:STAT?");
+    running=com->buffer[0]!='S';
+    if (running)
+    {
+         ui->cdisp1->setChecked(c1);
+         on_cdisp1_clicked();
+         usleep(250000);
+         ui->cdisp2->setChecked(c2);
+         on_cdisp2_clicked();
+         usleep(250000);
+    }
+
+    if ((c1 && !isChannelDisplayed(1)) || (c2 && !isChannelDisplayed(2)))
+    {
+       QMessageBox bx;
+       bx.setText("Channel not enabled and instrument in stop mode");
+       bx.exec();
+       return -1;
+    }
+
+
+    // make sure one source selected
+    if ((!c1)&&(!c2))
+    {
+        QMessageBox bx;
+        bx.setText("You must select at least one source.");
+        bx.exec();
+        return -1;
+    }
+   return 0;
+}
+
+int MainWindow::fillExportBuffer(bool c1, bool c2,bool raw)
+{
+    int asize,wsize;
+    // Now we can really compute the size
+    com.command(":WAV:POIN:MODE MAX");
+    com.command(":ACQ:MEMD?");
+    asize=com.buffer[0]=='L'?524288:8192;   // now it will be right
+    if ((c1&&!c2) || (c2&&!c1)) asize*=2;   // one channel is double
+
+    // allocate buffers
+    if (c1) chandata[0]=new double[asize];
+    if (c2) chandata[1]=new double[asize];
+    if (((c1&&!chandata[0]) || (c2&&!chandata[1])))
+    {
+        QMessageBox bx;
+        bx.setText("Sorry, insufficient memory.");
+        bx.exec();
+        return -1;
+
+    }
+    // Stop instrument
+    com.command(":STOP");   // only way to be sure we sync chan1 and chan2 that I can tell
+    // however, it takes a bit for it to "settle" If you get a short sample, just run it again
+    // since the scope is stopped it will be ok
+    waitForStop();
+    usleep(500000);  // if you don't delay you get short buffer first time even with wait for stop ???
+    setConfig();
+    // Acquire each channel (as requested)
+    if (c1)
+    {
+        wsize=convertbuf(1,":WAV:DATA? CHAN1",raw);
+        if (wsize<0)
+        {
+            QMessageBox bx;
+            bx.setText("Channel 1 data acquisition failure\n");
+            bx.exec();
+        }
+    }
+    if (c2)
+    {
+        wsize=convertbuf(2,":WAV:DATA? CHAN2",raw);
+        if (wsize<0)
+        {
+            QMessageBox bx;
+            bx.setText("Channel 2 data acquisition failure\n");
+            bx.exec();
+        }
+    }
+   return wsize;
+}
+
+// This function handles exporting for both CSV and plotting
+int MainWindow::exportEngine(bool dotime, bool c1, bool c2, bool wheader, bool wconfig, bool raw, QFile *file)
+{
+    int wsize;
+
+    if ((wsize=fillExportBuffer(c1,c2,raw))<0) return -1;
+
+    // Get file name
+    if (file==NULL)
+    {
+        QString fn=QFileDialog::getSaveFileName(this,"Select log file to create or append to",QString(),"Comma Separate Value Files (*.csv);;All files (*.*)");
+        if (fn.isEmpty()) return -1;
+        file=new QFile(fn);
+        if (!file->open(QIODevice::WriteOnly|QIODevice::Text))
+        {
+            QMessageBox bx;
+            bx.setText("Can't open file for writing!");
+            return -1;
+            return -1;
+        }
+
+    }
+    // if requested, write out config
+    if (wconfig)
+    {
+        QString cline;
+        cline=",,,HSCALE,HOFFSET,VSCALE 1,VSCALE 2,VOFFSET 1, VOFFSET 2, SAMP RATE, DELTA T,SAMPLE COUNT\n";
+        file->write(cline.toLatin1());
+        cline=",,,";
+        cline+=QString::number(config.hscale)+",";
+        cline+=QString::number(config.hoffset)+",";
+        cline+=QString::number(config.vscale[0])+",";
+        cline+=QString::number(config.vscale[1])+",";
+        cline+=QString::number(config.voffset[0])+",";
+        cline+=QString::number(config.voffset[1])+",";
+        cline+=QString::number(config.srate)+",";
+        cline+=QString::number(config.deltat)+",";
+        cline+=QString::number(wsize)+"\n";
+        file->write(cline.toLatin1());
+        file->write("\n");
+    }
+    // Write data out
+    if (wheader)
+    {
+        // write header
+        if (dotime) file->write("T,");
+        if (c1) file->write("CHAN1");
+        if (c1 && c2) file->write(",");
+        if (c2) file->write("CHAN2");
+        file->write("\n");
+    }
+    float t=0.0;
+    for (int idx=0;idx<wsize;idx++)
+    {
+        QString item;
+        if (dotime)
+        {
+            item=QString::number(t);
+            t+=config.deltat;
+            item+=",";
+        }
+        if (c1)
+        {
+            item+=QString::number(chandata[0][idx]);
+            if (c2) item+=",";
+        }
+        if (c2)
+        {
+            item+=QString::number(chandata[1][idx]);
+        }
+     item+="\n";
+     file->write(item.toLatin1());
+    }
+    // Close files
+    file->close();
+    // Free buffers
+    if (c1) delete [] chandata[0];
+    if (c2) delete [] chandata[1];
+    return 0;
+}
+
+void MainWindow::on_wavplot_clicked()
+{
+    PlotDialog *dlg=new PlotDialog(this);
+    QString cmd,script;
+
+    if (prepExport(ui->wavec1->isChecked(),ui->wavec2->isChecked())) return;
+
+    bool c1=ui->wavec1->isChecked();
+    bool c2=ui->wavec2->isChecked();
+    if (!dlg->exec()) return;
+    QTemporaryFile *file=new QTemporaryFile(QDir::tempPath()+"/qrigoldata_XXXXXX.csv");
+    QTemporaryFile *scriptfile=new QTemporaryFile(QDir::tempPath()+"/qrigolscript_XXXXXX");
+    file->setAutoRemove(false);
+    scriptfile->setAutoRemove(false);
+    scriptfile->open();
+    file->open();
+    script=dlg->script;
+    script=script.replace("{FILE}",file->fileName());  // does not work unless file is open!
+    scriptfile->write(script.toLatin1());
+    cmd=dlg->command;
+    cmd=cmd.replace("{SCRIPT}",scriptfile->fileName());
+    cmd=cmd.replace("{FILE}",file->fileName());
+// get names before close
+    scriptfile->close();
+    // generate temporary file
+    exportEngine(true,c1,c2,true,false,false,file);
+    // execute command
+    QProcess proc;
+    proc.startDetached(cmd);
+    delete file;
+    delete scriptfile; // really should have made these on the stack
+}
+
+void MainWindow::on_wavecsv_clicked()
+{
+    if (prepExport(ui->wavec1->isChecked(),ui->wavec2->isChecked())) return;
+    bool dotime=ui->wavetimeopt->isChecked();
+    bool c1=ui->wavec1->isChecked();
+    bool c2=ui->wavec2->isChecked();
+    bool wheader=ui->wavehead->isChecked();
+    bool wconfig=ui->wavesavecfg->isChecked();
+    bool raw=ui->waveraw->isChecked();
+
+    if (exportEngine(dotime,c1,c2,wheader,wconfig,raw)==0)
+    {
+        QMessageBox done;
+        QString msg;
+        msg="Wrote ";
+        msg+=QString::number(chansize)+" records";
+        done.setText(msg);
+        done.exec();
+    }
+    // TODO: Files not deleted here!
+}
+
+void MainWindow::on_exportOLS_clicked()
+{
+    if (prepExport(ui->wavec1->isChecked(),ui->wavec2->isChecked())) return;
+    bool c1=ui->wavec1->isChecked();
+    bool c2=ui->wavec2->isChecked();
+    int i,lastdat;
+    QString line;
+
+    QString fn;
+    float thresh=ui->logicThresh->value();
+    if (fillExportBuffer(c1,c2,false)<0) return;
+    fn=QFileDialog::getSaveFileName(this,"OLS Export File Name",QString(),"OLS Files (*.ols);; All Files (*.*)");
+    if (fn.isEmpty()) return;
+    QFile file(fn);
+    file.open(QIODevice::WriteOnly);
+    line=";Rate: ";
+    line+=QString().sprintf("%d\n",(int)config.srate);
+    file.write(line.toLatin1());
+    line=";Channels: ";
+    i=0;
+    if (c1) i++;
+    if (c2) i++;
+    line+=QString::number(i)+"\n";
+    file.write(line.toLatin1());
+    i=0;
+    if (c1) i|=1;
+    if (c2) i|=2;
+    line="EnabledChannels: ";
+    line+=QString::number(i)+"\n";
+    file.write(line.toLatin1());
+    lastdat=-1;
+    for (i=0;i<chansize;i++)
+    {
+        int dat=0;
+        if (c1 && chandata[0][i]>thresh) dat|=1;
+        if (c2 && chandata[1][i]>thresh) dat|=2;
+        if (dat!=lastdat)
+        {
+            line.sprintf("%X@%d\n",dat,i);
+            file.write(line.toLatin1());
+            lastdat=dat;
+        }
+    }
+    file.close();
+    QMessageBox done;
+    QString msg;
+    msg="Wrote ";
+    msg+=QString::number(chansize)+" records";
+    done.setText(msg);
+    done.exec();
+
+}
+
+void MainWindow::on_exportSigrok_clicked()
+{
+    if (prepExport(ui->wavec1->isChecked(),ui->wavec2->isChecked())) return;
+    bool c1=ui->wavec1->isChecked();
+    bool c2=ui->wavec2->isChecked();
+    int i;
+    QString line;
+
+    QString fn;
+    float thresh=ui->logicThresh->value();
+    if (fillExportBuffer(c1,c2,false)<0) return;
+    fn=QFileDialog::getSaveFileName(this,"OLS Export File Name",QString(),"Sigrok Files (*.sr);; All Files (*.*)");
+    if (fn.isEmpty()) return;
+    QTemporaryFile file(QDir::tempPath()+"/qrigoldata_XXXXXX.csv");
+    file.setAutoRemove(false);
+    file.open();
+    for (i=0;i<chansize;i++)
+    {
+        int dat=0;
+        if (c2 && chandata[1][i]>thresh) dat=1;
+        if (c1) dat<<=1;
+        if (c1 && chandata[0][i]>thresh) dat|=1;
+        line.sprintf("%d,%d\n",dat&1,(dat&2)?1:0);
+        file.write(line.toLatin1());
+    }
+
+
+    QProcess proc;
+    QStringList args;
+    QString srs;
+    srs=srs.sprintf("csv:samplerate=%d:numchannels=",(int)config.srate);
+    if (c1&&c2) srs+="2"; else srs+="1";
+    args<<"-I"<<srs<<"-i"<<file.fileName()<<"-o"<<fn;
+    file.close();
+    qDebug()<<args;
+    proc.start("sigrok-cli",args);
+    proc.waitForFinished();
+    QMessageBox done;
+    QString msg;
+    msg="Wrote ";
+    msg+=QString::number(chansize)+" records";
+    done.setText(msg);
+    done.exec();
+
+}

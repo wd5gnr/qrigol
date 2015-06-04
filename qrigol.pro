@@ -16,12 +16,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     rigolcomm.cpp \
     mlogger.cpp \
-    plotdialog.cpp
+    plotdialog.cpp \
+    scopedata.cpp
 
 HEADERS  += mainwindow.h \
     rigolcomm.h \
     mlogger.h \
-    plotdialog.h
+    plotdialog.h \
+    scopedata.h
 
 FORMS    += mainwindow.ui \
     plotdialog.ui

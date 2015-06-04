@@ -3384,8 +3384,11 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="toolTip">
+              <string>Requires sigrok-cli on PATH</string>
+             </property>
              <property name="text">
-              <string>Export Sigrok</string>
+              <string>Export Sigrok (Digital)</string>
              </property>
             </widget>
            </item>
