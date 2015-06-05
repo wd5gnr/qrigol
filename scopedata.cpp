@@ -418,3 +418,27 @@ int ScopeData::scale(int *decade,int *sign)
     if (p) *p='\0';
     return QString(com.buffer).toInt();
 }
+
+QString ScopeData::triggerSource(const QString &mode)
+{
+    QString cmd=":TRIG:";
+    QString rv;
+    cmd+=mode+":SOUR?";
+    command(cmd);
+    if (com.buffer[2]=='1') rv="CHAN1";
+    else if (com.buffer[2]=='2') rv="CHAN2";
+    else rv=com.buffer;
+    return rv;
+}
+
+
+QString ScopeData::sweep(const QString &mode)
+{
+    QString cmd=":TRIG:";
+    QString rv;
+    cmd+=mode+":SWE?";
+    command(cmd);
+    rv=com.buffer;
+    return rv;
+}
+

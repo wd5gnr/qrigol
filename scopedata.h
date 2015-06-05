@@ -16,6 +16,7 @@ public:
 protected:
     MainWindow *win;
     bool logiccmd(QString cmd,int chan,int offset,int ch);
+    QString stringCmd(const QString &cmd) { com.command(cmd.toLatin1()); return QString(com.buffer); }
 
 public:
 
@@ -44,7 +45,7 @@ public:
     int exportEngine(bool dotime=true, bool c1=true, bool c2=true, bool wheader=true, bool wconfig=true, bool raw=false, QFile *file=NULL);
     int command(const QString &cmd) { return com.command(cmd.toLatin1()); }
     float cmdFloat(const QString &cmd) { return com.cmdFloat(cmd.toLatin1()); }
-    float cmdFloatlt(const char *cmd) { return com.cmdFloat(cmd); }
+    float cmdFloatlt(const char *cmd) { return cmdFloat(cmd); }
     bool isChannelDisplayed(int chan);
     void do_wave_plot(bool c1, bool c2);
     void do_export_csv(bool c1, bool c2, bool dotime, bool wheader, bool wconfig, bool raw);
@@ -54,7 +55,7 @@ public:
     bool connected(void) { return com.connected(); }
     int close(void) { return com.close(); }
     int trigStatus(void) { com.command(":TRIG:STAT?"); return *com.buffer; }
-    QString trigMode(void) { com.command(":TRIG:MODE?"); return QString(com.buffer); }
+    QString trigMode(void) { return stringCmd(":TRIG:MODE?");  }
     int unlock(void) { return com.unlock(); }
     int open(QString dev) { return com.open(dev.toLatin1()); }
     QString id(void);
@@ -71,8 +72,33 @@ public:
     bool inverted(int chan) { return logiccmd(":CHAN%d:INV?",chan,1,'N'); }
     bool filtered(int chan) { return logiccmd(":CHAN%d:FILT?",chan,1,'N'); }
     QString coupling(int chan) { logiccmd(":CHAN%d:COUP?",chan,0,'x'); return QString(com.buffer); }
-
-
+    bool force(void) { return command(":FORC"); }
+    bool trig50(void) { return command(":TRIG%50"); }
+    QString triggerSource(const QString &mode);
+    float triggerHoldUs(void) { return cmdFloat(":TRIG:HOLD?")*1000000.0f; }
+    QString trigCoupling(const QString &mode) { return stringCmd(":TRIG:" + mode +":COUP?"); }
+    bool isEdgeSlopePos(void) { return logiccmd(":TRIG:EDGE:SLOP?",-1,0,'P'); }
+    QString trigPulseMode(void) { return stringCmd(":TRIG:PULS:MODE?");  }
+    QString sweep(const QString &mode);
+    QString trigSlopeMode(void) { return stringCmd(":TRIG:SLOP:MODE?"); }
+    QString trigSlopeWin(void) { return stringCmd(":TRIG:SLOP:WIND?"); }
+    bool mathDisplay(void) { return command(":MATH:DISP?"); return com.buffer[1]=='N'||com.buffer[0]=='1'; }
+    QString mathOp(void) { return stringCmd(":MATH:OPER?");   }
+    bool setAcqTNormal(void) { return command(":ACQ:TYPE NORM"); }
+    bool setAcqTAverage(void) { return command(":ACQ:TYPE AVER"); }
+    bool setAcqTPeak(void) { return command(":ACQ:TYPE PEAK"); }
+    bool setAcqModeRtim(void) { return command(":ACQ:MODE RTIM"); }
+    bool setAcqModeEtim(void) { return command(":ACQ:MODE ETIM"); }
+    bool setAcqAverage(int n) { return command(":ACQ:AVER "+QString::number(n)); }
+    bool setAcqMemNorm(void) { return command(":ACQ:MEMD NORM");  }
+    bool setAcqMemLong(void) { return command(":ACQ:MEMD LONG"); }
+    bool setTimeScale(const QString &s) { return command(":TIM:SCAL "+s); }
+    bool setChanDisp(int chan,bool state) { return command(QString(":CHAN")+QString::number(chan)+":DISP "+ (state?"ON":"OFF")); }
+    bool setChanBWL(int chan,bool state) { return command(QString(":CHAN")+QString::number(chan)+":BWL "+ (state?"ON":"OFF")); }
+    bool setChanInvert(int chan,bool state) { return command(QString(":CHAN")+QString::number(chan)+":INV "+ (state?"ON":"OFF")); }
+    bool setChanFilter(int chan,bool state) { return command(QString(":CHAN")+QString::number(chan)+":FILT "+ (state?"ON":"OFF")); }
+    bool setChanProbe(int chan,int x) { return command(QString(":CHAN")+QString::number(chan)+":PROB "+QString::number(x)); }
+    bool setChanCouple(int chan,const QString &acdc) { return command(QString(":CHAN")+QString::number(chan)+":COUP "+acdc); }
 
 signals:
 

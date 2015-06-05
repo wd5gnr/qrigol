@@ -387,9 +387,6 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
     on_tmode_currentIndexChanged(ui->tmode->currentIndex());
 
     // kind of ugly
-
-
-    scope.command(":TIM:SCAL?");
     int decade;
     int sign;
     int scale=scope.scale(&decade,&sign);
@@ -438,18 +435,12 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
    ui->c2filt->setChecked(scope.filtered(2));
    setupChannel(1,ui->c1probe,ui->c1vscale);
    setupChannel(2,ui->c2probe,ui->c2vscale);
-   QString cpl=scope.coupling(1);
-   ui->c1coup->setCurrentIndex(ui->c1coup->findText(cpl));
-   cpl=scope.coupling(2);
-   ui->c2coup->setCurrentIndex(ui->c2coup->findText(cpl));
-   float off=scope.config.hoffset;
+   ui->c1coup->setCurrentIndex(ui->c1coup->findText(scope.coupling(1)));
+   ui->c2coup->setCurrentIndex(ui->c2coup->findText(scope.coupling(2)));
    // convert to uS
-   off*=1000000.0f;
-   ui->hoffsetspin->setValue(off);
-   off=scope.config.vscale[0];
-   ui->c1offspin->setValue(off);
-   off=scope.config.vscale[1];
-   ui->c2offspin->setValue(off);
+   ui->hoffsetspin->setValue(scope.config.hoffset*1000000.0f);
+   ui->c1offspin->setValue(scope.config.voffset[0]);
+   ui->c2offspin->setValue(scope.config.voffset[1]);
 
    QString mode=scope.trigMode();
    int  moden=ui->tmode->findText(mode,static_cast<Qt::MatchFlags>(Qt::MatchFixedString));
@@ -463,43 +454,30 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
    }
    // since nocommands is set, this will just update ui
    on_tmode_currentIndexChanged(ui->tmode->currentIndex());
-   QString cmd,cmdbase=":TRIG:";
-   cmdbase=cmdbase+ui->tmode->currentText();
-   cmd=cmdbase+":SOUR?";
-   scope.command(cmd);
-   if (scope.com.buffer[2]=='1') strcpy(scope.com.buffer,"CHAN1");
-   if (scope.com.buffer[2]=='2') strcpy(scope.com.buffer,"CHAN2");
-   ui->tsource->setCurrentIndex(ui->tsource->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
-   cmd=cmdbase+":SWE?";
-   scope.command(cmd); // scope doesn't seem to care what trigger type is active
-   ui->tsweep->setCurrentIndex(ui->tsweep->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
 
-   float hold=scope.cmdFloat(":TRIG:HOLD?");
-   hold*=1000000.0f;  // convert to uS
-   ui->tholdoff->setValue(hold);
+
+   QString cmd;
+   QString source=scope.triggerSource(ui->tmode->currentText());
+   ui->tsource->setCurrentIndex(ui->tsource->findText(source,Qt::MatchFlags(Qt::MatchFixedString)));
+
+   source=scope.sweep(ui->tmode->currentText()); // scope doesn't seem to care what trigger type is active
+   ui->tsweep->setCurrentIndex(ui->tsweep->findText(source,Qt::MatchFlags(Qt::MatchFixedString)));
+
+   ui->tholdoff->setValue(scope.triggerHoldUs());
 
    // TODO: Need to read current scale to set range. Complex because range depends on trigger source scale
-   cmd=cmdbase+":LEV?";
+
    if (ui->tmode->currentText()!="Slope")
    {
-    off=scope.cmdFloat(cmd);
-    ui->tlevel->setValue(off);
+    ui->tlevel->setValue(scope.cmdFloat(":TRIG:"+ui->tmode->currentText()+":LEV?"));
    }
-    cmd=cmdbase+=":COUP?";
-    scope.command(cmd);
-    ui->tcouple->setCurrentIndex(ui->tcouple->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
+    ui->tcouple->setCurrentIndex(ui->tcouple->findText(scope.trigCoupling(ui->tmode->currentText()),Qt::MatchFlags(Qt::MatchFixedString)));
 
-    scope.command(":TRIG:EDGE:SLOP?");
-    ui->tposneg->setCurrentIndex(*scope.com.buffer=='P'?0:1);
-    off=scope.cmdFloat(":TRIG:EDGE:SENS?");
-    ui->tedgesense->setValue(off);
-    off=scope.cmdFloat(":TRIG:PULS:SENS?");
-    ui->tpulsesense->setValue(off);
-    off=scope.cmdFloat(":TRIG:PULS:WIDT?");
-    off*=1000000.0f;
-    ui->tpulswid->setValue(off);
-    scope.command(":TRIG:PULS:MODE?");
-    cmd=scope.com.buffer;
+    ui->tposneg->setCurrentIndex(scope.isEdgeSlopePos()?0:1);
+    ui->tedgesense->setValue(scope.cmdFloat(":TRIG:EDGE:SENS?"));
+    ui->tpulsesense->setValue(scope.cmdFloat(":TRIG:PULS:SENS?"));
+    ui->tpulswid->setValue(scope.cmdFloat(":TRIG:PULS:WIDT?")*1000000.0f);
+    cmd=scope.trigPulseMode();
     for (tmp=0;tmp<ui->tpulsemode->count();tmp++)
     {
         if (ui->tpulsemode->itemText(tmp).remove(' ')==cmd)
@@ -509,27 +487,18 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
         }
     }
 
-    off=scope.cmdFloat(":TRIG:SLOP:TIME?");
-    off*=1000000.0f;
-    ui->tslopetime->setValue(off);
-    off=scope.cmdFloat(":TRIG:SLOP:SENS?");
-    ui->tslopesense->setValue(off);
-    scope.command(":TRIG:SLOP:MODE?");  // oddly this returns spaces but can't have them in the command
-    ui->tslopemode->setCurrentIndex(ui->tslopemode->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
-    scope.command(":TRIG:SLOP:WIND?");
-    ui->tslopewin->setCurrentIndex(ui->tslopewin->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
-    off=scope.cmdFloat(":TRIG:SLOP:LEVA?");
-    ui->tslopea->setValue(off);
-    off=scope.cmdFloat(":TRIG:SLOP:LEVB?");
-    ui->tslopeb->setValue(off);
+    ui->tslopetime->setValue(scope.cmdFloat(":TRIG:SLOP:TIME?")*1000000.0f);
+    ui->tslopesense->setValue(scope.cmdFloat(":TRIG:SLOP:SENS?"));
+    // oddly TRIG SLOP MODE this returns spaces but can't have them in the command
+    ui->tslopemode->setCurrentIndex(ui->tslopemode->findText(scope.trigSlopeMode(),Qt::MatchFlags(Qt::MatchFixedString)));
+    ui->tslopewin->setCurrentIndex(ui->tslopewin->findText(scope.trigSlopeWin(),Qt::MatchFlags(Qt::MatchFixedString)));
+    ui->tslopea->setValue(scope.cmdFloat(":TRIG:SLOP:LEVA?"));
+    ui->tslopeb->setValue(scope.cmdFloat(":TRIG:SLOP:LEVB?"));
 
 
 
-    scope.command(":MATH:DISP?");
-    ui->mathdisp->setChecked(scope.com.buffer[1]=='N'||scope.com.buffer[0]=='1');
-    scope.command(":MATH:OPER?");
-    ui->mathsel->setCurrentIndex(ui->mathsel->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
-
+    ui->mathdisp->setChecked(scope.mathDisplay());
+    ui->mathsel->setCurrentIndex(ui->mathsel->findText(scope.mathOp(),Qt::MatchFlags(Qt::MatchFixedString)));
 
 
    nocommands=savestate;
@@ -538,57 +507,47 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
 
 void MainWindow::on_acqType_currentIndexChanged(int index)
 {
-    QString cmd=":ACQ:TYPE ";
     if (!scope.connected()||nocommands) return;
     switch (index)
     {
     case 0:
-        cmd+="NORM";
+        scope.setAcqTNormal();
         break;
     case 1:
-        cmd+="AVER";
+        scope.setAcqTAverage();
         break;
     case 2:
-        cmd+="PEAK";
+        scope.setAcqTPeak();
         break;
     }
     ui->acqAvg->setEnabled(index==1);
-    scope.command(cmd);
 }
 
 void MainWindow::on_acqMode_currentIndexChanged(int index)
 {
-    QString cmd=":ACQ:MODE ";
     if (!scope.connected()||nocommands) return;
     switch (index)
     {
     case 0:
-        cmd+="RTIM";
+        scope.setAcqModeRtim();
         break;
     case 1:
-        cmd+="ETIM";
+        scope.setAcqModeEtim();
         break;
     }
-    scope.command(cmd);
-
 }
 
 void MainWindow::on_acqAvg_currentIndexChanged(int index)
 {
-    QString cmd=":ACQ:AVER ";
     if (!scope.connected()||nocommands) return;
-    QString num=QString::number(1<<(index+1));
-    cmd+=num;
-    scope.command(cmd);
+    scope.setAcqAverage(1<<(index+1));
 }
 
 
 void MainWindow::on_acqMem_clicked()
 {
-    QString cmd=":ACQ:MEMD ";
     if (!scope.connected()) return;
-    if (ui->acqMem->isChecked()) cmd+="LONG"; else cmd+="NORM";
-    scope.command(cmd);
+    if (ui->acqMem->isChecked()) scope.setAcqMemLong(); else scope.setAcqMemNorm();
 }
 
 
@@ -597,15 +556,19 @@ void MainWindow::on_hscale_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
     if (!scope.connected()||nocommands) return;
-    scope.command((":TIM:SCAL " + ui->hscale->currentText()).toLatin1());
+    scope.setTimeScale(ui->hscale->currentText());
 }
 
 void MainWindow::on_cdisp1_clicked()
 {
     if (!scope.connected()) return;
-    QString cmd=":CHAN1:DISP ";
-    if (ui->cdisp1->checkState()) cmd+="ON"; else cmd+="OFF";
-    scope.command(cmd);
+    scope.setChanDisp(1,ui->cdisp1->checkState());
+}
+
+void MainWindow::on_cdisp2_clicked()
+{
+    if (!scope.connected()) return;
+    scope.setChanDisp(2,ui->cdisp2->checkState());
 }
 
 void MainWindow::on_updAcq_2_clicked()
@@ -613,67 +576,41 @@ void MainWindow::on_updAcq_2_clicked()
     on_updAcq_clicked();
 }
 
-void MainWindow::on_cdisp2_clicked()
-{
-    if (!scope.connected()) return;
-    QString cmd=":CHAN2:DISP ";
-    if (ui->cdisp2->checkState()) cmd+="ON"; else cmd+="OFF";
-    scope.command(cmd);
-
-}
 
 void MainWindow::on_c1bw_clicked()
 {
     if (!scope.connected()) return;
-    QString cmd=":CHAN1:BWL ";
-    if (ui->c1bw->checkState()) cmd+="ON"; else cmd+="OFF";
-    scope.command(cmd);
-
+    scope.setChanBWL(1,ui->c1bw->checkState());
 }
 
 void MainWindow::on_c2bw_clicked()
 {
     if (!scope.connected()) return;
-    QString cmd=":CHAN2:BWL ";
-    if (ui->c2bw->checkState()) cmd+="ON"; else cmd+="OFF";
-    scope.command(cmd);
-
+    scope.setChanBWL(2,ui->c2bw->checkState());
 }
 
 void MainWindow::on_c1inv_clicked()
 {
     if (!scope.connected()) return;
-    QString cmd=":CHAN1:INV ";
-    if (ui->c1inv->checkState()) cmd+="ON"; else cmd+="OFF";
-    scope.command(cmd);
-
+    scope.setChanInvert(1,ui->c1inv->checkState());
 }
 
 void MainWindow::on_c2inv_clicked()
 {
     if (!scope.connected()) return;
-    QString cmd=":CHAN2:INV ";
-    if (ui->c2inv->checkState()) cmd+="ON"; else cmd+="OFF";
-    scope.command(cmd);
-
+    scope.setChanInvert(2,ui->c2inv->checkState());
 }
 
 void MainWindow::on_c1filt_clicked()
 {
     if (!scope.connected()) return;
-    QString cmd=":CHAN1:FILT ";
-    if (ui->c1filt->checkState()) cmd+="ON"; else cmd+="OFF";
-    scope.command(cmd);
-
+    scope.setChanFilter(1,ui->c1filt->checkState());
 }
 
 void MainWindow::on_c2filt_clicked()
 {
     if (!scope.connected()) return;
-    QString cmd=":CHAN2:FILT ";
-    if (ui->c2filt->checkState()) cmd+="ON"; else cmd+="OFF";
-    scope.command(cmd);
-
+    scope.setChanFilter(2,ui->c2filt->checkState());
 }
 
 void MainWindow::on_tabWidget_currentChanged(int index)
@@ -687,40 +624,28 @@ void MainWindow::on_c1probe_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
     if (!scope.connected()||nocommands) return;
-    QString cmd=":CHAN1:PROB ";
-    cmd+=ui->c1probe->currentText().remove('X');
-    scope.command(cmd);
-
+    scope.setChanProbe(1,ui->c1probe->currentText().remove('X').toInt());
 }
 
 void MainWindow::on_c2probe_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
     if (!scope.connected()||nocommands) return;
-    QString cmd=":CHAN2:PROB ";
-    cmd+=ui->c2probe->currentText().remove('X');
-    scope.command(cmd);
-
-
+    scope.setChanProbe(2,ui->c2probe->currentText().remove('X').toInt());
 }
 
 void MainWindow::on_c1coup_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
     if (!scope.connected()||nocommands) return;
-    QString cmd=":CHAN1:COUP ";
-    cmd+=ui->c1coup->currentText();
-    scope.command(cmd);
+    scope.setChanCouple(1,ui->c1coup->currentText());
 }
 
 void MainWindow::on_c2coup_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
     if (!scope.connected()||nocommands) return;
-    QString cmd=":CHAN2:COUP ";
-    cmd+=ui->c2coup->currentText();
-  scope.command(cmd);
-
+    scope.setChanCouple(2,ui->c2coup->currentText());
 }
 
 
@@ -868,13 +793,13 @@ void MainWindow::on_tholdoff_valueChanged(double arg1)
 void MainWindow::on_tfifty_clicked()
 {
     if (!scope.connected()) return;
-    scope.command(":TRIG%50");
+    scope.trig50();
 }
 
 void MainWindow::on_tforce_clicked()
 {
     if (!scope.connected()) return;
-    scope.command(":FORC");
+    scope.force();
 }
 
 void MainWindow::on_tlevel_valueChanged(double arg1)
@@ -1058,7 +983,7 @@ void MainWindow::on_tslopeb_valueChanged(double arg1)
 }
 
 
-
+// This is about the only place we should be direct accessing command and com.buffer
 void MainWindow::on_action_Diagnostic_triggered()
 {
     bool ok;
