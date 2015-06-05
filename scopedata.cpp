@@ -23,6 +23,14 @@ QString ScopeData::id(void)
        com.command("*IDN?");
        return QString(com.buffer); }
 
+bool ScopeData::logiccmd(QString cmd,int chan,int offset,int ch)
+{
+    QString rcmd;
+    if (chan!=-1) rcmd.sprintf(cmd.toLatin1(),chan); else rcmd=cmd;
+    command(rcmd);
+    return com.buffer[offset]==ch;
+}
+
 bool ScopeData::isChannelDisplayed(int chan)
 {
     // Note the manual says this returns ON/OFF, but we see it returns 0 and 1 so..
@@ -397,4 +405,16 @@ void ScopeData::do_export_sigrok(bool c1, bool c2, float thresh)
     done.setText(msg);
     done.exec();
 
+}
+
+
+int ScopeData::scale(int *decade,int *sign)
+{
+    char *p;
+    command(":TIM:SCAL?");
+    if (decade) *decade=QString(com.buffer).right(1).toInt();
+    if (sign) *sign=QString(com.buffer).right(3).left(1)[0]=='+'?1:-1;
+    p=strchr(com.buffer,'.');
+    if (p) *p='\0';
+    return QString(com.buffer).toInt();
 }

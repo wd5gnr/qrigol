@@ -12,8 +12,6 @@
 
 // TODO: Read scales
 // TODO: The plot example UI probably doesn't work well with a keyboard
-// maybe a class per tab
-// TODO: Redo export UI
 // TODO: My goal is remove everything out of here having to do with direct command
 // and/or com.buffer but that is a work in progress
 
@@ -112,9 +110,9 @@ void MainWindow::on_connectButton_clicked()
         else
         {
             QSettings set;
-            ui->idstring->setText(scope.com.buffer);
+            ui->idstring->setText(id);
             set.setValue("Options/Device",ui->deviceName->text());
-            ui->statusBar->showMessage(scope.com.buffer);
+            ui->statusBar->showMessage(id);
         }
         ui->deviceName->setEnabled(false);
         ui->rsButton->setEnabled(true);
@@ -382,20 +380,19 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
     }
 
     ui->acqAvg->setCurrentIndex(idx);
-    scope.command(":ACQ:MEMD?");
-    ui->acqMem->setChecked(*scope.com.buffer=='L');
-    scope.command(":ACQ:SAMP?");
-    ui->srate->setText(scope.com.buffer);
+    ui->acqMem->setChecked(scope.isLongMemory());
+    ui->srate->setText(QString::number(scope.sampleRate(),'f',0));
+
 
     on_tmode_currentIndexChanged(ui->tmode->currentIndex());
 
     // kind of ugly
+
+
     scope.command(":TIM:SCAL?");
-    int decade=QString(scope.com.buffer).right(1).toInt();
-    char sign=QString(scope.com.buffer).right(3).left(1)[0].toLatin1();
-    char *p=strchr(scope.com.buffer,'.');
-    if (p) *p='\0';
-    int scale=QString(scope.com.buffer).toInt();
+    int decade;
+    int sign;
+    int scale=scope.scale(&decade,&sign);
     QString sscale=QString::number(scale);
     switch (decade)
     {
@@ -425,7 +422,7 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
         break;
     case 1:
         // need to tell + from - here
-        if (sign=='+') sscale.append("0s"); else sscale.append("00ms");
+        if (sign==1) sscale.append("0s"); else sscale.append("00ms");
         break;
     case 0:
         sscale.append("s");
@@ -433,24 +430,18 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
    ui->hscale->setCurrentIndex(ui->hscale->findText(sscale));
    ui->cdisp1->setChecked(scope.isChannelDisplayed(1));  // programming guide is wrong!
    ui->cdisp2->setChecked(scope.isChannelDisplayed(2));  // programming guide is wrong!
-   scope.command(":CHAN1:BWL?");
-   ui->c1bw->setChecked(scope.com.buffer[1]=='N');
-   scope.command(":CHAN2:BWL?");
-   ui->c2bw->setChecked(scope.com.buffer[1]=='N');
-   scope.command(":CHAN1:INV?");
-   ui->c1inv->setChecked(scope.com.buffer[1]=='N');
-   scope.command(":CHAN2:INV?");
-   ui->c2inv->setChecked(scope.com.buffer[1]=='N');
-   scope.command(":CHAN1:FILT?");
-   ui->c1filt->setChecked(scope.com.buffer[1]=='N');
-   scope.command(":CHAN2:FILT?");
-   ui->c2filt->setChecked(scope.com.buffer[1]=='N');
+   ui->c1bw->setChecked(scope.bandwidthLimit(1));
+   ui->c2bw->setChecked(scope.bandwidthLimit(2));
+   ui->c1inv->setChecked(scope.inverted(1));
+   ui->c2inv->setChecked(scope.inverted(2));
+   ui->c1filt->setChecked(scope.filtered(1));
+   ui->c2filt->setChecked(scope.filtered(2));
    setupChannel(1,ui->c1probe,ui->c1vscale);
    setupChannel(2,ui->c2probe,ui->c2vscale);
-   scope.command(":CHAN1:COUP?");
-   ui->c1coup->setCurrentIndex(ui->c1coup->findText(scope.com.buffer));
-   scope.command(":CHAN2:COUP?");
-   ui->c2coup->setCurrentIndex(ui->c2coup->findText(scope.com.buffer));
+   QString cpl=scope.coupling(1);
+   ui->c1coup->setCurrentIndex(ui->c1coup->findText(cpl));
+   cpl=scope.coupling(2);
+   ui->c2coup->setCurrentIndex(ui->c2coup->findText(cpl));
    float off=scope.config.hoffset;
    // convert to uS
    off*=1000000.0f;
@@ -460,16 +451,15 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
    off=scope.config.vscale[1];
    ui->c2offspin->setValue(off);
 
-   scope.command(":TRIG:MODE?");
-   int  moden=ui->tmode->findText(scope.com.buffer,static_cast<Qt::MatchFlags>(Qt::MatchFixedString));
+   QString mode=scope.trigMode();
+   int  moden=ui->tmode->findText(mode,static_cast<Qt::MatchFlags>(Qt::MatchFixedString));
    if (moden!=-1)
    {
        ui->tmode->setCurrentIndex(moden);
    }
    else
    {
-       ui->statusBar->showMessage(QString("Unsupported trigger mode ")+scope.com.buffer);
-       ui->tmode->findText(scope.com.buffer,static_cast<Qt::MatchFlags>(Qt::MatchFixedString));
+       ui->statusBar->showMessage(QString("Unsupported trigger mode ")+mode);
    }
    // since nocommands is set, this will just update ui
    on_tmode_currentIndexChanged(ui->tmode->currentIndex());

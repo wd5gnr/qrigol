@@ -15,7 +15,7 @@ public:
 
 protected:
     MainWindow *win;
-
+    bool logiccmd(QString cmd,int chan,int offset,int ch);
 
 public:
 
@@ -54,6 +54,7 @@ public:
     bool connected(void) { return com.connected(); }
     int close(void) { return com.close(); }
     int trigStatus(void) { com.command(":TRIG:STAT?"); return *com.buffer; }
+    QString trigMode(void) { com.command(":TRIG:MODE?"); return QString(*com.buffer); }
     int unlock(void) { return com.unlock(); }
     int open(QString dev) { return com.open(dev.toLatin1()); }
     QString id(void);
@@ -62,8 +63,14 @@ public:
     int cmdCharIndex(const QString &cmd,const QString &search,int bpos=0);
     int acqMode(void) { command(":ACQ:MODE?"); return *com.buffer; }
     int average(void) { return (int)cmdFloat(":ACQ:AVER?"); }
-
-
+    bool isLongMemory(void) { command(":ACQ:MEMD?"); return *com.buffer=='L'; }
+    float sampleRate(void) { return cmdFloat(":ACQ:SAMP?"); }
+    int numChannels(void) { return 2; }
+    int scale(int *decade,int *sign);
+    bool bandwidthLimit(int chan) { return logiccmd(":CHAN%d:BWL?",chan,1,'N'); }
+    bool inverted(int chan) { return logiccmd(":CHAN%d:INV?",chan,1,'N'); }
+    bool filtered(int chan) { return logiccmd(":CHAN%d:FILT?",chan,1,'N'); }
+    QString coupling(int chan) { logiccmd(":CHAN%d:COUP?",chan,0,'x'); return QString(com.buffer); }
 
 
 
