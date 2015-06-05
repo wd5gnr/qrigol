@@ -54,7 +54,7 @@ public:
     bool connected(void) { return com.connected(); }
     int close(void) { return com.close(); }
     int trigStatus(void) { com.command(":TRIG:STAT?"); return *com.buffer; }
-    QString trigMode(void) { com.command(":TRIG:MODE?"); return QString(*com.buffer); }
+    QString trigMode(void) { com.command(":TRIG:MODE?"); return QString(com.buffer); }
     int unlock(void) { return com.unlock(); }
     int open(QString dev) { return com.open(dev.toLatin1()); }
     QString id(void);
