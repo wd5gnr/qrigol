@@ -40,29 +40,30 @@ respective owners.
 
 The interface consists of tabs. This one lets you connect to the device and exercise basic control:
 
-![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_126.jpg)
+![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_200.png)
 
 Here's the vertical tab:
 
-![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_127.jpg)
+![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_201.png)
 
 The Horizontal tab:
 
-![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_128.jpg)
+![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_202.png)
 
 The trigger tab mutates depending on the type of trigger (EDGE, PULSE, and SLOPE currently supported)
 
-![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_129.jpg)
+![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_203.png)
 
 
 You can read all measurements and also log them to CSV format in a variety of way on demand or on a timer
 
-![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_130.jpg)
+![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_204.png)
 
 
-This tab lets you export the data buffers or plot them with an external tool
+This tab lets you export the data buffers or plot them with an external tool, including Open Logic
+Sniffer or Sigrok.
 
-![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_131.jpg)
+![Screenshot](https://raw.githubusercontent.com/wd5gnr/qrigol/master/screenshots/screenshot_205.png)
 
 
 # Building

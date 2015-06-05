@@ -42,7 +42,13 @@ OTHER_FILES += \
     icons/greenlight.png \
     icons/redlight.png \
     icons/disconnect,png \
-    icons/connect.png
+    icons/connect.png \
+    screenshots/screenshot_200.png \
+    screenshots/screenshot_201.png \
+    screenshots/screenshot_202.png \
+    screenshots/screenshot_203.png \
+    screenshots/screenshot_204.png \
+    screenshots/screenshot_205.png
 
 RESOURCES += \
     resources.qrc

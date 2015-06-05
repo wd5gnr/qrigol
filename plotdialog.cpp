@@ -19,14 +19,14 @@ const char *defscripts[]=
     "ysize=600\n"
     "set terminal qt 1 size xsize,ysize\n"
     "set datafile separator \",\"\n"
-    "set title \"Channel 1\"\n"
+    "set title \"Rigol Scope Output\"\n"
     "plot \"{FILE}\" using 1:2 with lines  title columnhead(2)  lc \"orange\",  \"{FILE}\" using 1:3 with lines title columnhead(3) lc \"blue\"\n"
     "pause mouse close\n",
     "xsize=800\n"
     "ysize=600\n"
     "set terminal x11 1 size xsize,ysize\n"
     "set datafile separator \",\"\n"
-    "set title \"Channel 1\"\n"
+    "set title \"Rigol Scope Output\"\n"
     "plot \"{FILE}\" using 1:2 with lines  title columnhead(2)  lc \"orange\",  \"{FILE}\" using 1:3 with lines title columnhead(3) lc \"blue\"\n"
     "pause mouse close\n",
     "set terminal pdf size 8.00in,11.00in\nset output '/tmp/scope.pdf'\nset datafile separator \",\"\nplot \"{FILE}\" using 1:2 with lines\npause -1\n",
