@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="status">
        <attribute name="title">
@@ -3006,7 +3006,7 @@
                 <string>Units for auto measure time (to the left)</string>
                </property>
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <item>
                 <property name="text">
@@ -3110,7 +3110,7 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="0" colspan="4">
+             <item row="2" column="0" colspan="2">
               <widget class="QLabel" name="mlogfilename">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -3126,6 +3126,13 @@
                </property>
                <property name="textInteractionFlags">
                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2" colspan="2">
+              <widget class="QLabel" name="captureCount">
+               <property name="text">
+                <string>0 captures logged</string>
                </property>
               </widget>
              </item>

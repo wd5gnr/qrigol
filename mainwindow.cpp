@@ -13,7 +13,7 @@
 // TODO: Read scales
 // TODO: The plot example UI probably doesn't work well with a keyboard
 // TODO: My goal is remove everything out of here having to do with direct command
-// and/or com.buffer but that is a work in progress
+// TODO: Export has a strange data point at the end all of a sudden
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -62,7 +62,7 @@ void MainWindow::chanDisp(int chan, bool disp)
         ui->cdisp1->setChecked(disp);
         on_cdisp1_clicked();
     }
-    else
+    else if (chan==2)
     {
         ui->cdisp2->setChecked(disp);
         on_cdisp2_clicked();
@@ -215,10 +215,13 @@ void MainWindow::on_measUpdate_clicked()
     if (ui->measLogEnable->isChecked())
     {
         mlogworker.inuse.lock();
-        for (int i=0;i<2;i++)  // should use std::copy (std::copy(&array[0][0],&array[0][0]+rows*columns,&dest[0][0]); TODO
-            for (int j=0;j<20;j++) mlogworker.data[i][j]=lastMeasure[i][j];
+        std::copy(&lastMeasure[0][0],&lastMeasure[0][0]+2*20,&mlogworker.data[0][0]);
+//        for (int i=0;i<2;i++)  // should use std::copy (std::copy(&array[0][0],&array[0][0]+rows*columns,&dest[0][0]); TODO
+//            for (int j=0;j<20;j++) mlogworker.data[i][j]=lastMeasure[i][j];
         mlogworker.sample.release();
         mlogworker.inuse.unlock();
+        capcount++;
+        ui->captureCount->setText(QString::number(capcount)+" captures logged");
     }
 
 }
@@ -651,10 +654,8 @@ void MainWindow::on_c2coup_currentIndexChanged(int index)
 
 void MainWindow::on_hoffsetspin_valueChanged(double arg1)
 {
-    float arg=arg1/1000000.0f;  // convert to seconds
     if (!scope.connected()||nocommands) return;
-    QString cmd=QString(":TIM:OFFS ")+QString::number(arg);
-    scope.command(cmd);
+    scope.setTimeOffsetUs(arg1);
 }
 
 void MainWindow::on_hoffincr_valueChanged(double arg1)
@@ -669,36 +670,28 @@ void MainWindow::on_c1offspin_valueChanged(double arg1)
 {
     Q_UNUSED(arg1);
     if (!scope.connected()||nocommands) return;
-    QString cmd=":CHAN1:OFFS ";
-    cmd+=QString::number(ui->c1offspin->value());
-    scope.command(cmd);
+    scope.setChanOffset(1,ui->c1offspin->value());
 }
 
 void MainWindow::on_c2offspin_valueChanged(double arg1)
 {
     Q_UNUSED(arg1);
     if (!scope.connected()||nocommands) return;
-    QString cmd=":CHAN2:OFFS ";
-    cmd+=QString::number(ui->c2offspin->value());
-    scope.command(cmd);
-
+    scope.setChanOffset(2,ui->c2offspin->value());
 }
 
 void MainWindow::on_c1vscale_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
     if (!scope.connected()||nocommands) return;
-    QString cmd=":CHAN1:SCAL "+ui->c1vscale->currentText();
-    scope.command(cmd);
+    scope.setChanScale(1,ui->c1vscale->currentText());
 }
 
 void MainWindow::on_c2vscale_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
     if (!scope.connected()||nocommands) return;
-    QString cmd=":CHAN2:SCAL "+ui->c2vscale->currentText();
-    scope.command(cmd);
-
+    scope.setChanScale(2,ui->c2vscale->currentText());
 }
 
 void MainWindow::on_unlockBtn_clicked()
@@ -733,7 +726,6 @@ void MainWindow::on_updAcq_3_clicked()
 
 void MainWindow::on_tmode_currentIndexChanged(int index)
 {
-    QString cmd=":TRIG:MODE ";
     ui->tboxedge->setVisible(index==0);
     ui->tboxpulse->setVisible(index==1);
     ui->tboxslope->setVisible(index==2);
@@ -744,16 +736,12 @@ void MainWindow::on_tmode_currentIndexChanged(int index)
     if (index==0) ui->tsource->addItem("ACLINE");
     ui->tcouple->setEnabled(index<3);
     if (!scope.connected()||nocommands) return;
-    cmd+=ui->tmode->currentText();
-    scope.command(cmd);
-    QString cmdbase=":TRIG:";
-    cmdbase=cmdbase+ui->tmode->currentText();
-    cmd=cmdbase+":SOUR?";
-    scope.command(cmd);
-    ui->tsource->setCurrentIndex(ui->tsource->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
-    cmd=cmdbase+":SWE?";
-    scope.command(cmd);
-    ui->tsweep->setCurrentIndex(ui->tsweep->findText(scope.com.buffer,Qt::MatchFlags(Qt::MatchFixedString)));
+    scope.setTrigMode(ui->tmode->currentText());
+    QString res;
+    res=scope.triggerSource(ui->tmode->currentText());
+    ui->tsource->setCurrentIndex(ui->tsource->findText(res,Qt::MatchFlags(Qt::MatchFixedString)));
+    res=scope.sweep(ui->tmode->currentText());
+    ui->tsweep->setCurrentIndex(ui->tsweep->findText(res,Qt::MatchFlags(Qt::MatchFixedString)));
 // This seems like a good idea, but the scope doesn't shift gears fast enough
 // For example, going to slope mode where the trigger channel is invalid and back to edge does not
 // update the channel source correctly
@@ -764,11 +752,8 @@ void MainWindow::on_tmode_currentIndexChanged(int index)
 void MainWindow::on_tsweep_currentIndexChanged(const QString &arg1)
 {
     Q_UNUSED(arg1);
-    QString cmd=":TRIG:";
     if (!scope.connected()||nocommands) return;
-    cmd+=ui->tmode->currentText()+":SWE ";
-    cmd+=ui->tsweep->currentText();
-    scope.command(cmd);
+    scope.setSweep(ui->tmode->currentText(),ui->tsweep->currentText());
 }
 
 void MainWindow::on_tsource_currentIndexChanged(int index)
@@ -776,18 +761,14 @@ void MainWindow::on_tsource_currentIndexChanged(int index)
     Q_UNUSED(index);
     QString cmd=":TRIG:";
     if (!scope.connected()||nocommands) return;
-    cmd+=ui->tmode->currentText()+":SOUR "+ui->tsource->currentText();
-    scope.command(cmd);
+    scope.setTrigSource(ui->tmode->currentText(),ui->tsource->currentText());
 }
 
 void MainWindow::on_tholdoff_valueChanged(double arg1)
 {
     QString cmd;
     if (!scope.connected()||nocommands) return;
-    arg1/=1000000.0f; // convert to seconds
-    cmd=":TRIG:HOLD ";
-    cmd+=QString::number(arg1,'f');
-    scope.command(cmd);
+    scope.setTrigHoldUs(arg1);
 }
 
 void MainWindow::on_tfifty_clicked()
@@ -805,66 +786,48 @@ void MainWindow::on_tforce_clicked()
 void MainWindow::on_tlevel_valueChanged(double arg1)
 {
     Q_UNUSED(arg1);
-    QString cmd=":TRIG:";
     if (!scope.connected()||nocommands) return;
-    cmd+=ui->tmode->currentText()+":LEV " + QString::number(ui->tlevel->value());
-    scope.command(cmd);
+    scope.setTrigLevel(ui->tmode->currentText(),ui->tlevel->value());
 }
 
 void MainWindow::on_tcouple_currentIndexChanged(const QString &arg1)
 {
-    QString cmd=":TRIG:";
     if (!scope.connected()||nocommands) return;
-    cmd+=ui->tmode->currentText()+":COUP " +arg1;
-    scope.command(cmd);
+    scope.setTrigCouple(ui->tmode->currentText(),arg1);
 }
 
 void MainWindow::on_tposneg_currentIndexChanged(int index)
 {
-    QString cmd;
     if (!scope.connected()||nocommands) return;
-    cmd=":TRIG:EDGE:SLOP ";
-    if (index) cmd+="NEG"; else cmd+="POS";
-    scope.command(cmd);
+    scope.setTrigEdgeSlope(index==0);
 }
 
 void MainWindow::on_tedgesense_valueChanged(double arg1)
 {
-    QString cmd;
     if (!scope.connected()||nocommands) return;
-    cmd=":TRIG:EDGE:SENS ";
-    cmd+=QString::number(arg1);
-    scope.command(cmd);
+    scope.setTrigEdgeSense(arg1);
 }
 
 void MainWindow::on_tpulsesense_valueChanged(double arg1)
 {
-    QString cmd;
     if (!scope.connected()||nocommands) return;
-    cmd=":TRIG:PULS:SENS ";
-    cmd+=QString::number(arg1);
-    scope.command(cmd);
+    scope.setTrigPulseSense(arg1);
 }
 
 void MainWindow::on_tpulswid_valueChanged(double arg1)
 {
-    QString cmd;
     if (!scope.connected()||nocommands) return;
-    arg1/=1000000.0f; // convert to seconds
-    cmd=":TRIG:PULS:WIDT ";
-    cmd+=QString::number(arg1,'f');
-    scope.command(cmd);
+    scope.setTrigPulseWidthUs(arg1);
 }
 
 
 
 void MainWindow::on_tpulsemode_currentIndexChanged(const QString &arg1)
 {
-    QString cmd=":TRIG:PULS:MODE ", arg=arg1;
-    arg=arg.remove(' ');
-    cmd+=arg;
+    QString arg=arg1;
     if (!scope.connected()||nocommands) return;
-    scope.command(cmd);
+    arg=arg.remove(' ');
+    scope.setTrigPulseMode(arg);
 }
 
 
@@ -893,12 +856,16 @@ void MainWindow::on_measLogEnable_clicked()
             bx.exec();
             return;
         }
+        capcount=0;
+        ui->captureCount->setText("0 captures logged");
+        ui->mlogfileselect->setEnabled(false);
         mlog=new QFile(ui->mlogfilename->text());
         mlogworker.prep(mlog,ui->measlogheader->isChecked(),ui->updTimeScale->currentIndex()>0,ui->mlogstop->isChecked()?ui->mlogrepeat->value():-1);
         mlogworker.start();
     }
     else
     {
+        ui->mlogfileselect->setEnabled(true);
         mlogworker.terminate();
         mlog->close();
     }
@@ -908,31 +875,23 @@ void MainWindow::on_measLogEnable_clicked()
 void MainWindow::on_mathdisp_clicked()
 {
     if (!scope.connected()) return;
-    QString cmd=":MATH:DISP ";
-    cmd+=ui->mathdisp->isChecked()?"ON":"OFF";
-    scope.command(cmd);
-
+    scope.setMathDisp(ui->mathdisp->isChecked());
 }
 
 void MainWindow::on_mathsel_currentIndexChanged(const QString &arg1)
 {
-    QString cmd=":MATH:OPER ";
-    cmd+=arg1;
     if (!scope.connected()||nocommands) return;
-    scope.command(cmd);
-
+   scope.setMathOper(arg1);
 }
 
 /* Still need to do the slope commands */
 void MainWindow::on_tslopemode_currentIndexChanged(const QString &arg1)
 {
     // Needs to have no spaces
+    QString arg=arg1;
     if (!scope.connected()||nocommands) return;
-    QString cmd,arg=arg1;
     arg=arg.remove(' ');
-    cmd=":TRIG:SLOP:MODE "+arg;
-    scope.command(cmd);
-
+    scope.setTrigSlopeMode(arg);
 }
 
 void MainWindow::on_tslopewin_currentIndexChanged(const QString &arg1)
@@ -941,47 +900,33 @@ void MainWindow::on_tslopewin_currentIndexChanged(const QString &arg1)
     if (!scope.connected()||nocommands) return;
     QString cmd,arg=arg1;
     arg=arg.replace("_WIN_","");
-    cmd=":TRIG:SLOP:WIND "+arg;
-    scope.command(cmd);
-
+    scope.setTrigSlopeWindow(arg);
 }
 
 void MainWindow::on_tslopetime_valueChanged(double arg1)
 {
-    Q_UNUSED(arg1);
-    // convert uS
     if (!scope.connected()||nocommands) return;
-    QString cmd=":TRIG:SLOP:TIME "+QString::number(ui->tslopetime->value()/1000000.0f);
-    scope.command(cmd);
-
+    scope.setTrigSlopeTimeUs(arg1);
 }
 
 void MainWindow::on_tslopea_valueChanged(double arg1)
 {
-    Q_UNUSED(arg1);
     if (!scope.connected()||nocommands) return;
-    QString cmd=":TRIG:SLOP:LEVA "+QString::number(ui->tslopea->value());
-    scope.command(cmd);
-
-}
-
-void MainWindow::on_tslopesense_valueChanged(double arg1)
-{
-    Q_UNUSED(arg1);
-    if (!scope.connected()||nocommands) return;
-    QString cmd=":TRIG:SLOP:SENS "+QString::number(ui->tslopesense->value());
-    scope.command(cmd);
+    scope.setTrigSlopeLevA(arg1);
 }
 
 void MainWindow::on_tslopeb_valueChanged(double arg1)
 {
-    Q_UNUSED(arg1);
     if (!scope.connected()||nocommands) return;
-    QString cmd=":TRIG:SLOP:LEVB "+QString::number(ui->tslopeb->value());
-    scope.command(cmd);
-
+    scope.setTrigSlopeLevB(arg1);
 }
 
+
+void MainWindow::on_tslopesense_valueChanged(double arg1)
+{
+    if (!scope.connected()||nocommands) return;
+    scope.setTrigSlopeSense(arg1);
+}
 
 // This is about the only place we should be direct accessing command and com.buffer
 void MainWindow::on_action_Diagnostic_triggered()
@@ -1004,7 +949,6 @@ void MainWindow::on_action_Diagnostic_triggered()
 }
 
 
-
 void MainWindow::on_actionRun_Stop_triggered()
 {
     if (scope.connected())
@@ -1017,7 +961,6 @@ void MainWindow::on_actionConnect_triggered()
 {
     ui->connectButton->setChecked(!scope.connected());
     on_connectButton_clicked();
-
 }
 
 

@@ -11,7 +11,7 @@
 
 
 static const int max_cmd_len=255;
-static const int max_resp_len=2*512*1024;
+static const int max_resp_len=2*512*1024+10; // 10 byte header on newer scopes
 
 RigolComm::RigolComm()
 {
@@ -69,13 +69,14 @@ int RigolComm::send(const char *command)
 // Databuffers return size of data in buffer
 int RigolComm::get_data_size(int rawsize)
  {
+     int rv;
      char csize[9];
      buffer=_buffer;
      if (_buffer[0]!='#' || _buffer[1]!='8' || getenv("RIGOL_USE_OLD_PROTOCOL")) return rawsize<512?0:rawsize;
      strncpy(csize,_buffer+2,sizeof(csize)-1);
-     csize[sizeof(csize)-1]='\0';
-     buffer+=10;
-     return atoi(csize);
+     csize[sizeof(csize)-1]='\0';  // it appears that if size is max (1M) the header chops off the end
+     rv=atoi(csize);
+     return rv;
 }
 
 int RigolComm::recv(void)

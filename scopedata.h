@@ -93,12 +93,34 @@ public:
     bool setAcqMemNorm(void) { return command(":ACQ:MEMD NORM");  }
     bool setAcqMemLong(void) { return command(":ACQ:MEMD LONG"); }
     bool setTimeScale(const QString &s) { return command(":TIM:SCAL "+s); }
+    bool setTimeOffsetUs(float f) { return command(":TIM:OFFS "+QString::number(f/1000000.0f)); }
     bool setChanDisp(int chan,bool state) { return command(QString(":CHAN")+QString::number(chan)+":DISP "+ (state?"ON":"OFF")); }
     bool setChanBWL(int chan,bool state) { return command(QString(":CHAN")+QString::number(chan)+":BWL "+ (state?"ON":"OFF")); }
     bool setChanInvert(int chan,bool state) { return command(QString(":CHAN")+QString::number(chan)+":INV "+ (state?"ON":"OFF")); }
     bool setChanFilter(int chan,bool state) { return command(QString(":CHAN")+QString::number(chan)+":FILT "+ (state?"ON":"OFF")); }
     bool setChanProbe(int chan,int x) { return command(QString(":CHAN")+QString::number(chan)+":PROB "+QString::number(x)); }
     bool setChanCouple(int chan,const QString &acdc) { return command(QString(":CHAN")+QString::number(chan)+":COUP "+acdc); }
+    bool setChanOffset(int chan,float f) { return command(":CHAN"+QString::number(chan)+":OFFS "+QString::number(f)); }
+    bool setChanScale(int chan, const QString &v) { return command(":CHAN" +QString::number(chan)+":SCAL "+v); }
+    bool setTrigMode(const QString &mod) { return command(":TRIG:MODE "+mod); }
+    bool setTrigLevel(const QString &mod, float f) { return command(":TRIG:"+mod+":LEV"+QString::number(f)); }
+    bool setSweep(const QString &mod,const QString state) { return command(":TRIG:"+mod+":SWE "+state); }
+    bool setTrigSource(const QString &mod,const QString state) { return command(":TRIG:"+mod+":SOUR "+state); }
+    bool setTrigHoldUs(float f) { return command(":TRIG:HOLD"+QString::number(f/1000000.0f,'f')); }
+    bool setTrigCouple(const QString &mod,const QString &acdc) { return command(":TRIG:"+mod+":COUP "+acdc); }
+    bool setTrigEdgeSlope(bool pos) { return command(QString(":TRIG:EDGE:SLOP ") + (pos?"POS":"NEG")); }
+    bool setTrigEdgeSense(float f) { return command(":TRIG:EDGE:SENS "+QString::number(f)); }
+    bool setTrigPulseSense(float f) { return command(":TRIG:PULS:SENS "+QString::number(f)); }
+    bool setTrigPulseWidthUs(float f) { return command(":TRIG:PULS:WIDT "+QString::number(f/1000000.0f)); }
+    bool setTrigPulseMode(const QString &mod) { return command(":TRIG:PULS:MODE "+mod); }
+    bool setMathDisp(bool on) { return command(QString(":MATH:DISP ")+(on?"ON":"OFF")); }
+    bool setMathOper(const QString &op) { return command(":MATH:OPER "+op); }
+    bool setTrigSlopeMode(const QString &mod) { return command(":TRIG:SLOP:MODE "+mod); }
+    bool setTrigSlopeWindow(const QString &mod) { return command(":TRIG:SLOP:WIND "+mod); }
+    bool setTrigSlopeTimeUs(float f) { return command(":TRIG:SLOP:TIME "+QString::number(f/1000000.0f)); }
+    bool setTrigSlopeLevA(float f)  { return command(":TRIG:SLOP:LEVA "+QString::number(f)); }
+    bool setTrigSlopeLevB(float f)  { return command(":TRIG:SLOP:LEVB "+QString::number(f)); }
+    bool setTrigSlopeSense(float f)  { return command(":TRIG:SLOP:SENS "+QString::number(f)); }
 
 signals:
 

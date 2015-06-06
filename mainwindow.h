@@ -181,6 +181,7 @@ private:
     QFile *mlog;
     MLogger mlogworker;
     ScopeData scope;
+    unsigned capcount;
 };
 
 #endif // MAINWINDOW_H
