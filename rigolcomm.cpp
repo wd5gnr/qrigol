@@ -22,6 +22,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
+
 
 
 // The intent of this file is to just read/write
@@ -111,7 +113,24 @@ int RigolComm::recv(void)
 float RigolComm::toFloat(void)
 {
     float rv=-1.0f;
-    if (recv()>=0) sscanf(buffer,"%f",&rv);
+    // the problem here is sscanf uses the user's locale
+    // But the Rigol ALWAYS uses a '.' for decimal separator
+    printf("%s\n",setlocale(LC_ALL,NULL));
+    struct lconv *lc=localeconv();
+    char dp=*lc->decimal_point;
+    printf("DEBUG: Decimal point is %c\n",dp);
+    if (recv()<0) return rv;
+    if (dp!='.')
+    {
+        char *p;
+        do
+        {
+            p=strchr(buffer,'.');
+            if (p) *p=dp;  // convert to local decimal point
+        } while (p);
+    }
+    printf("DEBUG: BUFFER=%s\n",buffer);
+    sscanf(buffer,"%f",&rv);
     return rv;
 }
 

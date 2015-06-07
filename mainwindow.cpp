@@ -311,10 +311,10 @@ void MainWindow::setupChannel(int ch,QComboBox *probebox,QComboBox *scalebox)
     QString cmd;
     cmdbase+=QString::number(ch);
     cmd=cmdbase+":PROB?";
-//    printf("DEBUG: cmd=%s\n",cmd.toLatin1().data());
+    printf("DEBUG: cmd=%s\n",cmd.toLatin1().data());
     float probe=scope.cmdFloat(cmd);
     probebox->setCurrentIndex(probebox->findText(QString::number((int)probe)+"X"));
-//    printf("DEBUG: %f %d\n",probe, (int)probe);
+    printf("DEBUG: %f %d\n",probe, (int)probe);
 //    QString dbg=QString::number((int)probe)+"X";
 //    printf("DEBUG: %s\n",(char *)dbg.toLatin1().data());
     scalebox->clear();
