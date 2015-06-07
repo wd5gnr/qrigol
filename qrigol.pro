@@ -48,7 +48,8 @@ OTHER_FILES += \
     screenshots/screenshot_202.png \
     screenshots/screenshot_203.png \
     screenshots/screenshot_204.png \
-    screenshots/screenshot_205.png
+    screenshots/screenshot_205.png \
+    packages/qrigol_0.1_amd64.deb
 
 RESOURCES += \
     resources.qrc
