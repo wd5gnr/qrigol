@@ -35,6 +35,9 @@ respective owners.
 * No help system (will fix)
 * Does not do XY, Delayed, or Roll mode
 
+# Notes
+If you have older firmware, read below. You need permissions on your scope's device (read below).
+To avoid confusion: the PC connects to the BACK of the Rigol scope, not the port in the front.
 
 # Screen Shots
 
