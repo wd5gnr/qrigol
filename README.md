@@ -72,3 +72,42 @@ Use QtCreator and load the .pro file as a project. Select a kit for your configu
 
 Might work on Windows, although you'd almost surely have to change the port selection and there might
 be a few other things that don't work. No idea. Use Linux!
+
+# Permissions
+
+You need to have read/write permissions on the usbtmc file you are using for your scope. One easy way
+to do this is to install sigrok which has definitions for many common scopes including your Rigol.
+The setup there puts read write permission in the plugdev group, so you need to be a member of that
+group. If your distribution's package of Sigrok doesn't include the udev setup, you might want
+to read this: http://sigrok.org/wiki/Fx2lafw#Install_the_udev_rules_file.
+
+If you prefer, you can try the following file (save as /etc/udev/rules.d/40-rigol.rules)
+
+    ACTION!="add|change", GOTO="rigol_rules_end"
+    SUBSYSTEM!="usb|usbmisc|usb_device", GOTO="rigol_rules_end"
+
+    # Rigol DS1000 series
+    ATTRS{idVendor}=="1ab1", ATTRS{idProduct}=="0588", MODE="664", GROUP="plugdev"
+
+    # Rigol DS2000 series
+    ATTRS{idVendor}=="1ab1", ATTRS{idProduct}=="04b0", MODE="664", GROUP="plugdev"
+
+    # Rigol DG4000 series
+    ATTRS{idVendor}=="1ab1", ATTRS{idProduct}=="0641", MODE="664", GROUP="plugdev"
+
+    LABEL="rigol_rules_end"
+
+After you fix udev, you need to restart udev (or reboot the PC if you are lazy). You probably need a command
+like "sudo /etc/init.d/udev restart"
+
+Another alternative (not suggested) is to run the program as root. Or, issue "sudo chmod 666 /dev/usbtmc0"
+(using whatever number your device is in place of 0, of course). You'd have to do this on every reboot
+or put it (without the sudo) in local.rc or some other autostart location.
+
+# A Note About Firmware Versions
+
+I tried to make the program compatible with the old and new format of data. However, there is at least
+one report of it not working on an old (pre 4.0) version of the firmware (in particular, the export
+functions will fail). Please report this behavior and I will send you a test version. I will remove
+this part of the README if and when this is resolved.
+
