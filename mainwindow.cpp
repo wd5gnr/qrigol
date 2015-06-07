@@ -33,6 +33,28 @@
 // TODO: Read scales
 // TODO: The plot example UI probably doesn't work well with a keyboard
 
+void MainWindow::on_action_About_triggered()
+{
+    QMessageBox::information(this,tr("About"),tr("qrigol V0.2 Copyright (c) 2015 by Al Williams http://www.awce.com.\n"
+                                                 "This program comes with ABSOLUTELY NO WARRANTY. "
+                                                 "This is free software, and you are welcome to redistribute it under certain conditions.\n"
+                                                 "See the file COPYING for more information."
+                                                 ));
+}
+void MainWindow::restoreSavedSettings(void)
+{
+    QSettings set;
+    ui->deviceName->setText(set.value("Options/Device","/dev/usbtmc0").toString());
+    ui->unlockBtn->setChecked(set.value("Options/Unlock",false).toBool());
+    ui->hoffincr->setValue(set.value("Options/hincr",100.0).toFloat());
+    ui->exportFmt->setCurrentIndex(set.value("Options/exportselect",0).toInt());
+    ui->wavec1->setChecked(set.value("Options/exportc1",true).toBool());
+    ui->wavec2->setChecked(set.value("Options/exportc2",true).toBool());
+    ui->wavehead->setChecked(set.value("Options/exporthead",true).toBool());
+    ui->wavesavecfg->setChecked(set.value("Options/exporthead",true).toBool());
+    ui->waveraw->setChecked(set.value("Options/exportraw",false).toBool());
+    ui->logicThresh->setValue(set.value("Options/exportthresh",2.5f).toFloat());
+}
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -46,14 +68,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->setCurrentIndex(0);
     ui->statusBar->showMessage("Disconnected");
 // recall device name and other settings
-    QString dev;
-    QSettings set;
-    dev=set.value("Options/Device","/dev/usbtmc0").toString();
-    ui->unlockBtn->setChecked(set.value("Options/Unlock",false).toBool());
-    ui->hoffincr->setValue(set.value("Options/hincr",100.0).toFloat());
-    ui->exportFmt->setCurrentIndex(set.value("Options/exportselect",0).toInt());
-    // TODO restore wav* and logicthresh
-    ui->deviceName->setText(dev);
+    restoreSavedSettings();
     ui->hoffsetspin->setSingleStep(ui->hoffincr->value());
     ui->tboxpulse->setVisible(false);
     ui->tboxslope->setVisible(false);
@@ -235,7 +250,8 @@ void MainWindow::on_measUpdate_clicked()
     {
         mlogworker.inuse.lock();
         std::copy(&lastMeasure[0][0],&lastMeasure[0][0]+2*20,&mlogworker.data[0][0]);
-//        for (int i=0;i<2;i++)  // should use std::copy (std::copy(&array[0][0],&array[0][0]+rows*columns,&dest[0][0]); TODO
+// If std::copy didn't work, this is what used to be here
+//        for (int i=0;i<2;i++)  // should use std::copy (std::copy(&array[0][0],&array[0][0]+rows*columns,&dest[0][0]);
 //            for (int j=0;j<20;j++) mlogworker.data[i][j]=lastMeasure[i][j];
         mlogworker.sample.release();
         mlogworker.inuse.unlock();
@@ -295,8 +311,12 @@ void MainWindow::setupChannel(int ch,QComboBox *probebox,QComboBox *scalebox)
     QString cmd;
     cmdbase+=QString::number(ch);
     cmd=cmdbase+":PROB?";
+//    printf("DEBUG: cmd=%s\n",cmd.toLatin1().data());
     float probe=scope.cmdFloat(cmd);
-    probebox->setCurrentIndex(probebox->findText(QString::number(probe)+"X"));
+    probebox->setCurrentIndex(probebox->findText(QString::number((int)probe)+"X"));
+//    printf("DEBUG: %f %d\n",probe, (int)probe);
+//    QString dbg=QString::number((int)probe)+"X";
+//    printf("DEBUG: %s\n",(char *)dbg.toLatin1().data());
     scalebox->clear();
     if (probe==1.0)
     {
@@ -727,14 +747,7 @@ void MainWindow::on_hoffclear_clicked()
 
 
 
-void MainWindow::on_action_About_triggered()
-{
-    QMessageBox::information(this,tr("About"),tr("qrigol V0.1 Copyright (c) 2015 by Al Williams http://www.awce.com.\n"
-                                                 "This program comes with ABSOLUTELY NO WARRANTY. "
-                                                 "This is free software, and you are welcome to redistribute it under certain conditions.\n"
-                                                 "See the file COPYING for more information."
-                                                 ));
-}
+
 
 
 
@@ -986,7 +999,13 @@ void MainWindow::on_actionConnect_triggered()
 
 void MainWindow::on_exportButton_clicked()
 {
-    // TODO Save wave options
+    QSettings set;
+    set.setValue("Options/exportc1",ui->wavec1->isChecked());
+    set.setValue("Options/exportc2",ui->wavec2->isChecked());
+    set.setValue("Options/exporthead",ui->wavehead->isChecked());
+    set.setValue("Options/exportcfg",ui->wavesavecfg->isChecked());
+    set.setValue("Options/exportraw",ui->waveraw->isChecked());
+    set.setValue("Options/exportthresh",ui->logicThresh->value());
     switch (ui->exportFmt->currentIndex())
     {
         case 0:

@@ -178,6 +178,7 @@ private:
 
     bool nocommands;
     void setupChannel(int ch, QComboBox *probebox, QComboBox *scalebox);
+    void restoreSavedSettings(void);
     QFile *mlog;
     MLogger mlogworker;
     ScopeData scope;

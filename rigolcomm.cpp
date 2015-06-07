@@ -24,7 +24,8 @@
 #include <string.h>
 
 
-
+// The intent of this file is to just read/write
+// the device in a very raw way
 
 
 
@@ -83,8 +84,9 @@ int RigolComm::send(const char *command)
      return size<0?size:0;
 }
 
-// Returns -1 for anything other than data buffers
+// Returns 0 for anything other than data buffers
 // Databuffers return size of data in buffer
+// There is at least one report that the OLD_PROTOCOL handling in this routine is not working
 int RigolComm::get_data_size(int rawsize)
  {
      int rv;
@@ -92,7 +94,7 @@ int RigolComm::get_data_size(int rawsize)
      buffer=_buffer;
      if (_buffer[0]!='#' || _buffer[1]!='8' || getenv("RIGOL_USE_OLD_PROTOCOL")) return rawsize<512?0:rawsize;
      strncpy(csize,_buffer+2,sizeof(csize)-1);
-     csize[sizeof(csize)-1]='\0';  // it appears that if size is max (1M) the header chops off the end
+     csize[sizeof(csize)-1]='\0';  // comment that used to be here was incorrect ;-)
      rv=atoi(csize);
      return rv;
 }

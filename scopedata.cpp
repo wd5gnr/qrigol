@@ -67,6 +67,41 @@ int ScopeData::cmdCharIndex(const QString &cmd,const QString &search,int bpos)
     return search.indexOf(c,0,Qt::CaseInsensitive);
 }
 
+
+int ScopeData::scale(int *decade,int *sign)
+{
+    char *p;
+    command(":TIM:SCAL?");
+    if (decade) *decade=QString(com.buffer).right(1).toInt();
+    if (sign) *sign=QString(com.buffer).right(3).left(1)[0]=='+'?1:-1;
+    p=strchr(com.buffer,'.');
+    if (p) *p='\0';
+    return QString(com.buffer).toInt();
+}
+
+QString ScopeData::triggerSource(const QString &mode)
+{
+    QString cmd=":TRIG:";
+    QString rv;
+    cmd+=mode+":SOUR?";
+    command(cmd);
+    if (com.buffer[2]=='1') rv="CHAN1";
+    else if (com.buffer[2]=='2') rv="CHAN2";
+    else rv=com.buffer;
+    return rv;
+}
+
+
+QString ScopeData::sweep(const QString &mode)
+{
+    QString cmd=":TRIG:";
+    QString rv;
+    cmd+=mode+":SWE?";
+    command(cmd);
+    rv=com.buffer;
+    return rv;
+}
+
 void ScopeData::setConfig(void)
 {
     QString cmdbase,cmd;
@@ -310,9 +345,16 @@ void ScopeData::do_wave_plot(bool c1, bool c2)
     exportEngine(true,c1,c2,true,false,false,file);
     // execute command
     QProcess proc;
-    proc.startDetached(cmd);
+    if (!proc.startDetached(cmd))
+    {
+        QMessageBox done;
+        done.setText("Unable to start plot program specified.");
+        done.exec();
+    }
     delete file;
     delete scriptfile; // really should have made these on the stack
+    // Note autodelete is off so we pollute the /tmp directory with files
+    // The problem is we don't know when the other program is done with them
 }
 
 void ScopeData::do_export_csv(bool c1, bool c2, bool dotime, bool wheader, bool wconfig, bool raw)
@@ -328,7 +370,7 @@ void ScopeData::do_export_csv(bool c1, bool c2, bool dotime, bool wheader, bool 
         done.setText(msg);
         done.exec();
     }
-    // TODO: Files not deleted here!
+
 }
 
 void ScopeData::do_export_ols(bool c1, bool c2,float thresh)
@@ -393,7 +435,7 @@ void ScopeData::do_export_sigrok(bool c1, bool c2, float thresh)
     fn=QFileDialog::getSaveFileName(win,"OLS Export File Name",QString(),"Sigrok Files (*.sr);; All Files (*.*)");
     if (fn.isEmpty()) return;
     QTemporaryFile file(QDir::tempPath()+"/qrigoldata_XXXXXX.csv");
-    file.setAutoRemove(false);
+//    file.setAutoRemove(false);  -- should be ok to remove this one when done
     file.open();
     for (i=0;i<chansize;i++)
     {
@@ -426,37 +468,4 @@ void ScopeData::do_export_sigrok(bool c1, bool c2, float thresh)
 }
 
 
-int ScopeData::scale(int *decade,int *sign)
-{
-    char *p;
-    command(":TIM:SCAL?");
-    if (decade) *decade=QString(com.buffer).right(1).toInt();
-    if (sign) *sign=QString(com.buffer).right(3).left(1)[0]=='+'?1:-1;
-    p=strchr(com.buffer,'.');
-    if (p) *p='\0';
-    return QString(com.buffer).toInt();
-}
-
-QString ScopeData::triggerSource(const QString &mode)
-{
-    QString cmd=":TRIG:";
-    QString rv;
-    cmd+=mode+":SOUR?";
-    command(cmd);
-    if (com.buffer[2]=='1') rv="CHAN1";
-    else if (com.buffer[2]=='2') rv="CHAN2";
-    else rv=com.buffer;
-    return rv;
-}
-
-
-QString ScopeData::sweep(const QString &mode)
-{
-    QString cmd=":TRIG:";
-    QString rv;
-    cmd+=mode+":SWE?";
-    command(cmd);
-    rv=com.buffer;
-    return rv;
-}
 

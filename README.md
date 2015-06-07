@@ -34,6 +34,11 @@ respective owners.
 * Not all tool tip help is in place (will fix)
 * No help system (will fix)
 * Does not do XY, Delayed, or Roll mode
+* Does not correctly handle floating point if your locale uses "," as a separator (will fix)
+
+# Binary packages
+In the packages directory is a 64-bit DEB and RPM. This is currently at version 0.1 which is older than
+what you would get by cloning off of github and building.
 
 # Notes
 If you have older firmware, read below. You need permissions on your scope's device (read below).
