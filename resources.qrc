@@ -4,5 +4,16 @@
         <file>icons/redlight.png</file>
         <file>icons/connect.png</file>
         <file>icons/disconnect,png</file>
+        <file>help.html</file>
+        <file>help.css</file>
+        <file>index.html</file>
+        <file>main.html</file>
+        <file>about.html</file>
+        <file>concept.html</file>
+        <file>status.html</file>
+        <file>verthor.html</file>
+        <file>trigger.html</file>
+        <file>measure.html</file>
+        <file>waveform.html</file>
     </qresource>
 </RCC>

@@ -28,6 +28,7 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QInputDialog>
+#include "helpdialog.h"
 #include "unistd.h"
 
 // TODO: Read scales
@@ -35,11 +36,16 @@
 
 void MainWindow::on_action_About_triggered()
 {
+#if 0
     QMessageBox::information(this,tr("About"),tr("qrigol V0.2 Copyright (c) 2015 by Al Williams http://www.awce.com.\n"
                                                  "This program comes with ABSOLUTELY NO WARRANTY. "
                                                  "This is free software, and you are welcome to redistribute it under certain conditions.\n"
                                                  "See the file COPYING for more information."
                                                  ));
+#else
+    if (!helpdlg) helpdlg=new HelpDialog(this);
+    helpdlg->showRequest("about");
+#endif
 }
 void MainWindow::restoreSavedSettings(void)
 {
@@ -54,6 +60,8 @@ void MainWindow::restoreSavedSettings(void)
     ui->wavesavecfg->setChecked(set.value("Options/exporthead",true).toBool());
     ui->waveraw->setChecked(set.value("Options/exportraw",false).toBool());
     ui->logicThresh->setValue(set.value("Options/exportthresh",2.5f).toFloat());
+    this->setGeometry((QRect)set.value("Options/mainwinpos",QRect(0,0,640,480)).toRect());
+
 }
 
 
@@ -62,6 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     scope(this)
 {
+    helpdlg=NULL;
     ui->setupUi(this);
     nocommands=false;  // used to inhibit commands while updating UI
 // Force current tab
@@ -83,6 +92,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    QSettings set;
+    set.setValue("Options/mainwinpos",this->geometry());
     if (scope.connected()) scope.close();
     delete ui;
 }
@@ -1056,4 +1067,11 @@ void MainWindow::on_exportFmt_currentIndexChanged(int index)
     }
     QSettings set;
     set.setValue("Options/exportselect",index);
+}
+
+void MainWindow::on_action_Help_triggered()
+{
+    // Not 100% sure about the lifetime management of this
+    if (!helpdlg) helpdlg=new HelpDialog(this);
+    helpdlg->showRequest();
 }

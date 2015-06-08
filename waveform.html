@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<title>Page 1</title>
+<link rel="stylesheet" type="text/css" href="help.css">
+</head>
+<body>
+<h1>Waveform Tab</h1>
+<p>The Waveform tab allows you to export data to a variety of destinations. If the scope
+is not stopped, the export operation will stop it as this is the best way to ensure
+both channels are in sync and that no data changes during export.
+<p>The type of exports current supported include:
+<ul>
+<li>CSV - Comma delimited files you can import to many programs (e.g., Excel)
+<li>OLS - Open Logic Sniffer data allows that client to do protocol decoding and other analysis on captured data.
+<li>Sigrok - Sigrok data allows that client to do protocol decoding and other analysis.
+<li>Plot/Custom - In this mode, the program writes a data file and a script file and runs it through a command of your choosing.
+Examples are avialable for GNUPLot, for example.
+</ul>
+<h2>Options</h2>
+<p>Not all options are available in all modes. The options are:
+<ul>
+<li>Header - Include a header row
+<li>Time - Include the time as an output
+<li>Chan1/2 - Click to include the specified channel in the output. At least one must be checked.
+<li>Save Config - Save the scope's cuurent configuraiton to the export file.
+<li>Raw Counts - If checked, the program will export raw counts (0-255) instead of voltages.
+<li>Logic Threshold - When converting to digital formats (OLS and Sigrok) the program treats anything
+above this setting as a logic 1 and anything below as a logic 0.
+</ul>
+<h2>More About Plot/Custom</h2>
+<p>You can load an example from the bottom left of the popup dialog that appears when you
+select this type of export. If you make changes, the changes will be saved for next time, but
+do not alter the example. Practically, this means you can remember one custom setting at any
+time.
+<p>Operation is simple. The program will write a temporarly script file using the contents of the
+Script box. This script will <b>not</b> be made executable. Any occurance of {FILE} will be replaced
+by the datafile name. Any occurence of {SCRIPT} will be replaced by the script file name.
+<p>The same substitutions will occur on the command before executing it. In some cases, you won't have any
+script at all. The command might be:
+<pre>
+    cp {FILE} ~/archives
+</pre>
+For example. You can also use bash to read the script to write arbitrarily complex actions
+(see the examples for more on how to do this).
+<p>
+The current examples cover using GNUPLot, Qtiplot, and LibreCalc.
+</body>
+</html>

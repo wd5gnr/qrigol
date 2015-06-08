@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<title>Concepts</title>
+<link rel="stylesheet" type="text/css" href="help.css">
+</head>
+<body>
+<h1>Connecting</h1>
+<p>To use QRigol, you need a DS1052E or DS1102E instrument connected to your PC via
+the USB connector <b>on the back</b>. Do not use the front USB connector.
+<p>Your Linux PC should show a file at /dev/usbtmcX where X is a number (usually 0). If not,
+you may need a newer kernel, or one built with usbtmc support. There may also be a loadable
+module avaiable for your kernel.
+<p>You must have permissions to use the device, as well. The easiest (but least handy)
+way to handle this is to simply issue a chmod command as root. For example, if your
+scope is on usbtmc0 you might say:
+<pre>
+    sudo chmod 666 /dev/usbtmc0
+</pre>
+<p>
+You'll have to do this every time you restart your PC. A better idea is to write a udev rule
+to identify the device. If you use sigrok, you may already have this set up. On Kubuntu and
+similar distributions, for example, a default sigrok install makes the device writable by
+users in the plugdev group.
+<p>
+Do the following command from a termina:
+<pre>
+    ls -l /dev/usbtmc*
+</pre><p>
+You should see something like this:
+<pre>
+crw-rw-r-- 1 root plugdev 180, 4 Jun  8 11:00 /dev/usbtmc0
+</pre>
+<p>
+In this case, any user in the plugdev group can read and write the device (the 2nd group of rw
+characters at the start of the line). Without the udev rules, you will probably see:
+<pre>
+crw-rw-r-- 1 root root 180, 4 Jun  8 11:00 /dev/usbtmc0
+</pre>
+<h2>Basic Usage</h2>
+<p>The first thing you'll want to do is fill in the Device field on the Status tab to match
+the device name of your scope (e.g., /dev/usbtmc0). Then press the connect icon on the tool bar
+or the connect button on the screen.
+<p>Before you connect, you can't really do much. When connected the second icon on the toolbar
+and the Run/Stop button on the status tab will correctly reflect the Run/Stop status of the scope.
+<p>Once connected, the program will lock out the scope's keyboard unless you check the
+Unlock keyboard box on the status tab (the program will remember this and most other settings).
+The keyboard is always unlocked when the program ends. If the program crashes, and the keyboard
+is locked, simply press the FORCE button in the trigger section to unlock the keyboard.
+<p>In addition to this help, many items have "pop up" help baloons that will appear if you let
+your mouse hover over them momentarily.
+<p>Using the File | Diagnostic menu you can enter commands that the program will
+send directly to the scope. Example commands are:
+
+<pre>
+*IDN?
+:CHAN1:DISP ON
+</pre>
+
+<p>You do <b>not</b> need to issue commands to the scope. This is simply here as a handy
+way to send commands to the scope should the need arise. Commands all start with ':' or '*'
+and any command output is indicated by the last letter being "?".
+
+</body>
+</html>

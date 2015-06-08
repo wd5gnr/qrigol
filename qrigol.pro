@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui webkit
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,16 +17,19 @@ SOURCES += main.cpp\
     rigolcomm.cpp \
     mlogger.cpp \
     plotdialog.cpp \
-    scopedata.cpp
+    scopedata.cpp \
+    helpdialog.cpp
 
 HEADERS  += mainwindow.h \
     rigolcomm.h \
     mlogger.h \
     plotdialog.h \
-    scopedata.h
+    scopedata.h \
+    helpdialog.h
 
 FORMS    += mainwindow.ui \
-    plotdialog.ui
+    plotdialog.ui \
+    helpdialog.ui
 
 
 OTHER_FILES += \
@@ -50,7 +53,18 @@ OTHER_FILES += \
     screenshots/screenshot_204.png \
     screenshots/screenshot_205.png \
     packages/qrigol_0.1_amd64.deb \
-    packages/qrigol-0.1-2.x86_64.rpm
+    packages/qrigol-0.1-2.x86_64.rpm \
+    help.html \
+    help.css \
+    index.html \
+    main.html \
+    about.html \
+    concept.html \
+    status.html \
+    verthor.html \
+    trigger.html \
+    measure.html \
+    waveform.html
 
 RESOURCES += \
     resources.qrc

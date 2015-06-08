@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<title>Page 1</title>
+<link rel="stylesheet" type="text/css" href="help.css">
+</head>
+<body>
+<h1>Vertical and Horizontal Tabs</h1>
+<p>These tabs duplicate functions that appear on your scope's front panel.
+<h2>Vertical</h2>
+Each channel has the same controls:
+<ul>
+<li>Display - Check to show channel
+<li>BW Limit - Check to limit bandwidth
+<li>AC/DC/GND - Set coupling
+<li>Filter - Turn on digital filter
+<li>Invert - CHeck to invert channel
+<li>1X/10X... - Probe attenuation setting
+<li>Offset - Set position of trace (hint: the mouse wheel works well in this field)
+</ul>
+In addition there is one drop down box in the bottom right corner to set the vertical scale of each
+channel (that is the volts/division).
+<p>The math area allows you to pick a basic math function or the FFT. The checkbox determines if
+the scope will display the selected operation or not.
+<p>At the bottom of the tab is a "Read Scope" button. The program does not constantly update
+the state of the controls. If the scope keyboard is locked, this isn't a problem since
+only the program will change the scope's settings. But if the keyboard is unlocked, it is
+possible to make changes on the scope that will not reflect on the program. Pressing
+Read Scope ensures all the controls match the ones found on the scope.
+<h2>Horizontal</h2>
+<p>In addition to a Read Scope button (see above) this tab has two major areas: Timebase and Acquire.
+The timebase position box sets the horizontal position in microseconds. In addtion, you can
+change what each "step" of that box is worth using the increment control next to it. This allows
+you to use keyboard arrows or the moues wheel to make very fine or very course adjustments
+as needed. The Clear button will zero the position, returning the trigger to the center of the screen.
+<p>In addition to these controls, there is also a setting for the scale and a read-only
+indicator of the scope's current sample rate.
+<p>The acquire section allows you set the type of aquistion the scope performs, including setting the long
+sample memory option. The average selection is only available, of course, in averaging mode.
+</body>
+</html>

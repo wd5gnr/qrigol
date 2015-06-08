@@ -7,6 +7,7 @@
 #include <QThread>
 #include "mlogger.h"
 #include "scopedata.h"
+#include "helpdialog.h"
 
 
 namespace Ui {
@@ -171,6 +172,8 @@ private slots:
 
     void on_exportFmt_currentIndexChanged(int index);
 
+    void on_action_Help_triggered();
+
 private:
     Ui::MainWindow *ui;
      QTimer *uTimer;
@@ -183,6 +186,7 @@ private:
     MLogger mlogworker;
     ScopeData scope;
     unsigned capcount;
+    HelpDialog *helpdlg;
 };
 
 #endif // MAINWINDOW_H
