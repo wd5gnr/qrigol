@@ -118,6 +118,7 @@ float RigolComm::toFloat(void)
     printf("%s\n",setlocale(LC_ALL,NULL));
     struct lconv *lc=localeconv();
     char dp=*lc->decimal_point;
+
     printf("DEBUG: Decimal point is %c\n",dp);
     if (recv()<0) return rv;
     if (dp!='.')
