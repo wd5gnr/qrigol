@@ -32,6 +32,8 @@
 #include "unistd.h"
 
 // TODO: Read scales
+// I think this is done for chanXoffset
+// Needs to also be done for :TIM:OFFS, CHANX:SCAL (if we didn't already) :TRIG:SLOP:LEVA/B :TRIG:MODE:LEV
 // TODO: The plot example UI probably doesn't work well with a keyboard
 
 void MainWindow::on_action_About_triggered()
@@ -316,7 +318,7 @@ void MainWindow::on_hardcopyBTN_clicked()  // scope's "hardcopy" function
 
 
 
-void MainWindow::setupChannel(int ch,QComboBox *probebox,QComboBox *scalebox)
+void MainWindow::setupChannel(int ch,QComboBox *probebox,QComboBox *scalebox,QDoubleSpinBox *coffset)
 {
     QString cmdbase=":CHAN";
     QString cmd;
@@ -388,6 +390,18 @@ void MainWindow::setupChannel(int ch,QComboBox *probebox,QComboBox *scalebox)
     }
     cmd=cmdbase+":SCAL?";
     probe=scope.cmdFloat(cmd);
+    // here probe equals the current scale which we should use to
+    // set the CHANnOffset range too
+    if (probe<0.250)
+    {
+        coffset->setMinimum(-2.0);
+        coffset->setMaximum(2.0);
+    }
+    else
+    {
+        coffset->setMinimum(-40.0);
+        coffset->setMaximum(40.0);
+    }
     int n=0;
     while (scalebox->itemText(n).toFloat()!=probe)
         if (++n>=scalebox->count()) break;
@@ -486,8 +500,8 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
    ui->c2inv->setChecked(scope.inverted(2));
    ui->c1filt->setChecked(scope.filtered(1));
    ui->c2filt->setChecked(scope.filtered(2));
-   setupChannel(1,ui->c1probe,ui->c1vscale);
-   setupChannel(2,ui->c2probe,ui->c2vscale);
+   setupChannel(1,ui->c1probe,ui->c1vscale,ui->c1offspin);
+   setupChannel(2,ui->c2probe,ui->c2vscale,ui->c2offspin);
    ui->c1coup->setCurrentIndex(ui->c1coup->findText(scope.coupling(1)));
    ui->c2coup->setCurrentIndex(ui->c2coup->findText(scope.coupling(2)));
    // convert to uS

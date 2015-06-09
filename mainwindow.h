@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "rigolcomm.h"
 #include <QComboBox>
+#include <QDoubleSpinBox>
 #include <QThread>
 #include "mlogger.h"
 #include "scopedata.h"
@@ -180,7 +181,7 @@ private:
      QTimer *uiTimer;
 
     bool nocommands;
-    void setupChannel(int ch, QComboBox *probebox, QComboBox *scalebox);
+    void setupChannel(int ch, QComboBox *probebox, QComboBox *scalebox, QDoubleSpinBox *coffset);
     void restoreSavedSettings(void);
     QFile *mlog;
     MLogger mlogworker;
