@@ -67,7 +67,8 @@ OTHER_FILES += \
     waveform.html \
     packages/qrigol_0.2_amd64.deb \
     packages/binary-release/Debug/qrigol \
-    packages/binary-release/Relase/qrigol
+    packages/binary-release/Relase/qrigol \
+    qrigol.desktop
 
 RESOURCES += \
     resources.qrc

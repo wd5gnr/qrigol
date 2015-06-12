@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=0.2
+Name=qRigol
+Comment=Qt-based control program for Rigol DS1xx2E oscilloscopes
+Exec=/usr/bin/qrigol
+Icon=qrigol
+Terminal=false
+Categories=Electronics;Utility
+StartupNotify=true
+Encoding=UTF-8

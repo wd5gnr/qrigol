@@ -402,6 +402,14 @@ void MainWindow::setupChannel(int ch,QComboBox *probebox,QComboBox *scalebox,QDo
         coffset->setMinimum(-40.0);
         coffset->setMaximum(40.0);
     }
+/*
+    if (ch==?? trig source ??)
+    ui->tlevel->setMaximum(6*probe);
+    ui->tlevel->setMinimum(-6*probe);
+    ui->tslopea->
+    ui->tslopeb->
+
+*/
     int n=0;
     while (scalebox->itemText(n).toFloat()!=probe)
         if (++n>=scalebox->count()) break;
@@ -500,15 +508,6 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
    ui->c2inv->setChecked(scope.inverted(2));
    ui->c1filt->setChecked(scope.filtered(1));
    ui->c2filt->setChecked(scope.filtered(2));
-   setupChannel(1,ui->c1probe,ui->c1vscale,ui->c1offspin);
-   setupChannel(2,ui->c2probe,ui->c2vscale,ui->c2offspin);
-   ui->c1coup->setCurrentIndex(ui->c1coup->findText(scope.coupling(1)));
-   ui->c2coup->setCurrentIndex(ui->c2coup->findText(scope.coupling(2)));
-   // convert to uS
-   ui->hoffsetspin->setValue(scope.config.hoffset*1000000.0f);
-   ui->c1offspin->setValue(scope.config.voffset[0]);
-   ui->c2offspin->setValue(scope.config.voffset[1]);
-
    QString mode=scope.trigMode();
    int  moden=ui->tmode->findText(mode,static_cast<Qt::MatchFlags>(Qt::MatchFixedString));
    if (moden!=-1)
@@ -521,11 +520,24 @@ void MainWindow::on_updAcq_clicked()  // this function updates the ui from the s
    }
    // since nocommands is set, this will just update ui
    on_tmode_currentIndexChanged(ui->tmode->currentIndex());
+   QString source=scope.triggerSource(ui->tmode->currentText());
+   ui->tsource->setCurrentIndex(ui->tsource->findText(source,Qt::MatchFlags(Qt::MatchFixedString)));
+   // TODO use trigger source channel and type to set level min/max
+   // based on scopedata.config.vscale[chan]
+
+
+   setupChannel(1,ui->c1probe,ui->c1vscale,ui->c1offspin);
+   setupChannel(2,ui->c2probe,ui->c2vscale,ui->c2offspin);
+   ui->c1coup->setCurrentIndex(ui->c1coup->findText(scope.coupling(1)));
+   ui->c2coup->setCurrentIndex(ui->c2coup->findText(scope.coupling(2)));
+   // convert to uS
+   ui->hoffsetspin->setValue(scope.config.hoffset*1000000.0f);
+   ui->c1offspin->setValue(scope.config.voffset[0]);
+   ui->c2offspin->setValue(scope.config.voffset[1]);
+
 
 
    QString cmd;
-   QString source=scope.triggerSource(ui->tmode->currentText());
-   ui->tsource->setCurrentIndex(ui->tsource->findText(source,Qt::MatchFlags(Qt::MatchFixedString)));
 
    source=scope.sweep(ui->tmode->currentText()); // scope doesn't seem to care what trigger type is active
    ui->tsweep->setCurrentIndex(ui->tsweep->findText(source,Qt::MatchFlags(Qt::MatchFixedString)));

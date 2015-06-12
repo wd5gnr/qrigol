@@ -13,12 +13,16 @@
   <property name="windowTitle">
    <string>QRigol by Al Williams</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/qrigol/icons/main.png</normaloff>:/qrigol/icons/main.png</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_6">
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>4</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="status">
        <attribute name="title">

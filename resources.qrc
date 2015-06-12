@@ -15,5 +15,6 @@
         <file>trigger.html</file>
         <file>measure.html</file>
         <file>waveform.html</file>
+        <file>icons/main.png</file>
     </qresource>
 </RCC>
