@@ -103,7 +103,7 @@ public:
     bool setChanOffset(int chan,float f) { return command(":CHAN"+QString::number(chan)+":OFFS "+QString::number(f)); }
     bool setChanScale(int chan, const QString &v) { return command(":CHAN" +QString::number(chan)+":SCAL "+v); }
     bool setTrigMode(const QString &mod) { return command(":TRIG:MODE "+mod); }
-    bool setTrigLevel(const QString &mod, float f) { return command(":TRIG:"+mod+":LEV"+QString::number(f)); }
+    bool setTrigLevel(const QString &mod, float f) { return command(":TRIG:"+mod+":LEV "+QString::number(f)); }
     bool setSweep(const QString &mod,const QString state) { return command(":TRIG:"+mod+":SWE "+state); }
     bool setTrigSource(const QString &mod,const QString state) { return command(":TRIG:"+mod+":SOUR "+state); }
     bool setTrigHoldUs(float f) { return command(":TRIG:HOLD"+QString::number(f/1000000.0f,'f')); }
