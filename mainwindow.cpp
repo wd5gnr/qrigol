@@ -28,6 +28,7 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QRegularExpression>
 #include "helpdialog.h"
 #include "unistd.h"
 
@@ -635,7 +636,40 @@ void MainWindow::on_hscale_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
     if (!scope.connected()||nocommands) return;
-    scope.setTimeScale(ui->hscale->currentText());
+
+    QString curStringVal = ui->hscale->currentText();
+    int unitLocation = curStringVal.indexOf(QRegularExpression("[a-z]"));
+
+    int curRawVal = curStringVal.left(unitLocation).toInt();
+    QString unitOnly = curStringVal.mid(unitLocation);
+
+    QString prefix = "";
+
+    if (unitOnly == "ms")
+    {
+        prefix = "0.";
+    }
+    else if (unitOnly == "us")
+    {
+       prefix = "0.000";
+    }
+    else if (unitOnly == "ns")
+    {
+       prefix = "0.000000";
+    }
+    else
+    {
+       // assume seconds
+    }
+
+    // Make the integer string 3 digits long (prefix with zeros)
+    QString setValue = QString::number(curRawVal);
+    while(setValue.length() < 3)
+    {
+       setValue = "0" + setValue;
+    }
+
+    scope.setTimeScale(prefix + setValue);
 }
 
 void MainWindow::on_cdisp1_clicked()
